@@ -3,7 +3,7 @@ import type {
   DayBookEntryType, 
   DayBookEntry, 
   DayBookSummary 
-} from '../types/daybook';
+} from '../types';
 
 export type { DayBookEntryType, DayBookEntry, DayBookSummary };
 
