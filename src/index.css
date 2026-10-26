@@ -8,23 +8,67 @@
    ========================================================================== */
 
 @layer base {
-  :root {
-    --paper: #f7f3ea;
-    --paper-raised: #fcfaf4;
-    --paper-deep: #f1ebdd;
-    --ink: #14110f;
-    --ink-soft: #1c1815;
-    --line: #e3daca;
-    --line-strong: #cfc3af;
-    --indigo: #202853;
-    --neel: #23306B;
-    --chilli: #A23A19;
-    --paan: #2B5A44;
-    --copper: #8a5a38;
-    --sage: #2f5d4e;
+  :root,
+  [data-theme="organic-forest"] {
+    --paper: #f7f8f5;
+    --paper-raised: #ffffff;
+    --paper-deep: #eef2ee;
+    --ink: #12231a;
+    --ink-soft: #2e4438;
+    --line: #d6e0d8;
+    --line-strong: #bacabf;
+    --indigo: #1b3629;
+    --neel: #2d4e41;
+    --chilli: #a23a19;
+    --paan: #2b5a44;
+    --copper: #e28d3b;
+    --sage: #2a5843;
     --oxblood: #7a2e35;
-    --brass: #8c6a2f;
-    --shadow-card: 0 4px 12px -4px rgba(20, 17, 15, 0.1), 0 1px 2px rgba(20, 17, 15, 0.04);
+    --brass: #e28d3b;
+    --accent: #e28d3b;
+    --shadow-card: 0 4px 16px -4px rgba(18, 35, 26, 0.07), 0 1px 3px rgba(18, 35, 26, 0.03);
+    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  [data-theme="obsidian-chic"] {
+    --paper: #f9fafb;
+    --paper-raised: #ffffff;
+    --paper-deep: #f3f4f6;
+    --ink: #090b0e;
+    --ink-soft: #374151;
+    --line: #e5e7eb;
+    --line-strong: #d1d5db;
+    --indigo: #0c0e12;
+    --neel: #1f2937;
+    --chilli: #ec2d5c;
+    --paan: #be123c;
+    --copper: #ec2d5c;
+    --sage: #374151;
+    --oxblood: #9f1239;
+    --brass: #f5a3b5;
+    --accent: #ec2d5c;
+    --shadow-card: 0 4px 16px -4px rgba(12, 14, 18, 0.06), 0 1px 3px rgba(12, 14, 18, 0.02);
+    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  [data-theme="sovereign-gold"] {
+    --paper: #fcfaf5;
+    --paper-raised: #ffffff;
+    --paper-deep: #f4f0e6;
+    --ink: #0c1812;
+    --ink-soft: #2a3d31;
+    --line: #e3dccf;
+    --line-strong: #cebea6;
+    --indigo: #0f1e17;
+    --neel: #1c3b2d;
+    --chilli: #9e3d23;
+    --paan: #1e4533;
+    --copper: #d4af37;
+    --sage: #2a5a42;
+    --oxblood: #6b2420;
+    --brass: #d4af37;
+    --accent: #d4af37;
+    --shadow-card: 0 4px 16px -4px rgba(15, 30, 23, 0.08), 0 1px 3px rgba(15, 30, 23, 0.03);
     --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 

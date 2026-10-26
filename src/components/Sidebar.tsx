@@ -2,7 +2,23 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SaudaLogo } from './SaudaLogo';
 import { GlassIcon, GlassIconType } from './GlassIcon';
-import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen, Building2, Scale, ClipboardList, Truck, FileText, ReceiptText, Award, ShieldAlert, FolderDown } from 'lucide-react';
+import { 
+  ChevronDown, 
+  Lock, 
+  Wrench, 
+  ArrowUpRight, 
+  BookOpen, 
+  Building2, 
+  Scale, 
+  ClipboardList, 
+  Truck, 
+  FileText, 
+  ReceiptText, 
+  Award, 
+  ShieldAlert, 
+  FolderDown,
+  Sparkles
+} from 'lucide-react';
 
 interface SidebarProps {
   currentTab: string;
@@ -15,7 +31,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCurrentTab,
   onOpenToolModal,
 }) => {
-  const { lang, setLang, currentUser, currentShop, lockApp, t } = useApp();
+  const { 
+    lang, 
+    setLang, 
+    currentUser, 
+    currentShop, 
+    lockApp, 
+    t, 
+    setIsLuxuryStudioOpen,
+    activeTheme,
+    activeLogoConcept
+  } = useApp();
   const [showTools, setShowTools] = useState(false);
 
   const primaryNavItems: {
@@ -59,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Brand */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-start justify-between gap-2">
-          <SaudaLogo size="md" showSubtitle tone="dark" />
+          <SaudaLogo size="md" showSubtitle tone="dark" concept={activeLogoConcept} />
 
           <span className="mt-1 inline-flex items-center gap-1.5 font-mono text-[8px] font-medium uppercase tracking-micro text-stone-300">
             <span className="w-1.5 h-1.5 rounded-full bg-sage-400" aria-hidden="true" />
@@ -78,6 +104,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </span>
           </div>
         </div>
+
+        {/* Luxury Palette & Logo Studio Quick Launcher */}
+        <button
+          onClick={() => setIsLuxuryStudioOpen(true)}
+          className="mt-2.5 w-full flex items-center justify-between px-3 py-2 rounded-md bg-white/10 hover:bg-white/15 border border-white/15 text-paper text-xs transition-all duration-200 group active:scale-[0.98]"
+          title="Open Luxury Brand & Palette Studio"
+          data-testid="btn-open-luxury-studio"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+            <span className="font-medium text-[11px] tracking-wide">
+              {t('లగ్జరీ స్టూడియో', 'Luxury Studio')}
+            </span>
+          </div>
+          <span className="text-[9px] font-mono text-stone-300 uppercase px-1.5 py-0.5 rounded bg-black/30">
+            {activeTheme === 'organic-forest' ? 'Forest' : activeTheme === 'obsidian-chic' ? 'Chic' : 'Royal'}
+          </span>
+        </button>
       </div>
 
       {/* Navigation */}

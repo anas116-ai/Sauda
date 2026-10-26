@@ -3,10 +3,18 @@ import { type User, type Shop } from '../types';
 import { db, seedInitialData } from '../db';
 
 export type Language = 'en' | 'te' | 'hi';
+export type LuxuryTheme = 'organic-forest' | 'obsidian-chic' | 'sovereign-gold';
+export type LogoConcept = 'knot' | 'prism' | 'portal';
 
 interface AppContextType {
   lang: Language;
   setLang: (lang: Language) => void;
+  activeTheme: LuxuryTheme;
+  setActiveTheme: (theme: LuxuryTheme) => void;
+  activeLogoConcept: LogoConcept;
+  setActiveLogoConcept: (concept: LogoConcept) => void;
+  isLuxuryStudioOpen: boolean;
+  setIsLuxuryStudioOpen: (open: boolean) => void;
   currentUser: User | null;
   currentShop: Shop | null;
   isLocked: boolean;
@@ -23,6 +31,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('sauda_lang');
     return (saved === 'te' || saved === 'en' || saved === 'hi') ? saved : 'en';
   });
+
+  const [activeTheme, setActiveThemeState] = useState<LuxuryTheme>(() => {
+    const saved = localStorage.getItem('sauda_theme');
+    return (saved === 'organic-forest' || saved === 'obsidian-chic' || saved === 'sovereign-gold')
+      ? saved
+      : 'organic-forest';
+  });
+
+  const [activeLogoConcept, setActiveLogoConceptState] = useState<LogoConcept>(() => {
+    const saved = localStorage.getItem('sauda_logo_concept');
+    return (saved === 'knot' || saved === 'prism' || saved === 'portal') ? saved : 'knot';
+  });
+
+  const [isLuxuryStudioOpen, setIsLuxuryStudioOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentShop, setCurrentShop] = useState<Shop | null>(null);
   const [isLocked, setIsLocked] = useState<boolean>(false);
@@ -31,6 +53,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setLangState(newLang);
     localStorage.setItem('sauda_lang', newLang);
   };
+
+  const setActiveTheme = (theme: LuxuryTheme) => {
+    setActiveThemeState(theme);
+    localStorage.setItem('sauda_theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  };
+
+  const setActiveLogoConcept = (concept: LogoConcept) => {
+    setActiveLogoConceptState(concept);
+    localStorage.setItem('sauda_logo_concept', concept);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', activeTheme);
+  }, [activeTheme]);
 
   useEffect(() => {
     async function init() {
@@ -75,6 +112,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         lang,
         setLang,
+        activeTheme,
+        setActiveTheme,
+        activeLogoConcept,
+        setActiveLogoConcept,
+        isLuxuryStudioOpen,
+        setIsLuxuryStudioOpen,
         currentUser,
         currentShop,
         isLocked,
