@@ -19,7 +19,8 @@ import {
   type DayEndClosingReport,
   type BankAccount,
   type AccountTransaction,
-  type Estimate
+  type Estimate,
+  type PurchaseOrder
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -43,6 +44,7 @@ export class LekvyaDatabase extends Dexie {
   accounts!: Table<BankAccount, string>;
   accountTransactions!: Table<AccountTransaction, string>;
   estimates!: Table<Estimate, string>;
+  purchaseOrders!: Table<PurchaseOrder, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -98,6 +100,10 @@ export class LekvyaDatabase extends Dexie {
 
     this.version(11).stores({
       estimates: 'id, shopId, estimateNumber, customerId, status, createdAt',
+    });
+
+    this.version(12).stores({
+      purchaseOrders: 'id, shopId, poNumber, supplierId, status, createdAt',
     });
   }
 }
@@ -1339,6 +1345,53 @@ export async function seedInitialData() {
           quantity: 5,
           unitPricePaise: 2700,
           lineTotalPaise: 13500,
+        }
+      ]
+    });
+  }
+
+  // Seed initial sample Purchase Orders if empty
+  const poCount = await db.purchaseOrders.count();
+  if (poCount === 0) {
+    await db.purchaseOrders.put({
+      id: 'po-2026-0001',
+      shopId: defaultShopId,
+      poNumber: 'PO-2026-0001',
+      supplierId: 'sup-001',
+      supplierName: 'Sri Srinivasa ITC Agencies',
+      supplierPhone: '9849012345',
+      totalQuantity: 20,
+      subtotalPaise: 820000,
+      taxPaise: 41000,
+      totalAmountPaise: 861000,
+      status: 'SENT',
+      expectedDeliveryDate: Date.now() + 2 * 86400000,
+      notes: 'వారం స్టాక్ రీ-ఆర్డర్: ఆశీర్వాద్ గోధుమ పిండి మరియు సబ్బులు',
+      createdAt: Date.now() - 1 * 86400000,
+      items: [
+        {
+          id: 'poi-1',
+          variantId: 'var-001-10kg',
+          productNameEn: 'Aashirvaad Superior MP Whole Wheat Atta',
+          productNameTe: 'ఆశీర్వాద్ గోధుమ పిండి',
+          variantName: '10 kg Bag',
+          unit: 'KG',
+          quantityOrdered: 10,
+          quantityReceived: 0,
+          expectedRatePaise: 41000,
+          lineTotalPaise: 410000,
+        },
+        {
+          id: 'poi-2',
+          variantId: 'var-007-100g',
+          productNameEn: 'Lifebuoy Total Germ Protection Soap',
+          productNameTe: 'లైఫ్‌బాయ్ సబ్బు',
+          variantName: '100g Bar',
+          unit: 'PCS',
+          quantityOrdered: 10,
+          quantityReceived: 0,
+          expectedRatePaise: 41000,
+          lineTotalPaise: 410000,
         }
       ]
     });

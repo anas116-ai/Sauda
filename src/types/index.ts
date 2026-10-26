@@ -97,6 +97,40 @@ export interface Estimate {
   items: EstimateItem[];
 }
 
+export type PurchaseOrderStatus = 'DRAFT' | 'SENT' | 'PARTIALLY_RECEIVED' | 'COMPLETED' | 'CANCELLED';
+
+export interface PurchaseOrderItem {
+  id: string;
+  variantId: string;
+  productNameEn: string;
+  productNameTe: string;
+  variantName: string;
+  unit: string;
+  quantityOrdered: number;
+  quantityReceived: number;
+  expectedRatePaise: number;
+  lineTotalPaise: number;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  shopId: string;
+  poNumber: string;
+  supplierId: string;
+  supplierName: string;
+  supplierPhone?: string;
+  totalQuantity: number;
+  subtotalPaise: number;
+  taxPaise: number;
+  totalAmountPaise: number;
+  status: PurchaseOrderStatus;
+  expectedDeliveryDate?: number;
+  notes?: string;
+  createdAt: number;
+  convertedInwardId?: string;
+  items: PurchaseOrderItem[];
+}
+
 export type UnitType = 'L' | 'ML' | 'KG' | 'G' | 'PCS' | 'PACK';
 
 export interface ProductVariant {
