@@ -16,6 +16,7 @@ import { DeliveryChallansScreen } from './features/challans/DeliveryChallansScre
 import { GstReportsScreen } from './features/gst/GstReportsScreen';
 import { LoyaltyRewardsScreen } from './features/loyalty/LoyaltyRewardsScreen';
 import { ActivityLogScreen } from './features/audit/ActivityLogScreen';
+import { ExportCenterScreen } from './features/export/ExportCenterScreen';
 
 const MainLayout: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
@@ -88,6 +89,7 @@ const MainLayout: React.FC = () => {
         {currentTab === 'gst' && <GstReportsScreen />}
         {currentTab === 'loyalty' && <LoyaltyRewardsScreen />}
         {currentTab === 'audit' && <ActivityLogScreen />}
+        {currentTab === 'export' && <ExportCenterScreen />}
         {currentTab === 'settings' && <SettingsScreen />}
       </main>
 

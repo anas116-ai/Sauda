@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T14:37:44.325Z",
+  "generatedAt": "2026-10-26T15:58:37.505Z",
   "url": "http://localhost:5173/",
   "viewport": "1440x950 (desktop) + 390x844 (mobile probe)",
   "total": 46,
@@ -40,7 +40,7 @@
     {
       "name": "P2 · Telugu product search returns matches",
       "pass": true,
-      "detail": "results=7"
+      "detail": "results=8"
     },
     {
       "name": "P3 · English product search returns matches",
