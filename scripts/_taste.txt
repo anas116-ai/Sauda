@@ -1,0 +1,120 @@
+=== TYPOGRAPHY (74 pairings) ===
+Classic Elegant  ·  Playfair Display / Inter  ·  Serif + Sans  ·  elegant, luxury, sophisticated, timeless, premium, editorial  ·  Best: Luxury brands, fashion, spa, beauty, editorial, magazines, high-end e-commerce
+Editorial Classic  ·  Cormorant Garamond / Libre Baskerville  ·  Serif + Serif  ·  editorial, classic, literary, traditional, refined, bookish  ·  Best: Publishing, blogs, news sites, literary magazines, book covers
+Playful Creative  ·  Fredoka / Nunito  ·  Display + Sans  ·  playful, friendly, fun, creative, warm, approachable  ·  Best: Children's apps, educational, gaming, creative tools, entertainment
+Wellness Calm  ·  Lora / Raleway  ·  Serif + Sans  ·  calm, wellness, health, relaxing, natural, organic  ·  Best: Health apps, wellness, spa, meditation, yoga, organic brands
+Developer Mono  ·  JetBrains Mono / IBM Plex Sans  ·  Mono + Sans  ·  code, developer, technical, precise, functional, hacker  ·  Best: Developer tools, documentation, code editors, tech blogs, CLI apps
+Retro Vintage  ·  Abril Fatface / Merriweather  ·  Display + Serif  ·  retro, vintage, nostalgic, dramatic, decorative, bold  ·  Best: Vintage brands, breweries, restaurants, creative portfolios, posters
+Luxury Serif  ·  Cormorant / Montserrat  ·  Serif + Sans  ·  luxury, high-end, fashion, elegant, refined, premium  ·  Best: Fashion brands, luxury e-commerce, jewelry, high-end services
+News Editorial  ·  Newsreader / Roboto  ·  Serif + Sans  ·  news, editorial, journalism, trustworthy, readable, informative  ·  Best: News sites, blogs, magazines, journalism, content-heavy sites
+Handwritten Charm  ·  Caveat / Quicksand  ·  Script + Sans  ·  handwritten, personal, friendly, casual, warm, charming  ·  Best: Personal blogs, invitations, creative portfolios, lifestyle brands
+Brutalist Raw  ·  Space Mono / Space Mono  ·  Mono + Mono  ·  brutalist, raw, technical, monospace, minimal, stark  ·  Best: Brutalist designs, developer portfolios, experimental, tech art
+Soft Rounded  ·  Varela Round / Nunito Sans  ·  Sans + Sans  ·  soft, rounded, friendly, approachable, warm, gentle  ·  Best: Children's products, pet apps, friendly brands, wellness, soft UI
+Japanese Elegant  ·  Noto Serif JP / Noto Sans JP  ·  Serif + Sans  ·  japanese, elegant, traditional, modern, multilingual, readable  ·  Best: Japanese sites, Japanese restaurants, cultural sites, anime/manga
+Chinese Traditional  ·  Noto Serif TC / Noto Sans TC  ·  Serif + Sans  ·  chinese, traditional, elegant, cultural, multilingual, readable  ·  Best: Traditional Chinese sites, cultural content, Taiwan/Hong Kong markets
+Arabic Elegant  ·  Noto Naskh Arabic / Noto Sans Arabic  ·  Serif + Sans  ·  arabic, elegant, traditional, cultural, RTL, readable  ·  Best: Arabic sites, Middle East market, Islamic content, bilingual sites
+Legal Professional  ·  EB Garamond / Lato  ·  Serif + Sans  ·  legal, professional, traditional, trustworthy, formal, authoritative  ·  Best: Law firms, legal services, contracts, formal documents, government
+Real Estate Luxury  ·  Cinzel / Josefin Sans  ·  Serif + Sans  ·  real estate, luxury, elegant, sophisticated, property, premium  ·  Best: Real estate, luxury properties, architecture, interior design
+Restaurant Menu  ·  Playfair Display SC / Karla  ·  Serif + Sans  ·  restaurant, menu, culinary, elegant, foodie, hospitality  ·  Best: Restaurants, cafes, food blogs, culinary, hospitality
+Art Deco  ·  Poiret One / Didact Gothic  ·  Display + Sans  ·  art deco, vintage, 1920s, elegant, decorative, gatsby  ·  Best: Vintage events, art deco themes, luxury hotels, classic cocktails
+Magazine Style  ·  Libre Bodoni / Public Sans  ·  Serif + Sans  ·  magazine, editorial, publishing, refined, journalism, print  ·  Best: Magazines, online publications, editorial content, journalism
+E-commerce Clean  ·  Rubik / Nunito Sans  ·  Sans + Sans  ·  ecommerce, clean, shopping, product, retail, conversion  ·  Best: E-commerce, online stores, product pages, retail, shopping
+Academic/Research  ·  Crimson Pro / Atkinson Hyperlegible  ·  Serif + Sans  ·  academic, research, scholarly, accessible, readable, educational  ·  Best: Universities, research papers, academic journals, educational
+Dashboard Data  ·  Fira Code / Fira Sans  ·  Mono + Sans  ·  dashboard, data, analytics, code, technical, precise  ·  Best: Dashboards, analytics, data visualization, admin panels
+Wedding/Romance  ·  Great Vibes / Cormorant Infant  ·  Script + Serif  ·  wedding, romance, elegant, script, invitation, feminine  ·  Best: Wedding sites, invitations, romantic brands, bridal
+Science/Tech  ·  Exo / Roboto Mono  ·  Sans + Sans  ·  science, technology, research, data, futuristic, precise  ·  Best: Science, research, tech documentation, data-heavy sites
+Luxury Minimalist  ·  Bodoni Moda / Jost  ·  Serif + Sans  ·  luxury, minimalist, high-end, sophisticated, refined, premium  ·  Best: Luxury minimalist brands, high-end fashion, premium products
+Tech/HUD Mono  ·  Share Tech Mono / Fira Code  ·  Mono + Mono  ·  tech, futuristic, hud, sci-fi, data, monospaced, precise  ·  Best: Sci-fi interfaces, developer tools, cybersecurity, dashboards
+Academic/Archival  ·  EB Garamond / Crimson Text  ·  Serif + Serif  ·  academic, old-school, university, research, serious, traditional  ·  Best: University sites, archives, research papers, history
+Kinetic Motion  ·  Syncopate / Space Mono  ·  Display + Mono  ·  kinetic, motion, futuristic, speed, wide, tech  ·  Best: Music festivals, automotive, high-energy brands
+Bauhaus Geometric  ·  Outfit / Outfit  ·  Geometric Sans + Single Weight  ·  bauhaus, geometric, constructivist, bold, uppercase, architectural, mechanical, poster, tactile  ·  Best: Bauhaus mobile apps, bold editorial mobile, design-forward branding apps, art/culture platforms
+Minimalist Monochrome Editorial  ·  Playfair Display / Source Serif 4  ·  Serif + Serif + Mono (Triple Stack)  ·  monochrome, editorial, austere, typographic, pocket manifesto, luxury, high contrast, brutalist mobile  ·  Best: Luxury fashion mobile apps, editorial publications, digital exhibitions, portfolio apps, high-contrast e-reader aesthetics
+Modern Dark Cinema (Inter System)  ·  Inter / Inter  ·  Sans + Mono  ·  dark, cinematic, technical, precision, clean, premium, developer, professional, high-end utility  ·  Best: Developer tools, fintech/trading, AI dashboards, streaming platforms, high-end productivity apps
+SaaS Mobile Boutique (Calistoga + Inter)  ·  Calistoga / Inter  ·  Display Serif + Sans + Mono  ·  saas, boutique, electric, warm, editorial, bold, premium, fintech, business, dual font, human warmth  ·  Best: B2B SaaS mobile, fintech apps, analytics dashboards, marketing tools, operations platforms
+Terminal CLI Monospace  ·  JetBrains Mono / JetBrains Mono  ·  Mono + Mono (Single Family)  ·  terminal, cli, hacker, monospace, matrix, developer, retro-future, command line, precision, OLED  ·  Best: Developer tools, Web3/blockchain apps, hacker aesthetic, sci-fi games, ARG, security tools, geek-culture portfolios
+Bold Typography Mobile (Inter Poster)  ·  Inter / Playfair Display  ·  Sans + Serif (Display) + Mono  ·  bold typography, editorial, poster, near-black, vermillion, luxury, type-as-hero, manifesto, high-contrast  ·  Best: Creative brand flagships, reading platforms, event apps, flash pages, luxury mobile experiences
+Academia Mobile (Cormorant + Crimson + Cinzel)  ·  Cormorant Garamond / Crimson Pro  ·  Serif + Book Serif + Engraved (Triple Stack)  ·  academia, library, mahogany, parchment, brass, scholarly, prestige, antique, victorian, leather  ·  Best: Knowledge management apps, scholarly reading tools, personal brand portfolios, RPG games, cultural community platforms
+Cyberpunk Mobile (Orbitron + JetBrains Mono)  ·  Orbitron / JetBrains Mono  ·  Tech Display + Mono  ·  cyberpunk, neon, glitch, hud, sci-fi, dark, matrix green, magenta, chamfered, tactical  ·  Best: Gaming companion apps, fintech/crypto, data visualization, dark brand apps, cyberpunk narrative games
+Web3 Bitcoin DeFi (Space Grotesk + Inter + Mono)  ·  Space Grotesk / Inter  ·  Geometric Sans + Sans + Mono (Triple)  ·  web3, bitcoin, defi, digital gold, fintech, crypto, trustless, luminescent, precision, dark  ·  Best: DeFi protocols and wallets, NFT platforms, metaverse social apps, high-tech brand landing pages
+Neumorphism Mobile (Plus Jakarta Sans + System)  ·  Plus Jakarta Sans / Plus Jakarta Sans  ·  Geometric Sans (System Fallback)  ·  neumorphism, soft ui, monochromatic, cool grey, minimal, physical, depth, ceramic, system font, utility  ·  Best: Smart home controls, minimal tools, aesthetic dashboards, health monitors, brand showcase pages
+
+=== COLOR (192) ===
+E-commerce Luxury  ·  P #1C1917  BG #FAFAF9  ACC #A16207  ·  Premium dark + gold accent [Accent adjusted from #CA8A04]
+Portfolio/Personal  ·  P #18181B  BG #FAFAFA  ACC #2563EB  ·  Monochrome + blue accent
+Podcast Platform  ·  P #1E1B4B  BG #0F0F23  ACC #F97316  ·  Dark audio + warm accent
+Dating App  ·  P #E11D48  BG #FFF1F2  ACC #EA580C  ·  Romantic rose + warm orange [Accent adjusted from #F97316]
+Beauty/Spa/Wellness Service  ·  P #EC4899  BG #FDF2F8  ACC #8B5CF6  ·  Soft pink + lavender luxury
+Luxury/Premium Brand  ·  P #1C1917  BG #FAFAF9  ACC #A16207  ·  Premium black + gold accent [Accent adjusted from #CA8A04]
+Restaurant/Food Service  ·  P #DC2626  BG #FEF2F2  ACC #A16207  ·  Appetizing red + warm gold [Accent adjusted from #CA8A04]
+Hotel/Hospitality  ·  P #1E3A8A  BG #F8FAFC  ACC #A16207  ·  Luxury navy + gold service [Accent adjusted from #CA8A04]
+Veterinary Clinic  ·  P #0D9488  BG #F0FDFA  ACC #EA580C  ·  Caring teal + warm orange [Accent adjusted from #F97316]
+Bakery/Cafe  ·  P #92400E  BG #FEF3C7  ACC #92400E  ·  Warm brown + cream white [Accent adjusted from #F8FAFC]
+Magazine/Blog  ·  P #18181B  BG #FAFAFA  ACC #EC4899  ·  Editorial black + accent pink
+Church/Religious Organization  ·  P #7C3AED  BG #FAF5FF  ACC #A16207  ·  Spiritual purple + warm gold [Accent adjusted from #CA8A04]
+Notes & Writing App  ·  P #78716C  BG #FFFBEB  ACC #D97706  ·  Warm ink + amber accent on cream
+Recipe & Cooking App  ·  P #9A3412  BG #FFFBEB  ACC #059669  ·  Warm terracotta + fresh green
+Diary & Journal App  ·  P #92400E  BG #FFFBEB  ACC #6366F1  ·  Warm journal brown + ink violet
+Grocery & Shopping List  ·  P #059669  BG #ECFDF5  ACC #D97706  ·  Fresh green + food amber
+Bookmark & Read-Later  ·  P #D97706  BG #FFFBEB  ACC #2563EB  ·  Warm amber + link blue
+Music Instrument Learning  ·  P #DC2626  BG #FFFBEB  ACC #D97706  ·  Musical red + warm amber
+Home Decoration & Interior Design  ·  P #78716C  BG #FAF5F2  ACC #D97706  ·  Interior warm grey + gold accent
+Academic Journal / Scholarly Publishing  ·  P #1E3A5F  BG #F8FAFC  ACC #B45309  ·  Scholarly navy + citation gold + serif accent
+Auction Platform  ·  P #0F172A  BG #020617  ACC #16A34A  ·  Dark luxury + bid green + outbid red + urgency
+Research Lab / University Department  ·  P #1E3A5F  BG #F8FAFC  ACC #A16207  ·  Institutional navy + research accent + serif headings
+
+=== STYLES (88) ===
+Minimalism & Swiss Style  ·  Monochromatic, Black #000000, White #FFFFFF  ·  Clean, simple, spacious, functional, white space, high contrast, geometric, sans-serif, grid-based, essential  ·  Best: Enterprise apps, dashboards, documentation sites, SaaS platforms, professional tools
+Neumorphism  ·  Light pastels: Soft Blue #C8E0F4, Soft Pink #F5E0E8, Soft Grey #E8E8E8  ·  Soft UI, embossed, debossed, convex, concave, light source, subtle depth, rounded (12-16px), monochromatic  ·  Best: Health/wellness apps, meditation platforms, fitness trackers, minimal interaction UIs
+Brutalism  ·  Primary: Red #FF0000, Blue #0000FF, Yellow #FFFF00, Black #000000, White #FFFFFF  ·  Raw, unpolished, stark, high contrast, plain text, default fonts, visible borders, asymmetric, anti-design  ·  Best: Design portfolios, artistic projects, counter-culture brands, editorial/media sites, tech blogs
+Skeuomorphism  ·  Rich realistic: wood, leather, metal colors, detailed gradients (8-12 stops), metallic effects  ·  Realistic, texture, depth, 3D appearance, real-world metaphors, shadows, gradients, tactile, detailed, material  ·  Best: Legacy apps, gaming, immersive storytelling, premium products, luxury, realistic simulations, education
+Trust & Authority  ·  Professional colors (blue/grey), trust colors, certification badge colors (gold/silver accents)  ·  Certificates/badges displayed, expert credentials, case studies with metrics, before/after comparisons, industry recognition, security badges  ·  Best: Healthcare/medical landing pages, financial services, enterprise software, premium/luxury products, legal services
+Exaggerated Minimalism  ·  #000000 (Black), #FFFFFF (White), single vibrant accent only  ·  Bold minimalism, oversized typography, high contrast, negative space, loud minimal, statement design  ·  Best: Fashion, architecture, portfolios, agency landing pages, luxury brands, editorial
+Swiss Modernism 2.0  ·  #000000, #FFFFFF, #F5F5F5, single vibrant accent only  ·  Grid system, Helvetica, modular, asymmetric, international style, rational, clean, mathematical spacing  ·  Best: Corporate sites, architecture, editorial, SaaS, museums, professional services, documentation
+E-Ink / Paper  ·  Off-White #FDFBF7, Paper White #F5F5F5, Ink Black #1A1A1A  ·  Paper-like, matte, high contrast, texture, reading, calm, slow tech, monochrome  ·  Best: Reading apps, digital newspapers, minimal journals, distraction-free writing, slow-living brands
+Anti-Polish / Raw Aesthetic  ·  Paper White #FAFAF8, Pencil Grey #4A4A4A, Marker Black #1A1A1A, Kraft Brown #C4A77D  ·  Hand-drawn, collage, scanned textures, unfinished, imperfect, authentic, human, sketch, raw marks, creative process  ·  Best: Creative portfolios, artist sites, indie brands, handmade products, authentic storytelling, editorial
+Nature Distilled  ·  Terracotta #C67B5C, Sand Beige #D4C4A8, Warm Clay #B5651D, Soft Cream #F5F0E1  ·  Muted earthy, skin tones, wood, soil, sand, terracotta, warmth, organic materials, handmade warmth  ·  Best: Wellness brands, sustainable products, artisan goods, organic food, spa/beauty, home decor
+Editorial Grid / Magazine  ·  High contrast: Black #000000, White #FFFFFF, accent brand color  ·  Magazine layout, asymmetric grid, editorial typography, pull quotes, drop caps, column layout, print-inspired  ·  Best: News sites, blogs, magazines, editorial content, long-form articles, journalism, publishing
+Vintage Analog / Retro Film  ·  Faded Cream #F5E6C8, Warm Sepia #D4A574, Muted Teal #4A7B7C, Soft Pink #E8B4B8  ·  Film grain, VHS, cassette tape, polaroid, analog warmth, faded colors, light leaks, vintage photography  ·  Best: Photography portfolios, music/vinyl brands, vintage fashion, nostalgia marketing, film industry, cafes
+Bauhaus (包豪斯)  ·  Primary Red #D02020, Primary Blue #1040C0, Primary Yellow #F0C020  ·  bauhaus, geometric, constructivist, primary colors, hard shadow, bold, tactile, functional, poster, mechanical, architectural  ·  Best: Mobile-first apps needing high personality, onboarding flows, branding-forward product screens, artisan/design brands, editorial mobile experiences
+Minimalist Monochrome  ·  Pure Black #000000, Pure White #FFFFFF  ·  monochrome, black white, editorial, austere, typographic, sharp, zero radius, high contrast, brutalist, pocket editorial, serif, mechanical  ·  Best: Luxury fashion e-commerce mobile, editorial publications, high-end portfolio apps, experimental/avant-garde brands, digital exhibitions
+SaaS Mobile (High-Tech Boutique)  ·  Electric Blue #0052FF, Gradient End #4D7CFF  ·  saas, electric blue, gradient, fintech, spring animation, dual font, glassmorphism, boutique, premium, calistoga, inter, mono, tactile, haptic, bento  ·  Best: B2B SaaS mobile dashboards, fintech apps, developer tool mobile companions, marketing analytics apps, HR/operations apps, modern business productivity
+Terminal CLI (Mobile)  ·  Matrix Green #33FF00, OLED Black #050505  ·  terminal, cli, matrix green, monospace, hacker, ascii, command line, developer, web3, crypto, sci-fi, OLED, retro-future, field operative  ·  Best: Developer tools, Web3/blockchain apps, geek-culture apps, ARG games, sci-fi/noir gaming companions, hacker/security tools, creative studio portfolios
+Bold Typography (Mobile Poster)  ·  Near Black #0A0A0A, Warm White #FAFAFA  ·  bold typography, editorial, poster, broadsheet, vermillion, negative space, edge-to-edge type, underline CTA, near-black, warm white  ·  Best: Creative brand heroes, reading-focused apps, event/exhibition pages, editorial mobile experiences, landing hero sections
+Academia (Scholarly Mobile)  ·  Mahogany #1C1714, Oak #251E19  ·  academia, library, mahogany, parchment, brass, crimson, serif, drop cap, arch-top, vignette, leather, scholarly, tactile  ·  Best: Knowledge management apps, deep reading tools, ritual-heavy personal brands, lore-heavy RPG/roleplay apps, culture-specific community platforms
+Neumorphism (Mobile)  ·  Accent Violet #6C63FF, Clay Base #E0E5EC  ·  neumorphism, soft ui, dual shadow, extruded, inset, clay surface, monochromatic, cool grey, haptic, ceramic, physical, depth  ·  Best: Minimal hardware controls, smart home apps, aesthetic utility tools, health monitors, brand showcase pages
+
+=== FONTS trending/top unique serif+mono ===
+Archivo  ·  Sans Serif  ·  Sans Serif  ·  pop 58  ·  clean, modern, minimal, professional, readable, neutral
+Azeret Mono  ·  Monospace  ·    ·  pop 390  ·  code, developer, technical, fixed-width, terminal, programming
+Bodoni Moda  ·  Serif  ·  Serif  ·  pop 153  ·  elegant, traditional, classic, refined, literary, editorial
+Bricolage Grotesque  ·  Sans Serif  ·  Sans Serif  ·  pop 33  ·  clean, modern, minimal, professional, readable, neutral
+Chivo  ·  Sans Serif  ·  Sans Serif  ·  pop 248  ·  clean, modern, minimal, professional, readable, neutral
+Cormorant Garamond  ·  Serif  ·  Serif  ·  pop 49  ·  elegant, traditional, classic, refined, literary, editorial
+DM Serif Display  ·  Serif  ·  Serif  ·  pop 31  ·  elegant, traditional, classic, refined, literary, editorial
+Epilogue  ·  Sans Serif  ·  Sans Serif  ·  pop 72  ·  clean, modern, minimal, professional, readable, neutral
+Familjen Grotesk  ·  Sans Serif  ·  Sans Serif  ·  pop 299  ·  clean, modern, minimal, professional, readable, neutral
+Figtree  ·  Sans Serif  ·  Sans Serif  ·  pop 32  ·  clean, modern, minimal, professional, readable, neutral
+Fraunces  ·  Serif  ·  Serif  ·  pop 65  ·  elegant, traditional, classic, refined, literary, editorial
+Gabarito  ·  Display  ·  Sans Serif  ·  pop 330  ·  bold, decorative, headline, attention-grabbing, creative, expressive
+Geist  ·  Sans Serif  ·  Sans Serif  ·  pop 109  ·  clean, modern, minimal, professional, readable, neutral
+Hanken Grotesk  ·  Sans Serif  ·  Sans Serif  ·  pop 48  ·  clean, modern, minimal, professional, readable, neutral
+IBM Plex Mono  ·  Monospace  ·    ·  pop 63  ·  code, developer, technical, fixed-width, terminal, programming
+Instrument Sans  ·  Sans Serif  ·  Sans Serif  ·  pop 45  ·  clean, modern, minimal, professional, readable, neutral
+Instrument Serif  ·  Serif  ·  Serif  ·  pop 27  ·  elegant, traditional, classic, refined, literary, editorial
+JetBrains Mono  ·  Monospace  ·    ·  pop 18  ·  code, developer, technical, fixed-width, terminal, programming
+Literata  ·  Serif  ·  Serif  ·  pop 80  ·  elegant, traditional, classic, refined, literary, editorial
+Manrope  ·  Sans Serif  ·  Sans Serif  ·  pop 22  ·  clean, modern, minimal, professional, readable, neutral
+Martian Mono  ·  Monospace  ·    ·  pop 965  ·  code, developer, technical, fixed-width, terminal, programming
+Newsreader  ·  Serif  ·  Serif  ·  pop 91  ·  elegant, traditional, classic, refined, literary, editorial
+Onest  ·  Sans Serif  ·  Sans Serif  ·  pop 95  ·  clean, modern, minimal, professional, readable, neutral
+Outfit  ·  Sans Serif  ·  Sans Serif  ·  pop 23  ·  clean, modern, minimal, professional, readable, neutral
+Public Sans  ·  Sans Serif  ·  Sans Serif  ·  pop 54  ·  clean, modern, minimal, professional, readable, neutral
+Red Hat Display  ·  Sans Serif  ·  Sans Serif  ·  pop 32  ·  clean, modern, minimal, professional, readable, neutral
+Schibsted Grotesk  ·  Sans Serif  ·  Sans Serif  ·  pop 60  ·  clean, modern, minimal, professional, readable, neutral
+Sora  ·  Sans Serif  ·  Sans Serif  ·  pop 90  ·  clean, modern, minimal, professional, readable, neutral
+Source Serif 4  ·  Serif  ·  Serif  ·  pop 37  ·  elegant, traditional, classic, refined, literary, editorial
+Space Mono  ·  Monospace  ·    ·  pop 102  ·  code, developer, technical, fixed-width, terminal, programming
+Spectral  ·  Serif  ·  Serif  ·  pop 53  ·  elegant, traditional, classic, refined, literary, editorial
+Syne  ·  Sans Serif  ·  Sans Serif  ·  pop 66  ·  clean, modern, minimal, professional, readable, neutral
+Unbounded  ·  Sans Serif  ·  Sans Serif  ·  pop 67  ·  clean, modern, minimal, professional, readable, neutral
+Young Serif  ·  Serif  ·  Serif  ·  pop 198  ·  elegant, traditional, classic, refined, literary, editorial

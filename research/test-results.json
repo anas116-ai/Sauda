@@ -1,0 +1,241 @@
+{
+  "generatedAt": "2026-10-26T11:56:49.084Z",
+  "url": "http://localhost:5173/",
+  "viewport": "1440x950 (desktop) + 390x844 (mobile probe)",
+  "total": 46,
+  "passed": 46,
+  "failed": 0,
+  "consoleErrors": [],
+  "results": [
+    {
+      "name": "D1 · Sidebar, brand and 5 primary tabs render",
+      "pass": true,
+      "detail": "tabs=5 logo=40px"
+    },
+    {
+      "name": "D2 · Four KPI cards (sales, khata due, valuation, invoices)",
+      "pass": true,
+      "detail": "kpis=5"
+    },
+    {
+      "name": "D3 · Recent store invoices table has rows",
+      "pass": true,
+      "detail": "rows=4"
+    },
+    {
+      "name": "D4 · Low Stock Radar panel renders",
+      "pass": true,
+      "detail": "panel present"
+    },
+    {
+      "name": "D5 · Store tools drawer exposes 7 tools",
+      "pass": true,
+      "detail": "tools=7"
+    },
+    {
+      "name": "P1 · POS renders search, cart and payment suite",
+      "pass": true,
+      "detail": "cash=1 upi=1 khata=1"
+    },
+    {
+      "name": "P2 · Telugu product search returns matches",
+      "pass": true,
+      "detail": "results=2"
+    },
+    {
+      "name": "P3 · English product search returns matches",
+      "pass": true,
+      "detail": "results=7"
+    },
+    {
+      "name": "P4 · Add product to cart updates bill total",
+      "pass": true,
+      "detail": "total=₹1550"
+    },
+    {
+      "name": "P5 · Quantity + increases line total",
+      "pass": true,
+      "detail": "₹1550 → ₹3100"
+    },
+    {
+      "name": "P6 · Cash checkout finalizes the bill",
+      "pass": true,
+      "detail": "cash sale completed"
+    },
+    {
+      "name": "P7 · Empty-cart cash button is disabled",
+      "pass": true,
+      "detail": "disabled=yes"
+    },
+    {
+      "name": "P8 · Loose items matrix (F8) opens",
+      "pass": true,
+      "detail": "matrix opened"
+    },
+    {
+      "name": "P9 · GSTR-1 tax report opens with slab totals",
+      "pass": true,
+      "detail": "GST slabs rendered"
+    },
+    {
+      "name": "P10 · Park cart stores an active ticket",
+      "pass": true,
+      "detail": "parked tickets before=0"
+    },
+    {
+      "name": "I1 · Inventory list renders products",
+      "pass": true,
+      "detail": "rows=73"
+    },
+    {
+      "name": "I2 · Inventory search filters rows",
+      "pass": true,
+      "detail": "73 → 8"
+    },
+    {
+      "name": "I3 · Add Item form opens with pricing fields",
+      "pass": true,
+      "detail": "Add Product Name (English) * Name (Telugu) Category General Groceries "
+    },
+    {
+      "name": "I4 · Stock Inward form opens",
+      "pass": true,
+      "detail": "Purchase Stock Inward Bill Studio Supplier * Sri Srinivasa ITC Agencie"
+    },
+    {
+      "name": "I5 · Barcode label studio opens",
+      "pass": true,
+      "detail": "50mm x 25mm Barcode Label Sticker Studio ఆశీర్వాద్ గోధుమ పిండి (10 kg "
+    },
+    {
+      "name": "I6 · Stock audit & shrinkage panel opens",
+      "pass": true,
+      "detail": "audit tab rendered, rows=73"
+    },
+    {
+      "name": "I7 · CSV import modal opens",
+      "pass": true,
+      "detail": "file input present"
+    },
+    {
+      "name": "K1 · Customer and supplier ledgers render",
+      "pass": true,
+      "detail": "customer rows=4"
+    },
+    {
+      "name": "K2 · Five aging buckets render without clipping",
+      "pass": true,
+      "detail": "chips=5"
+    },
+    {
+      "name": "K3 · Khata search filters customers",
+      "pass": true,
+      "detail": "filter narrowed"
+    },
+    {
+      "name": "K4 · Gave / Got entry modal opens",
+      "pass": true,
+      "detail": "entry form opened"
+    },
+    {
+      "name": "K5 · Bulk settlement modal opens",
+      "pass": true,
+      "detail": "bulk settle opened"
+    },
+    {
+      "name": "K6 · WhatsApp statement composer opens",
+      "pass": true,
+      "detail": "statement composer opened"
+    },
+    {
+      "name": "S1 · All hardware and profile sections render",
+      "pass": true,
+      "detail": "6 sections"
+    },
+    {
+      "name": "S2 · Printer width 58mm can be selected",
+      "pass": true,
+      "detail": "58mm selectable"
+    },
+    {
+      "name": "S3 · Language switch to Telugu and back",
+      "pass": true,
+      "detail": "te → en round trip"
+    },
+    {
+      "name": "S4 · Staff users load with role and PIN actions",
+      "pass": true,
+      "detail": "roles present"
+    },
+    {
+      "name": "S5 · Encrypted JSON backup downloads",
+      "pass": true,
+      "detail": "Sauda_Backup_2026-10-26.json 88.7KB"
+    },
+    {
+      "name": "T-reorder · reorder studio opens",
+      "pass": true,
+      "detail": "Smart Purchase Re-order Studio FMCG DEMAND FORECAST 30-day v"
+    },
+    {
+      "name": "T-pnl · pnl studio opens",
+      "pass": true,
+      "detail": "Profit & Loss Statement P&L STUDIO Real-time Kirana Profitab"
+    },
+    {
+      "name": "T-health · health studio opens",
+      "pass": true,
+      "detail": "Store Health & Sales Forecast VITALITY INDEX Business Vitali"
+    },
+    {
+      "name": "T-dayend · dayend studio opens",
+      "pass": true,
+      "detail": "Day-End Closing & Z-Report Studio 10/26/2026 Reconcile daily"
+    },
+    {
+      "name": "T-mesh · mesh studio opens",
+      "pass": true,
+      "detail": "Local Wi-Fi Peer Sync LAN MESH ACTIVE Zero-Internet Peer Mes"
+    },
+    {
+      "name": "T-cloud · cloud studio opens",
+      "pass": true,
+      "detail": "Encrypted Cloud Backup & Restore AES-256 VAULT AES-256 encry"
+    },
+    {
+      "name": "T-multicounter · multicounter studio opens",
+      "pass": true,
+      "detail": "Multi-Counter Billing Studio PRIMARY HOST Concurrent billing"
+    },
+    {
+      "name": "L1 · PIN lock renders 12-key pad",
+      "pass": true,
+      "detail": "keys=12"
+    },
+    {
+      "name": "L2 · Wrong PIN is rejected",
+      "pass": true,
+      "detail": "still locked"
+    },
+    {
+      "name": "L3 · PIN 1234 unlocks",
+      "pass": true,
+      "detail": "unlocked"
+    },
+    {
+      "name": "Q1 · No horizontal overflow at 1440px",
+      "pass": true,
+      "detail": "1440/1440"
+    },
+    {
+      "name": "Q2 · No console or page errors during the run",
+      "pass": true,
+      "detail": "0 errors"
+    },
+    {
+      "name": "Q3 · 390px mobile viewport is usable",
+      "pass": true,
+      "detail": "no h-scroll, sidebar=256"
+    }
+  ]
+}

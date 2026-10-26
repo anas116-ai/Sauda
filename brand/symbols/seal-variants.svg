@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" width="1100" height="820">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;display=swap');
+    .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 600; }
+    .label { font-family: Georgia, serif; font-size: 12px; fill: #6B6257; letter-spacing: 2px; }
+  </style>
+  <rect width="1100" height="820" fill="#F7F3EA" />
+
+  <g class="label" text-anchor="middle">
+    <text x="140" y="46">F1 · COPPER FOLD</text>
+    <text x="380" y="46">F2 · COPPER BASE</text>
+    <text x="620" y="46">F3 · OUTLINE</text>
+    <text x="860" y="46">F4 · PURE SEAL</text>
+  </g>
+
+  <!-- F1 -->
+  <g transform="translate(40 70)">
+    <svg width="200" height="200" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+      <path d="M46 4 L60 18 H46 Z" fill="#A9714B" />
+      <text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text>
+    </svg>
+  </g>
+
+  <!-- F2 -->
+  <g transform="translate(280 70)">
+    <svg width="200" height="200" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+      <text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text>
+      <rect x="14" y="54" width="36" height="2" fill="#A9714B" />
+    </svg>
+  </g>
+
+  <!-- F3 -->
+  <g transform="translate(520 70)">
+    <svg width="200" height="200" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="none" stroke="#14110F" stroke-width="3" />
+      <path d="M46 4 L60 18 H46 Z" fill="#A9714B" />
+      <text x="30" y="48" text-anchor="middle" font-size="47" fill="#14110F" class="serif">S</text>
+    </svg>
+  </g>
+
+  <!-- F4 -->
+  <g transform="translate(760 70)">
+    <svg width="200" height="200" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+      <text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text>
+    </svg>
+  </g>
+
+  <!-- size ladder -->
+  <g class="label" text-anchor="middle">
+    <text x="140" y="320">40 / 24 / 16</text>
+    <text x="380" y="320">40 / 24 / 16</text>
+    <text x="620" y="320">40 / 24 / 16</text>
+    <text x="860" y="320">40 / 24 / 16</text>
+  </g>
+
+  <g transform="translate(120 340)">
+    <svg width="40" height="40" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(180 348)">
+    <svg width="24" height="24" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(220 352)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+
+  <g transform="translate(360 340)">
+    <svg width="40" height="40" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text><rect x="14" y="54" width="36" height="2" fill="#A9714B" /></svg>
+  </g>
+  <g transform="translate(420 348)">
+    <svg width="24" height="24" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text><rect x="14" y="54" width="36" height="2" fill="#A9714B" /></svg>
+  </g>
+  <g transform="translate(460 352)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text><rect x="14" y="54" width="36" height="2" fill="#A9714B" /></svg>
+  </g>
+
+  <g transform="translate(600 340)">
+    <svg width="40" height="40" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="none" stroke="#14110F" stroke-width="3" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#14110F" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(660 348)">
+    <svg width="24" height="24" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="none" stroke="#14110F" stroke-width="3" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#14110F" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(700 352)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="none" stroke="#14110F" stroke-width="3" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#14110F" class="serif">S</text></svg>
+  </g>
+
+  <g transform="translate(840 340)">
+    <svg width="40" height="40" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(900 348)">
+    <svg width="24" height="24" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(940 352)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+
+  <!-- lockups -->
+  <g class="label" text-anchor="middle"><text x="550" y="470">LOCKUP · 32 / 24 / 18 PX WORDMARK</text></g>
+
+  <!-- 32 -->
+  <g transform="translate(60 500)">
+    <svg width="40" height="40" viewBox="0 0 64 64" x="0" y="0"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+    <text x="56" y="31" font-size="32" letter-spacing="4" fill="#14110F" class="serif">SAUDA</text>
+    <text x="58" y="50" font-size="13" fill="#A9714B" font-family="'Noto Sans Telugu', sans-serif">సౌదా</text>
+  </g>
+
+  <!-- 24 -->
+  <g transform="translate(430 500)">
+    <svg width="30" height="30" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+    <text x="42" y="24" font-size="24" letter-spacing="3" fill="#14110F" class="serif">SAUDA</text>
+    <text x="44" y="39" font-size="11" fill="#A9714B" font-family="'Noto Sans Telugu', sans-serif">సౌదా</text>
+  </g>
+
+  <!-- 18 stacked -->
+  <g transform="translate(800 495)">
+    <svg width="34" height="34" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#F7F3EA" class="serif">S</text></svg>
+    <text x="46" y="18" font-size="20" letter-spacing="2.5" fill="#14110F" class="serif">SAUDA</text>
+    <text x="46" y="32" font-size="10.5" fill="#A9714B" font-family="'Noto Sans Telugu', sans-serif">సౌదా</text>
+    <text x="46" y="43" font-size="7" letter-spacing="1.5" fill="#6B6257" font-family="Georgia, serif">KIRANA OS</text>
+  </g>
+
+  <!-- dark lockup -->
+  <g transform="translate(0 580)">
+    <rect x="20" y="0" width="1060" height="200" fill="#14110F" />
+    <g transform="translate(70 55)">
+      <svg width="90" height="90" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#F7F3EA" /><path d="M46 4 L60 18 H46 Z" fill="#A9714B" /><text x="30" y="48" text-anchor="middle" font-size="47" fill="#14110F" class="serif">S</text></svg>
+    </g>
+    <text x="190" y="108" font-size="54" letter-spacing="6" fill="#F7F3EA" class="serif">SAUDA</text>
+    <text x="192" y="138" font-size="20" fill="#C08552" font-family="'Noto Sans Telugu', sans-serif">సౌదా</text>
+    <rect x="360" y="92" width="1" height="46" fill="#3D352D" />
+    <text x="392" y="112" font-size="13" letter-spacing="4" fill="#B3A695" font-family="Georgia, serif">THE KIRANA LEDGER</text>
+    <text x="392" y="132" font-size="11" letter-spacing="2" fill="#8C7E6E" font-family="Instrument Sans, sans-serif">OFFLINE-FIRST RETAIL OPERATING SYSTEM</text>
+  </g>
+</svg>

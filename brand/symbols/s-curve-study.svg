@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" width="1100" height="760">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;display=swap');
+    .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 600; }
+    .label { font-family: Georgia, serif; font-size: 12px; fill: #6B6257; letter-spacing: 2px; }
+  </style>
+  <rect width="1100" height="760" fill="#F7F3EA" />
+
+  <g class="label" text-anchor="middle">
+    <text x="110" y="46">E1 · CURVED S</text>
+    <text x="330" y="46">E2 · S IN TILE</text>
+    <text x="550" y="46">E3 · SERIF IN TILE</text>
+    <text x="770" y="46">E4 · SERIF + RULE</text>
+    <text x="990" y="46">E5 · SERIF OPEN</text>
+  </g>
+
+  <!-- E1 -->
+  <g transform="translate(30 70)">
+    <svg width="160" height="160" viewBox="0 0 64 64">
+      <path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#14110F" stroke-width="9" stroke-linecap="butt" />
+    </svg>
+  </g>
+
+  <!-- E2 -->
+  <g transform="translate(250 70)">
+    <svg width="160" height="160" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+      <path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#F7F3EA" stroke-width="9" stroke-linecap="butt" />
+    </svg>
+  </g>
+
+  <!-- E3 -->
+  <g transform="translate(470 70)">
+    <svg width="160" height="160" viewBox="0 0 64 64">
+      <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+      <text x="32" y="47" text-anchor="middle" font-size="46" fill="#F7F3EA" class="serif">S</text>
+    </svg>
+  </g>
+
+  <!-- E4 -->
+  <g transform="translate(690 70)">
+    <svg width="160" height="160" viewBox="0 0 64 64">
+      <text x="32" y="49" text-anchor="middle" font-size="54" fill="#14110F" class="serif">S</text>
+      <rect x="18" y="56" width="28" height="2.5" fill="#A9714B" />
+    </svg>
+  </g>
+
+  <!-- E5 -->
+  <g transform="translate(910 70)">
+    <svg width="160" height="160" viewBox="0 0 64 64">
+      <text x="32" y="50" text-anchor="middle" font-size="64" fill="#14110F" class="serif">S</text>
+      <rect x="47" y="41" width="7" height="7" fill="#A9714B" />
+    </svg>
+  </g>
+
+  <!-- 32px row -->
+  <g class="label" text-anchor="middle">
+    <text x="110" y="300">32 PX</text><text x="330" y="300">32 PX</text><text x="550" y="300">32 PX</text><text x="770" y="300">32 PX</text><text x="990" y="300">32 PX</text>
+  </g>
+
+  <g transform="translate(94 320)">
+    <svg width="32" height="32" viewBox="0 0 64 64"><path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#14110F" stroke-width="9" stroke-linecap="butt" /></svg>
+  </g>
+  <g transform="translate(314 320)">
+    <svg width="32" height="32" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#F7F3EA" stroke-width="9" /></svg>
+  </g>
+  <g transform="translate(534 320)">
+    <svg width="32" height="32" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="47" text-anchor="middle" font-size="46" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(754 320)">
+    <svg width="32" height="32" viewBox="0 0 64 64"><text x="32" y="49" text-anchor="middle" font-size="54" fill="#14110F" class="serif">S</text><rect x="18" y="56" width="28" height="2.5" fill="#A9714B" /></svg>
+  </g>
+  <g transform="translate(974 320)">
+    <svg width="32" height="32" viewBox="0 0 64 64"><text x="32" y="50" text-anchor="middle" font-size="64" fill="#14110F" class="serif">S</text><rect x="47" y="41" width="7" height="7" fill="#A9714B" /></svg>
+  </g>
+
+  <!-- 16px row -->
+  <g class="label" text-anchor="middle">
+    <text x="110" y="390">16 PX</text><text x="330" y="390">16 PX</text><text x="550" y="390">16 PX</text><text x="770" y="390">16 PX</text><text x="990" y="390">16 PX</text>
+  </g>
+
+  <g transform="translate(102 410)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#14110F" stroke-width="9" /></svg>
+  </g>
+  <g transform="translate(322 410)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M47 13 C34 9 19 15 19 27 C19 38 45 27 45 38 C45 50 30 55 17 51" fill="none" stroke="#F7F3EA" stroke-width="9" /></svg>
+  </g>
+  <g transform="translate(542 410)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><text x="32" y="47" text-anchor="middle" font-size="46" fill="#F7F3EA" class="serif">S</text></svg>
+  </g>
+  <g transform="translate(762 410)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><text x="32" y="49" text-anchor="middle" font-size="54" fill="#14110F" class="serif">S</text><rect x="18" y="56" width="28" height="2.5" fill="#A9714B" /></svg>
+  </g>
+  <g transform="translate(982 410)">
+    <svg width="16" height="16" viewBox="0 0 64 64"><text x="32" y="50" text-anchor="middle" font-size="64" fill="#14110F" class="serif">S</text><rect x="47" y="41" width="7" height="7" fill="#A9714B" /></svg>
+  </g>
+
+  <!-- Wordmark study -->
+  <g class="label" text-anchor="middle"><text x="550" y="520">WORDMARK · FRAUNCES SEMIBOLD</text></g>
+  <text x="550" y="600" text-anchor="middle" font-size="76" letter-spacing="12" fill="#14110F" class="serif">SAUDA</text>
+  <text x="550" y="648" text-anchor="middle" font-size="24" letter-spacing="6" fill="#A9714B" font-family="'Noto Sans Telugu', sans-serif">సౌదా</text>
+  <rect x="400" y="672" width="300" height="1" fill="#D6CBB8" />
+  <text x="550" y="700" text-anchor="middle" font-size="12" letter-spacing="5" fill="#6B6257" font-family="Georgia, serif">KIRANA · LEDGER · POS</text>
+</svg>

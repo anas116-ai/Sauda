@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <!-- Background: Deep Tech Navy -->
+  <rect width="800" height="800" fill="#0F172A" rx="0"/>
+  
+  <defs>
+    <linearGradient id="velocityBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="velocityCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dual-Blade Velocity Ribbon Monogram 'S' -->
+  <g transform="translate(400, 310)">
+    <!-- Top Blade -->
+    <path d="M 120 -90 L -60 -90 C -110 -90 -130 -50 -100 -20 L 50 40 C 90 60 110 100 70 120 L -110 120" 
+          fill="none" stroke="url(#velocityBlue)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+          
+    <!-- Core Kinetic Diamond Node -->
+    <polygon points="0,-20 25,0 0,20 -25,0" fill="#FFFFFF"/>
+    
+    <!-- Accent Speed Lines -->
+    <line x1="-120" y1="-50" x2="-80" y2="-50" stroke="#38BDF8" stroke-width="8" stroke-linecap="round"/>
+    <line x1="80" y1="80" x2="120" y2="80" stroke="#38BDF8" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Brand Wordmark -->
+  <text x="400" y="555" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="46" font-weight="900" letter-spacing="10" fill="#FFFFFF">
+    SAUDA
+  </text>
+
+  <!-- Telugu Typography -->
+  <text x="400" y="605" text-anchor="middle" font-family="'Noto Sans Telugu', sans-serif" font-size="24" font-weight="700" letter-spacing="4" fill="#38BDF8">
+    సౌదా
+  </text>
+
+  <text x="400" y="650" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" letter-spacing="5" fill="#94A3B8">
+    FINTECH-GRADE SPEED &amp; TRUST
+  </text>
+</svg>

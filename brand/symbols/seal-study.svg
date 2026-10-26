@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620">
+  <rect width="1000" height="620" fill="#F7F3EA" />
+  <g font-family="Georgia, serif" font-size="12" fill="#6B6257" letter-spacing="1.5">
+    <text x="100" y="40" text-anchor="middle">B1 · SQUARE</text>
+    <text x="300" y="40" text-anchor="middle">B2 · CLIPPED</text>
+    <text x="500" y="40" text-anchor="middle">B3 · SOFT</text>
+    <text x="700" y="40" text-anchor="middle">B4 · WIDE CUT</text>
+    <text x="900" y="40" text-anchor="middle">B5 · SEAL</text>
+  </g>
+
+  <!-- large -->
+  <g transform="translate(20 60)"><svg width="160" height="160" viewBox="0 0 64 64">
+    <rect x="4" y="4" width="56" height="56" fill="#14110F" />
+    <path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" />
+  </svg></g>
+
+  <g transform="translate(220 60)"><svg width="160" height="160" viewBox="0 0 64 64">
+    <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+    <path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="8" />
+  </svg></g>
+
+  <g transform="translate(420 60)"><svg width="160" height="160" viewBox="0 0 64 64">
+    <rect x="4" y="4" width="56" height="56" rx="7" fill="#14110F" />
+    <path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" />
+  </svg></g>
+
+  <g transform="translate(620 60)"><svg width="160" height="160" viewBox="0 0 64 64">
+    <rect x="4" y="4" width="56" height="56" fill="#14110F" />
+    <path d="M58 20 H31 V30 H49 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="10" />
+  </svg></g>
+
+  <g transform="translate(820 60)"><svg width="160" height="160" viewBox="0 0 64 64">
+    <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+    <path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="10" />
+  </svg></g>
+
+  <!-- 32px actual -->
+  <g font-family="Georgia, serif" font-size="11" fill="#6B6257" letter-spacing="1">
+    <text x="100" y="280" text-anchor="middle">32 PX</text>
+    <text x="300" y="280" text-anchor="middle">32 PX</text>
+    <text x="500" y="280" text-anchor="middle">32 PX</text>
+    <text x="700" y="280" text-anchor="middle">32 PX</text>
+    <text x="900" y="280" text-anchor="middle">32 PX</text>
+  </g>
+
+  <g transform="translate(84 300)">
+    <svg width="32" height="32" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" fill="#14110F" /><path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(284 300)">
+    <svg width="32" height="32" viewBox="0 0 64 64" shape-rendering="crispEdges"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(484 300)">
+    <svg width="32" height="32" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" rx="7" fill="#14110F" /><path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(684 300)">
+    <svg width="32" height="32" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" fill="#14110F" /><path d="M58 20 H31 V30 H49 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="10" /></svg>
+  </g>
+  <g transform="translate(884 300)">
+    <svg width="32" height="32" viewBox="0 0 64 64" shape-rendering="crispEdges"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="10" /></svg>
+  </g>
+
+  <!-- 16px actual -->
+  <g font-family="Georgia, serif" font-size="11" fill="#6B6257" letter-spacing="1">
+    <text x="100" y="370" text-anchor="middle">16 PX</text>
+    <text x="300" y="370" text-anchor="middle">16 PX</text>
+    <text x="500" y="370" text-anchor="middle">16 PX</text>
+    <text x="700" y="370" text-anchor="middle">16 PX</text>
+    <text x="900" y="370" text-anchor="middle">16 PX</text>
+  </g>
+
+  <g transform="translate(92 390)">
+    <svg width="16" height="16" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" fill="#14110F" /><path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(292 390)">
+    <svg width="16" height="16" viewBox="0 0 64 64" shape-rendering="crispEdges"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(492 390)">
+    <svg width="16" height="16" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" rx="7" fill="#14110F" /><path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" /></svg>
+  </g>
+  <g transform="translate(692 390)">
+    <svg width="16" height="16" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect x="4" y="4" width="56" height="56" fill="#14110F" /><path d="M58 20 H31 V30 H49 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="10" /></svg>
+  </g>
+  <g transform="translate(892 390)">
+    <svg width="16" height="16" viewBox="0 0 64 64" shape-rendering="crispEdges"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#F7F3EA" stroke-width="10" /></svg>
+  </g>
+
+  <g font-family="Georgia, serif" font-size="12" fill="#6B6257" letter-spacing="1">
+    <text x="500" y="470" text-anchor="middle">REVERSE / DARK SURFACE</text>
+  </g>
+
+  <g transform="translate(0 490)">
+    <rect x="20" y="0" width="960" height="110" fill="#14110F" />
+    <g transform="translate(60 10)">
+      <svg width="90" height="90" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#F7F3EA" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#14110F" stroke-width="8" /></svg>
+    </g>
+    <g transform="translate(200 10)">
+      <svg width="90" height="90" viewBox="0 0 64 64"><path d="M4 4 H46 L60 18 V60 H4 Z" fill="#F7F3EA" /><path d="M58 28 H32 V36 H50 V46 H6" fill="none" stroke="#14110F" stroke-width="10" /></svg>
+    </g>
+    <g transform="translate(340 10)">
+      <svg width="90" height="90" viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="56" fill="#F7F3EA" /><path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#14110F" stroke-width="8" /></svg>
+    </g>
+  </g>
+</svg>

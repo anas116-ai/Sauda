@@ -1,0 +1,467 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Sauda — Identity Concepts 1/2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Telugu:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#14110F;--paper:#F7F3EA;--copper:#A9714B;--rule:#DBD2BE;--card:#FBF7EE;--stone:#6B6357}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink)}
+  body{font-family:'Instrument Sans',system-ui,sans-serif;padding:44px 44px 56px;width:1440px}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:14px}
+  .hdr h1{font-family:'Fraunces',serif;font-weight:600;font-size:40px;letter-spacing:-1.2px;margin:0;line-height:1}
+  .hdr .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);margin-top:10px}
+  .hdr .meta{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--stone);line-height:1.9}
+  .strip{display:flex;gap:0;margin:18px 0 26px;border:1px solid var(--rule)}
+  .strip div{flex:1;padding:9px 12px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.14em;border-right:1px solid var(--rule);color:var(--stone)}
+  .strip div:last-child{border-right:0}
+  .strip b{color:var(--ink);font-weight:500}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:var(--card);border:1px solid var(--rule);padding:16px 16px 18px;display:flex;flex-direction:column;min-height:352px}
+  .card header{display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+  .card .num{color:var(--copper);font-size:11px}
+  .card .fam{padding-left:9px;border-left:1px solid var(--rule)}
+  .card .pick{margin-left:auto;color:var(--copper);border:1px solid rgba(169,113,75,.45);padding:2px 6px;font-size:8px;letter-spacing:.12em}
+  .stage{height:170px;display:flex;align-items:center;justify-content:center;margin:10px 0 6px}
+  .stage svg{width:132px;height:132px;overflow:visible}
+  .stage.wide svg{width:200px;height:150px}
+  .sizes{display:flex;align-items:center;gap:14px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:8px 2px;margin-bottom:12px;min-height:52px}
+  .sizes svg{display:block}
+  .sz64 svg{width:46px;height:46px}
+  .sz32 svg{width:28px;height:28px}
+  .sz16 svg{width:16px;height:16px}
+  .sizelabel{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;color:#9A9184}
+  .card h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 4px;letter-spacing:-.2px}
+  .card p{margin:0;font-size:11.5px;line-height:1.5;color:var(--stone)}
+  .card .te{font-family:'Noto Sans Telugu',sans-serif;font-size:11px;line-height:1.75;color:#7B7264;margin-top:5px}
+  .foot{display:flex;justify-content:space-between;margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--stone)}
+</style></head><body>
+<div class="hdr">
+  <div><h1>Sauda — Identity Concepts</h1><div class="sub">Round 02 · 24 marks · ledger · deal · kirana · monogram · indian · wordmark</div></div>
+  <div class="meta">SAUDA / సౌదా<br>KIRANA LEDGER &amp; POS<br>SHEET 1 OF 2 · 24 CONCEPTS</div>
+</div>
+<div class="strip">
+  <div>INK <b>#14110F</b></div><div>PAPER <b>#F7F3EA</b></div><div>COPPER <b>#A9714B</b></div><div>INDIGO <b>#202853</b></div><div>KIRANA RED <b>#7A2E35</b></div>
+</div>
+<div class="grid">
+  <article class="card">
+    <header>
+      <span class="num">01</span>
+      <span class="fam">Ledger</span>
+      <span class="pick">editor pick</span>
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Folded Leaf"><rect x="20" y="20" width="160" height="160" rx="18" fill="#14110F"/>
+      <path d="M122 20h58v58z" fill="#A9714B"/>
+      <path d="M122 20v58h58" fill="none" stroke="#F7F3EA" stroke-opacity=".22" stroke-width="2"/>
+      <text x="97" y="103" font-family="Fraunces" font-size="104" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" rx="18" fill="#14110F"/>
+      <path d="M122 20h58v58z" fill="#A9714B"/>
+      <path d="M122 20v58h58" fill="none" stroke="#F7F3EA" stroke-opacity=".22" stroke-width="2"/>
+      <text x="97" y="103" font-family="Fraunces" font-size="104" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" rx="18" fill="#14110F"/>
+      <path d="M122 20h58v58z" fill="#A9714B"/>
+      <path d="M122 20v58h58" fill="none" stroke="#F7F3EA" stroke-opacity=".22" stroke-width="2"/>
+      <text x="97" y="103" font-family="Fraunces" font-size="104" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" rx="18" fill="#14110F"/>
+      <path d="M122 20h58v58z" fill="#A9714B"/>
+      <path d="M122 20v58h58" fill="none" stroke="#F7F3EA" stroke-opacity=".22" stroke-width="2"/>
+      <text x="97" y="103" font-family="Fraunces" font-size="104" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Folded Leaf</h3>
+    <p>An ink ledger tile with a copper page-fold and a serif S.</p>
+    <p class="te">ఇంక్ లెడ్జర్ టైల్, రాగి మడత, సెరిఫ్ S.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">02</span>
+      <span class="fam">Ledger</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Ruled S"><rect x="52" y="54" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="134" y="54" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="92" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="52" y="92" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="130" width="98" height="16" rx="4" fill="#14110F"/>
+      <circle cx="150" cy="48" r="8" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><rect x="52" y="54" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="134" y="54" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="92" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="52" y="92" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="130" width="98" height="16" rx="4" fill="#14110F"/>
+      <circle cx="150" cy="48" r="8" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><rect x="52" y="54" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="134" y="54" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="92" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="52" y="92" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="130" width="98" height="16" rx="4" fill="#14110F"/>
+      <circle cx="150" cy="48" r="8" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><rect x="52" y="54" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="134" y="54" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="92" width="98" height="16" rx="4" fill="#14110F"/>
+      <rect x="52" y="92" width="16" height="44" fill="#14110F"/>
+      <rect x="52" y="130" width="98" height="16" rx="4" fill="#14110F"/>
+      <circle cx="150" cy="48" r="8" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Ruled S</h3>
+    <p>Five ledger rules joined into one S. A copper dot closes the entry.</p>
+    <p class="te">ఐదు లెడ్జర్ గీతలతో ఏర్పడిన S; రాగి చుక్క ముగింపు.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">03</span>
+      <span class="fam">Ledger</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="The Book"><rect x="56" y="30" width="88" height="140" rx="10" fill="#14110F"/>
+      <rect x="56" y="30" width="15" height="140" rx="7" fill="#8A5A38"/>
+      <text x="106" y="92" font-family="Fraunces" font-size="62" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="88" y="136" width="48" height="5" rx="2.5" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><rect x="56" y="30" width="88" height="140" rx="10" fill="#14110F"/>
+      <rect x="56" y="30" width="15" height="140" rx="7" fill="#8A5A38"/>
+      <text x="106" y="92" font-family="Fraunces" font-size="62" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="88" y="136" width="48" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><rect x="56" y="30" width="88" height="140" rx="10" fill="#14110F"/>
+      <rect x="56" y="30" width="15" height="140" rx="7" fill="#8A5A38"/>
+      <text x="106" y="92" font-family="Fraunces" font-size="62" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="88" y="136" width="48" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><rect x="56" y="30" width="88" height="140" rx="10" fill="#14110F"/>
+      <rect x="56" y="30" width="15" height="140" rx="7" fill="#8A5A38"/>
+      <text x="106" y="92" font-family="Fraunces" font-size="62" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="88" y="136" width="48" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>The Book</h3>
+    <p>A khata book seen from the spine — copper binding, paper S.</p>
+    <p class="te">ఖాతా పుస్తకం వెన్నెముక — రాగి బైండింగ్, కాగితపు S.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">04</span>
+      <span class="fam">Ledger</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Counter Seal"><circle cx="100" cy="100" r="80" fill="#14110F"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="99" font-family="Fraunces" font-size="78" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="94" y="158" width="12" height="12" rx="2" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="#14110F"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="99" font-family="Fraunces" font-size="78" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="94" y="158" width="12" height="12" rx="2" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="#14110F"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="99" font-family="Fraunces" font-size="78" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="94" y="158" width="12" height="12" rx="2" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="#14110F"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="99" font-family="Fraunces" font-size="78" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="94" y="158" width="12" height="12" rx="2" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Counter Seal</h3>
+    <p>A round counter stamp: ink disc, copper ring, paper S, one register tick.</p>
+    <p class="te">గుండ్రని కౌంటర్ సీల్ — ఇంక్ డిస్క్, రాగి వలయం, కాగితపు S.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">05</span>
+      <span class="fam">Deal</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Tag Cut"><g transform="rotate(-8 100 100)">
+        <path d="M64 36h58l42 42v78a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V44a8 8 0 0 1 8-8z" fill="#14110F"/>
+        <path d="M122 36l42 42-9 9-42-42z" fill="#A9714B"/>
+        <circle cx="78" cy="58" r="8" fill="#F7F3EA"/>
+        <text x="110" y="110" font-family="Fraunces" font-size="66" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      </g></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><g transform="rotate(-8 100 100)">
+        <path d="M64 36h58l42 42v78a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V44a8 8 0 0 1 8-8z" fill="#14110F"/>
+        <path d="M122 36l42 42-9 9-42-42z" fill="#A9714B"/>
+        <circle cx="78" cy="58" r="8" fill="#F7F3EA"/>
+        <text x="110" y="110" font-family="Fraunces" font-size="66" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      </g></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><g transform="rotate(-8 100 100)">
+        <path d="M64 36h58l42 42v78a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V44a8 8 0 0 1 8-8z" fill="#14110F"/>
+        <path d="M122 36l42 42-9 9-42-42z" fill="#A9714B"/>
+        <circle cx="78" cy="58" r="8" fill="#F7F3EA"/>
+        <text x="110" y="110" font-family="Fraunces" font-size="66" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      </g></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><g transform="rotate(-8 100 100)">
+        <path d="M64 36h58l42 42v78a8 8 0 0 1-8 8H64a8 8 0 0 1-8-8V44a8 8 0 0 1 8-8z" fill="#14110F"/>
+        <path d="M122 36l42 42-9 9-42-42z" fill="#A9714B"/>
+        <circle cx="78" cy="58" r="8" fill="#F7F3EA"/>
+        <text x="110" y="110" font-family="Fraunces" font-size="66" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      </g></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Tag Cut</h3>
+    <p>A price tag whose corner is shaved in copper; the hole is the counter eyelet.</p>
+    <p class="te">ధర ట్యాగ్ — రాగి మూల కోత, రంధ్రం ఐలెట్.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">06</span>
+      <span class="fam">Deal</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Weigh Beam"><circle cx="100" cy="34" r="11" fill="none" stroke="#14110F" stroke-width="7"/>
+      <rect x="44" y="62" width="112" height="10" rx="5" fill="#14110F"/>
+      <path d="M50 67v30M150 67v30" stroke="#14110F" stroke-width="7" stroke-linecap="round"/>
+      <path d="M24 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <path d="M124 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <rect x="88" y="62" width="24" height="24" rx="4" fill="#8A5A38"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><circle cx="100" cy="34" r="11" fill="none" stroke="#14110F" stroke-width="7"/>
+      <rect x="44" y="62" width="112" height="10" rx="5" fill="#14110F"/>
+      <path d="M50 67v30M150 67v30" stroke="#14110F" stroke-width="7" stroke-linecap="round"/>
+      <path d="M24 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <path d="M124 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <rect x="88" y="62" width="24" height="24" rx="4" fill="#8A5A38"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><circle cx="100" cy="34" r="11" fill="none" stroke="#14110F" stroke-width="7"/>
+      <rect x="44" y="62" width="112" height="10" rx="5" fill="#14110F"/>
+      <path d="M50 67v30M150 67v30" stroke="#14110F" stroke-width="7" stroke-linecap="round"/>
+      <path d="M24 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <path d="M124 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <rect x="88" y="62" width="24" height="24" rx="4" fill="#8A5A38"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><circle cx="100" cy="34" r="11" fill="none" stroke="#14110F" stroke-width="7"/>
+      <rect x="44" y="62" width="112" height="10" rx="5" fill="#14110F"/>
+      <path d="M50 67v30M150 67v30" stroke="#14110F" stroke-width="7" stroke-linecap="round"/>
+      <path d="M24 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <path d="M124 97h52a26 26 0 0 1-52 0z" fill="#A9714B"/>
+      <rect x="88" y="62" width="24" height="24" rx="4" fill="#8A5A38"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Weigh Beam</h3>
+    <p>A hanging balance reduced to ring, beam and two pans. The oldest trust device in trade.</p>
+    <p class="te">తూకం — వలయం, కడ్డీ, రెండు త్రాసులు. వ్యాపారంలో పురాతన నమ్మకం.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">07</span>
+      <span class="fam">Deal</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Bazaar Token"><path d="M100 18l82 82-82 82-82-82z" fill="#14110F"/>
+      <path d="M100 44l56 56-56 56-56-56z" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="100" font-family="Fraunces" font-size="72" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <circle cx="100" cy="160" r="6" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><path d="M100 18l82 82-82 82-82-82z" fill="#14110F"/>
+      <path d="M100 44l56 56-56 56-56-56z" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="100" font-family="Fraunces" font-size="72" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <circle cx="100" cy="160" r="6" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><path d="M100 18l82 82-82 82-82-82z" fill="#14110F"/>
+      <path d="M100 44l56 56-56 56-56-56z" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="100" font-family="Fraunces" font-size="72" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <circle cx="100" cy="160" r="6" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><path d="M100 18l82 82-82 82-82-82z" fill="#14110F"/>
+      <path d="M100 44l56 56-56 56-56-56z" fill="none" stroke="#A9714B" stroke-width="3"/>
+      <text x="100" y="100" font-family="Fraunces" font-size="72" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <circle cx="100" cy="160" r="6" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Bazaar Token</h3>
+    <p>A trade token: hard diamond, counter-cut S, one copper pin.</p>
+    <p class="te">వాణిజ్య టోకెన్ — డైమండ్, కౌంటర్-కట్ S, రాగి పిన్.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">08</span>
+      <span class="fam">Deal</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Paper Bill"><path d="M58 40a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v116l-12 9-12-9-12 9-12-9-12 9-12-9-12 9z" fill="#14110F"/>
+      <text x="100" y="86" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="80" y="118" width="40" height="5" rx="2.5" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><path d="M58 40a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v116l-12 9-12-9-12 9-12-9-12 9-12-9-12 9z" fill="#14110F"/>
+      <text x="100" y="86" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="80" y="118" width="40" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><path d="M58 40a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v116l-12 9-12-9-12 9-12-9-12 9-12-9-12 9z" fill="#14110F"/>
+      <text x="100" y="86" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="80" y="118" width="40" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><path d="M58 40a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v116l-12 9-12-9-12 9-12-9-12 9-12-9-12 9z" fill="#14110F"/>
+      <text x="100" y="86" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text>
+      <rect x="80" y="118" width="40" height="5" rx="2.5" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Paper Bill</h3>
+    <p>A torn-bottom receipt with the S pressed into the paper and a copper total rule.</p>
+    <p class="te">కన్నం అంచు రసీదు — కాగితంలో నొక్కిన S, రాగి మొత్తం గీత.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">09</span>
+      <span class="fam">Kirana</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Gunny Sack"><path d="M74 40c0 15-15 19-19 39l-7 66c-1 15 9 25 24 25h56c15 0 25-10 24-25l-7-66c-4-20-19-24-19-39z" fill="#14110F"/>
+      <rect x="74" y="30" width="52" height="13" rx="6.5" fill="#A9714B"/>
+      <text x="100" y="116" font-family="Fraunces" font-size="58" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><path d="M74 40c0 15-15 19-19 39l-7 66c-1 15 9 25 24 25h56c15 0 25-10 24-25l-7-66c-4-20-19-24-19-39z" fill="#14110F"/>
+      <rect x="74" y="30" width="52" height="13" rx="6.5" fill="#A9714B"/>
+      <text x="100" y="116" font-family="Fraunces" font-size="58" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><path d="M74 40c0 15-15 19-19 39l-7 66c-1 15 9 25 24 25h56c15 0 25-10 24-25l-7-66c-4-20-19-24-19-39z" fill="#14110F"/>
+      <rect x="74" y="30" width="52" height="13" rx="6.5" fill="#A9714B"/>
+      <text x="100" y="116" font-family="Fraunces" font-size="58" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><path d="M74 40c0 15-15 19-19 39l-7 66c-1 15 9 25 24 25h56c15 0 25-10 24-25l-7-66c-4-20-19-24-19-39z" fill="#14110F"/>
+      <rect x="74" y="30" width="52" height="13" rx="6.5" fill="#A9714B"/>
+      <text x="100" y="116" font-family="Fraunces" font-size="58" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Gunny Sack</h3>
+    <p>The sack every kirana back room runs on — copper tie, paper S.</p>
+    <p class="te">కిరాణా స్టోర్ గోనె సంచి — రాగి కట్టు, కాగితపు S.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">10</span>
+      <span class="fam">Kirana</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Grain"><path d="M100 26c40 30 50 76 0 148-50-72-40-118 0-148z" fill="#14110F"/>
+      <path d="M100 58v92" stroke="#A9714B" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="150" r="6" fill="#A9714B"/></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><path d="M100 26c40 30 50 76 0 148-50-72-40-118 0-148z" fill="#14110F"/>
+      <path d="M100 58v92" stroke="#A9714B" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="150" r="6" fill="#A9714B"/></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><path d="M100 26c40 30 50 76 0 148-50-72-40-118 0-148z" fill="#14110F"/>
+      <path d="M100 58v92" stroke="#A9714B" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="150" r="6" fill="#A9714B"/></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><path d="M100 26c40 30 50 76 0 148-50-72-40-118 0-148z" fill="#14110F"/>
+      <path d="M100 58v92" stroke="#A9714B" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="150" r="6" fill="#A9714B"/></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Grain</h3>
+    <p>One grain of rice, split by a copper vein. The smallest unit of the shop.</p>
+    <p class="te">ఒక బియ్యపు గింజ, రాగి ఈనెతో చీలిక. షాప్ చిన్న యూనిట్.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">11</span>
+      <span class="fam">Kirana</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Awning"><rect x="30" y="42" width="140" height="38" fill="#A9714B"/>
+      <rect x="54" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="93" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="132" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="46" y="80" width="108" height="86" rx="4" fill="#14110F"/>
+      <text x="100" y="122" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><rect x="30" y="42" width="140" height="38" fill="#A9714B"/>
+      <rect x="54" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="93" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="132" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="46" y="80" width="108" height="86" rx="4" fill="#14110F"/>
+      <text x="100" y="122" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><rect x="30" y="42" width="140" height="38" fill="#A9714B"/>
+      <rect x="54" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="93" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="132" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="46" y="80" width="108" height="86" rx="4" fill="#14110F"/>
+      <text x="100" y="122" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><rect x="30" y="42" width="140" height="38" fill="#A9714B"/>
+      <rect x="54" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="93" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="132" y="42" width="14" height="38" fill="#F7F3EA" fill-opacity=".85"/>
+      <rect x="46" y="80" width="108" height="86" rx="4" fill="#14110F"/>
+      <text x="100" y="122" font-family="Fraunces" font-size="56" font-weight="600" fill="#F7F3EA" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Awning</h3>
+    <p>A striped shop awning over an ink shopfront. Colour is the copper stripe.</p>
+    <p class="te">చారల షాప్ పందిరి, ఇంక్ షాప్ ఫ్రంట్. రంగు రాగి చార.</p>
+  </article>
+
+  <article class="card">
+    <header>
+      <span class="num">12</span>
+      <span class="fam">Kirana</span>
+      
+    </header>
+    <div class="stage square">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Shutter"><rect x="42" y="34" width="116" height="132" rx="8" fill="#14110F"/>
+      <g fill="#F7F3EA" fill-opacity=".9">
+        <rect x="42" y="62" width="116" height="5"/>
+        <rect x="42" y="88" width="116" height="5"/>
+        <rect x="42" y="114" width="116" height="5"/>
+        <rect x="42" y="140" width="116" height="5"/>
+      </g>
+      <text x="100" y="100" font-family="Fraunces" font-size="74" font-weight="600" fill="#A9714B" text-anchor="middle" dominant-baseline="central">S</text></svg>
+    </div>
+    <div class="sizes">
+      <span class="sz64"><svg viewBox="0 0 200 200"><rect x="42" y="34" width="116" height="132" rx="8" fill="#14110F"/>
+      <g fill="#F7F3EA" fill-opacity=".9">
+        <rect x="42" y="62" width="116" height="5"/>
+        <rect x="42" y="88" width="116" height="5"/>
+        <rect x="42" y="114" width="116" height="5"/>
+        <rect x="42" y="140" width="116" height="5"/>
+      </g>
+      <text x="100" y="100" font-family="Fraunces" font-size="74" font-weight="600" fill="#A9714B" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz32"><svg viewBox="0 0 200 200"><rect x="42" y="34" width="116" height="132" rx="8" fill="#14110F"/>
+      <g fill="#F7F3EA" fill-opacity=".9">
+        <rect x="42" y="62" width="116" height="5"/>
+        <rect x="42" y="88" width="116" height="5"/>
+        <rect x="42" y="114" width="116" height="5"/>
+        <rect x="42" y="140" width="116" height="5"/>
+      </g>
+      <text x="100" y="100" font-family="Fraunces" font-size="74" font-weight="600" fill="#A9714B" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sz16"><svg viewBox="0 0 200 200"><rect x="42" y="34" width="116" height="132" rx="8" fill="#14110F"/>
+      <g fill="#F7F3EA" fill-opacity=".9">
+        <rect x="42" y="62" width="116" height="5"/>
+        <rect x="42" y="88" width="116" height="5"/>
+        <rect x="42" y="114" width="116" height="5"/>
+        <rect x="42" y="140" width="116" height="5"/>
+      </g>
+      <text x="100" y="100" font-family="Fraunces" font-size="74" font-weight="600" fill="#A9714B" text-anchor="middle" dominant-baseline="central">S</text></svg></span>
+      <span class="sizelabel">64 · 32 · 16</span>
+    </div>
+    <h3>Shutter</h3>
+    <p>The shop shutter at closing time; the S is left open on the slats.</p>
+    <p class="te">షట్టర్ మూసే సమయం — స్లాట్లపై S తెరిచి ఉంది.</p>
+  </article></div>
+<div class="foot"><span>SAUDA IDENTITY · CONCEPT SHEET 1/2</span><span>ALL MARKS SHOWN AT 64 / 32 / 16 PX</span><span>SELECT ONE OR MIX ELEMENTS</span></div>
+</body></html>

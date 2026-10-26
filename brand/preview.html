@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sauda — Brand Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14110f;
+    --paper: #f7f3ea;
+    --raised: #fcfaf4;
+    --line: #e3daca;
+    --copper: #8a5a38;
+    --stone: #6b5e51;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-feature-settings: 'tnum' 1;
+    padding: 56px 64px 64px;
+  }
+  .micro { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--stone); }
+  .rule { height: 1px; background: var(--line); border: 0; margin: 0; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .brandline { display: flex; align-items: center; gap: 18px; }
+  .word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 40px; line-height: .9; letter-spacing: .14em; }
+  .tel { font-family: 'Noto Sans Telugu', sans-serif; font-weight: 600; color: var(--copper); font-size: 15px; letter-spacing: 0; margin-top: 6px; }
+  .sub { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--stone); margin-top: 6px; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 24px; letter-spacing: -.01em; margin: 0 0 4px; }
+  .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 32px; margin-top: 32px; }
+  .panel { border: 1px solid var(--line); border-radius: 10px; background: var(--raised); padding: 28px; }
+  .panel.dark { background: var(--ink); border-color: #2a241f; color: var(--paper); }
+  .stack { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 14px 0 6px; }
+  .stack .word { font-size: 46px; letter-spacing: 6px; }
+  .stack .tel { font-size: 18px; color: var(--copper); }
+  .stack-rule { width: 140px; height: 1px; background: #cfc3af; }
+  .lock { display: flex; align-items: center; gap: 18px; padding: 18px 0 10px; }
+  .lock .word { font-size: 42px; letter-spacing: 6px; }
+  .lock .tel { font-size: 15px; margin-top: 4px; }
+  .lock .sub { color: #b3a695; }
+  .lock.dark .word { color: var(--paper); }
+  .lock.dark .tel { color: #cf9f79; }
+  .sizes { display: flex; align-items: flex-end; gap: 22px; margin-top: 18px; }
+  .size { text-align: center; }
+  .size .micro { font-size: 8px; margin-top: 8px; display: block; }
+  .swatches { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .sw { padding: 16px 12px 12px; min-height: 92px; display: flex; flex-direction: column; justify-content: flex-end; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: .06em; }
+  .sw b { font-family: 'Instrument Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0; display: block; margin-bottom: 2px; }
+  .type { margin-top: 22px; display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 28px; }
+  .type .display { font-family: 'Fraunces', serif; font-size: 44px; line-height: 1.02; letter-spacing: -.015em; }
+  .type .body { font-size: 13px; line-height: 1.55; color: #40372e; }
+  .type .telugu { font-family: 'Noto Sans Telugu', sans-serif; font-size: 20px; line-height: 1.55; letter-spacing: 0; }
+  .type .mono { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; color: var(--stone); }
+  .foot { display: flex; justify-content: space-between; margin-top: 34px; }
+  .foot .micro { font-size: 8px; }
+  .dot { width: 6px; height: 6px; border-radius: 99px; background: #2f5d4e; display: inline-block; margin-right: 7px; }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <div class="brandline">
+      <img src="final/sauda-seal.svg" width="64" height="64" alt="">
+      <div>
+        <div class="word">SAUDA</div>
+        <div class="tel">సౌదా</div>
+        <div class="sub">KIRANA LEDGER OS</div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="micro">Identity · v2.0</div>
+      <div class="micro" style="margin-top:6px">The ledger seal</div>
+      <div class="micro" style="margin-top:6px;color:#2f5d4e"><span class="dot"></span>Approved direction</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="micro">Primary · stacked lockup</div>
+      <div class="stack">
+        <img src="final/sauda-seal.svg" width="132" height="132" alt="">
+        <div style="text-align:center">
+          <div class="word">SAUDA</div>
+          <div class="tel">సౌదా</div>
+        </div>
+        <div class="stack-rule"></div>
+        <div class="micro" style="font-size:8px">KIRANA LEDGER OS</div>
+      </div>
+    </div>
+
+    <div class="panel dark">
+      <div class="micro" style="color:#8a7b6b">Reverse · horizontal</div>
+      <div class="lock dark" style="padding-top:36px">
+        <img src="final/sauda-seal-reverse.svg" width="88" height="88" alt="">
+        <div>
+          <div class="word">SAUDA</div>
+          <div class="tel">సౌదా</div>
+          <div class="sub">OFFLINE-FIRST RETAIL OS</div>
+        </div>
+      </div>
+      <hr class="rule" style="background:#2a241f;margin:26px 0 18px">
+      <div class="micro" style="color:#8a7b6b">Seal on ink</div>
+      <div class="sizes">
+        <div class="size"><img src="final/sauda-seal-reverse.svg" width="40" height="40" alt=""><span class="micro" style="color:#8a7b6b">40</span></div>
+        <div class="size"><img src="final/sauda-seal-reverse.svg" width="24" height="24" alt=""><span class="micro" style="color:#8a7b6b">24</span></div>
+        <div class="size"><img src="final/sauda-seal-reverse.svg" width="16" height="16" alt=""><span class="micro" style="color:#8a7b6b">16</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:36px">
+    <h2>Colour</h2>
+    <div class="micro">One ink, one paper, one copper · semantic colour only for state</div>
+    <div class="swatches">
+      <div class="sw" style="background:#14110f;color:#f7f3ea"><b>Ink 950</b>#14110F</div>
+      <div class="sw" style="background:#f7f3ea;color:#6b5e51;border-right:1px solid #e3daca"><b>Paper</b>#F7F3EA</div>
+      <div class="sw" style="background:#202853;color:#f7f3ea"><b>Indigo 800</b>#202853</div>
+      <div class="sw" style="background:#a9714b;color:#fcfaf4"><b>Copper 600</b>#A9714B</div>
+      <div class="sw" style="background:#2f5d4e;color:#f7f3ea"><b>Sage 600</b>#2F5D4E</div>
+      <div class="sw" style="background:#7a2e35;color:#f7f3ea"><b>Oxblood 600</b>#7A2E35</div>
+      <div class="sw" style="background:#8c6a2f;color:#fcfaf4"><b>Brass 600</b>#8C6A2F</div>
+    </div>
+  </div>
+
+  <div class="type">
+    <div>
+      <div class="micro" style="margin-bottom:10px">Display · Fraunces</div>
+      <div class="display">The ledger remembers every deal.</div>
+    </div>
+    <div>
+      <div class="micro" style="margin-bottom:10px">Interface · Instrument Sans</div>
+      <div class="body">Billing, stock and khata in one quiet surface. Figures are tabular, rules are hairlines, and nothing glows.</div>
+      <div class="mono" style="margin-top:14px">BL-2026-004 · ₹1,100 · 12:23 PM</div>
+    </div>
+    <div>
+      <div class="micro" style="margin-bottom:10px">Telugu · Noto Sans Telugu</div>
+      <div class="telugu">సౌదా కిరాణా లెడ్జర్<br>ఈ రోజు అమ్మకాలు ₹1,100</div>
+      <div class="mono" style="margin-top:14px">letter-spacing: 0</div>
+    </div>
+  </div>
+
+  <hr class="rule" style="margin-top:36px">
+  <div class="foot">
+    <div class="micro">SAUDA · BRAND &amp; INTERFACE MANUAL · 2026</div>
+    <div class="micro">SEAL · LOCKUPS · COLOUR · TYPE</div>
+  </div>
+
+</body>
+</html>

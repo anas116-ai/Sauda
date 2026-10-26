@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   SAUDA — The Kirana Ledger
+   Warm paper, ink, indigo, copper. Hairlines instead of boxes. No gradients.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --paper: #f7f3ea;
+    --paper-raised: #fcfaf4;
+    --paper-deep: #f1ebdd;
+    --ink: #14110f;
+    --ink-soft: #1c1815;
+    --line: #e3daca;
+    --line-strong: #cfc3af;
+    --indigo: #202853;
+    --copper: #8a5a38;
+    --sage: #2f5d4e;
+    --oxblood: #7a2e35;
+    --brass: #8c6a2f;
+    --shadow-card: 0 4px 12px -4px rgba(20, 17, 15, 0.1), 0 1px 2px rgba(20, 17, 15, 0.04);
+    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  html {
+    background-color: var(--paper);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', 'Noto Sans Telugu', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums lining-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  /* Physical paper: a fine, fixed grain above the canvas, never on top of text alone */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  ::selection {
+    background-color: var(--copper);
+    color: var(--paper-raised);
+  }
+
+  h1,
+  h2 {
+    font-family: 'Fraunces', 'Noto Sans Telugu', Georgia, serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+  }
+
+  h3,
+  h4 {
+    font-family: 'Instrument Sans', 'Noto Sans Telugu', sans-serif;
+  }
+
+  /* Telugu carries no letter-spacing — applied per label, never globally. */
+
+  /* Copper focus ring, consistent across every control */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--copper);
+    outline-offset: 2px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #8a7b6b;
+  }
+
+  hr {
+    border-color: var(--line);
+  }
+}
+
+@layer components {
+  /* Paper surfaces — hairlines carry the hierarchy, not boxes */
+  .apple-glass,
+  .glass-panel,
+  .apple-glass-card,
+  .classic-card {
+    background-color: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    color: var(--ink);
+    background-image: none;
+    backdrop-filter: none;
+  }
+
+  .apple-glass-header {
+    background-color: var(--paper-raised);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    backdrop-filter: none;
+  }
+
+  .apple-glass-modal {
+    background-color: var(--paper-raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    box-shadow: 0 24px 64px -24px rgba(20, 17, 15, 0.28), 0 4px 16px -8px rgba(20, 17, 15, 0.12);
+    color: var(--ink);
+  }
+
+  .subtle-input {
+    background-color: var(--paper-raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .subtle-input:focus {
+    outline: none;
+    border-color: #293368;
+    box-shadow: 0 0 0 3px rgba(32, 40, 83, 0.14);
+  }
+
+  /* A small caps label used across the brand surfaces */
+  .micro-label {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* One acknowledged press state across the whole app */
+  button:active,
+  .interactive-press:active {
+    transform: scale(0.985);
+    transition: transform 80ms ease;
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .scrollbar-none,
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+/* ============================================================================
+   Scrollbars — quiet, warm, out of the way
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 105, 90, 0.32);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 105, 90, 0.55);
+  background-clip: content-box;
+}
+
+/* ============================================================================
+   Motion — quiet by default, and respectful
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   Bilingual thermal receipt print styles
+   ========================================================================== */
+@media print {
+  body::before {
+    display: none;
+  }
+  body * {
+    visibility: hidden;
+  }
+  body.print-receipt-80mm #printable-receipt,
+  #printable-receipt,
+  #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 76mm !important;
+    margin: 0 auto;
+    padding: 2mm 3mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Telugu', sans-serif;
+  }
+  body.print-receipt-58mm #printable-receipt {
+    width: 54mm !important;
+    padding: 1mm 1.5mm;
+  }
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}

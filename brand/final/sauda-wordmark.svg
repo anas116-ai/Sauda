@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" width="640" height="260" role="img">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Instrument+Sans:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;500;600&display=swap');
+    .word { font-family: 'Fraunces', Georgia, serif; font-weight: 600; }
+    .tel { font-family: 'Noto Sans Telugu', sans-serif; font-weight: 600; letter-spacing: 0; }
+    .micro { font-family: 'Instrument Sans', sans-serif; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; }
+  </style>
+  <rect width="640" height="260" fill="#F7F3EA"/>
+  <text x="320" y="130" text-anchor="middle" class="word" font-size="88" letter-spacing="10" fill="#14110F">SAUDA</text>
+  <text x="321" y="177" text-anchor="middle" class="tel" font-size="24" fill="#8A5A38">????</text>
+  <rect x="200" y="205" width="240" height="1" fill="#CFC3AF"/>
+  <text x="320" y="235" text-anchor="middle" class="micro" font-size="10" fill="#6B5E51">THE KIRANA LEDGER</text>
+</svg>

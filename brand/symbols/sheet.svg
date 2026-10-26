@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 260" width="960" height="260">
+  <rect width="960" height="260" fill="#F7F3EA" />
+  <g font-family="Georgia, serif" font-size="13" fill="#6B6257" letter-spacing="2">
+    <text x="120" y="236" text-anchor="middle">A · HOOKS</text>
+    <text x="360" y="236" text-anchor="middle">B · SEAL</text>
+    <text x="600" y="236" text-anchor="middle">C · RIBBON</text>
+    <text x="840" y="236" text-anchor="middle">D · FRAME</text>
+  </g>
+
+  <g transform="translate(48 40)">
+    <svg width="144" height="144" viewBox="0 0 64 64">
+      <g fill="none" stroke="#14110F" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter">
+        <path d="M18 16 H46 V27 H31" />
+        <path d="M46 48 H18 V37 H33" />
+      </g>
+    </svg>
+  </g>
+
+  <g transform="translate(288 40)">
+    <svg width="144" height="144" viewBox="0 0 64 64">
+      <rect x="4" y="4" width="56" height="56" fill="#14110F" />
+      <path d="M58 20 H32 V30 H50 V44 H6" fill="none" stroke="#F7F3EA" stroke-width="8" stroke-linecap="butt" stroke-linejoin="miter" />
+    </svg>
+  </g>
+
+  <g transform="translate(528 40)">
+    <svg width="144" height="144" viewBox="0 0 64 64">
+      <path d="M14 8 H50 V18 H24 V28 H50 V56 H14 V46 H40 V38 H14 Z" fill="#14110F" />
+    </svg>
+  </g>
+
+  <g transform="translate(768 40)">
+    <svg width="144" height="144" viewBox="0 0 64 64">
+      <g fill="none" stroke="#14110F" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter">
+        <path d="M30 12 H12 V52 H30" />
+        <path d="M34 12 H52 V52 H34" />
+      </g>
+      <rect x="28" y="28" width="8" height="8" fill="#A9714B" />
+    </svg>
+  </g>
+</svg>

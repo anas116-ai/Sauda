@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <!-- Background: Obsidian Charcoal -->
+  <rect width="800" height="800" fill="#090D16" rx="0"/>
+  
+  <defs>
+    <linearGradient id="mobiusGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <linearGradient id="mobiusWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mobius Continuous Infinity 'S' Loop -->
+  <g transform="translate(400, 310)">
+    <!-- Back Loop Arc -->
+    <path d="M 0 -80 C 70 -80 120 -30 70 20 C 20 70 -50 40 -80 80 C -110 120 -50 160 0 160 C 50 160 100 120 70 80" 
+          fill="none" stroke="url(#mobiusWhite)" stroke-width="24" stroke-linecap="round"/>
+          
+    <!-- Front Dynamic Gold Twist Arc -->
+    <path d="M 0 160 C -60 160 -120 110 -70 50 C -20 -10 60 10 90 -40 C 120 -90 50 -130 0 -130 C -50 -130 -100 -90 -70 -50" 
+          fill="none" stroke="url(#mobiusGold)" stroke-width="20" stroke-linecap="round"/>
+  </g>
+
+  <!-- Brand Wordmark -->
+  <text x="400" y="555" text-anchor="middle" font-family="'Inter', -apple-system, sans-serif" font-size="46" font-weight="900" letter-spacing="10" fill="#FFFFFF">
+    SAUDA
+  </text>
+
+  <!-- Telugu Typography -->
+  <text x="400" y="605" text-anchor="middle" font-family="'Noto Sans Telugu', sans-serif" font-size="24" font-weight="700" letter-spacing="4" fill="#FDE68A">
+    సౌదా
+  </text>
+
+  <text x="400" y="648" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" letter-spacing="5" fill="#64748B">
+    THE INFINITE CIRCLE OF TRUST
+  </text>
+</svg>

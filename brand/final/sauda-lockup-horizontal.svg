@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160" role="img" aria-label="Sauda horizontal lockup">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&amp;family=Noto+Sans+Telugu:wght@600&amp;family=Instrument+Sans:wght@500;600&amp;display=swap');
+    .word { font-family: 'Fraunces', Georgia, serif; font-weight: 600; }
+    .tel { font-family: 'Noto Sans Telugu', sans-serif; font-weight: 600; }
+    .micro { font-family: 'Instrument Sans', sans-serif; font-weight: 600; }
+  </style>
+  <rect width="400" height="160" fill="#F7F3EA" />
+  <g transform="translate(32 40)">
+    <path d="M4 4 H46 L60 18 V60 H4 Z" fill="#14110F" />
+    <path d="M46 4 L60 18 H46 Z" fill="#A9714B" />
+    <text x="30" y="48" text-anchor="middle" fill="#F7F3EA" class="word" font-size="47">S</text>
+  </g>
+  <text x="132" y="86" fill="#14110F" class="word" font-size="46" letter-spacing="6">SAUDA</text>
+  <text x="134" y="112" fill="#8A5A38" class="tel" font-size="18">సౌదా</text>
+  <text x="135" y="132" fill="#6B5E51" class="micro" font-size="8.5" letter-spacing="3.2">KIRANA LEDGER OS</text>
+</svg>
