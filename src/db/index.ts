@@ -22,7 +22,8 @@ import {
   type Estimate,
   type PurchaseOrder,
   type DeliveryChallan,
-  type LoyaltyTransaction
+  type LoyaltyTransaction,
+  type ActivityLog
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -49,6 +50,7 @@ export class LekvyaDatabase extends Dexie {
   purchaseOrders!: Table<PurchaseOrder, string>;
   deliveryChallans!: Table<DeliveryChallan, string>;
   loyaltyTransactions!: Table<LoyaltyTransaction, string>;
+  activityLogs!: Table<ActivityLog, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -116,6 +118,10 @@ export class LekvyaDatabase extends Dexie {
 
     this.version(14).stores({
       loyaltyTransactions: 'id, shopId, customerId, type, timestamp, referenceBillId',
+    });
+
+    this.version(15).stores({
+      activityLogs: 'id, shopId, userId, actionType, severity, timestamp',
     });
   }
 }
@@ -1505,6 +1511,66 @@ export async function seedInitialData() {
       loyaltyPointsBalance: 60,
       totalPointsEarned: 60,
     });
+  }
+
+  // Seed initial Activity Logs (Feature 9)
+  const activityCount = await db.activityLogs.count();
+  if (activityCount === 0) {
+    const now = Date.now();
+    await db.activityLogs.bulkPut([
+      {
+        id: 'act-001',
+        shopId: defaultShopId,
+        userId: 'user-001',
+        userName: 'వెంకటేశ్వర్లు (Owner)',
+        userRole: 'OWNER',
+        actionType: 'PIN_LOGIN',
+        actionTitleTe: 'సిస్టమ్ అన్‌లాక్ (PIN Login)',
+        actionTitleEn: 'Staff Terminal Unlock',
+        details: 'కౌంటర్ నం 1 వద్ద పిన్ ద్వారా లాగిన్ అయ్యారు',
+        severity: 'INFO',
+        timestamp: now - 18000000,
+      },
+      {
+        id: 'act-002',
+        shopId: defaultShopId,
+        userId: 'user-002',
+        userName: 'రమేష్ (Cashier)',
+        userRole: 'CASHIER',
+        actionType: 'DRAWER_OPEN',
+        actionTitleTe: 'నగదు డ్రాయర్ తెరవబడింది',
+        actionTitleEn: 'Cash Drawer Opened',
+        details: 'చిల్లర మార్పిడి కోసం డ్రాయర్ తెరిచారు (Petty Change)',
+        severity: 'WARN',
+        timestamp: now - 14400000,
+      },
+      {
+        id: 'act-003',
+        shopId: defaultShopId,
+        userId: 'user-001',
+        userName: 'వెంకటేశ్వర్లు (Owner)',
+        userRole: 'OWNER',
+        actionType: 'CREDIT_LIMIT_OVERRIDE',
+        actionTitleTe: 'అరువు పరిమితి సడలింపు',
+        actionTitleEn: 'Khata Credit Limit Override',
+        details: 'రామయ్య గారి ఖాతా పరిమితి ₹20,000 నుండి ₹25,000 కు పెంచబడింది',
+        severity: 'CRITICAL',
+        timestamp: now - 7200000,
+      },
+      {
+        id: 'act-004',
+        shopId: defaultShopId,
+        userId: 'user-002',
+        userName: 'రమేష్ (Cashier)',
+        userRole: 'CASHIER',
+        actionType: 'DISCOUNT_OVERRIDE',
+        actionTitleTe: 'ప్రత్యేక డిస్కౌంట్ వర్తింపు',
+        actionTitleEn: 'Manual Discount Override',
+        details: 'బిల్లు #BL-2026-0042 పై ₹50 మాన్యువల్ తగ్గింపు ఇవ్వబడింది',
+        severity: 'WARN',
+        timestamp: now - 3600000,
+      }
+    ]);
   }
 }
 

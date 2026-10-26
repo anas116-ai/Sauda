@@ -26,6 +26,31 @@ export interface User {
   createdAt: number;
 }
 
+export type ActivityActionType = 
+  | 'BILL_VOID' 
+  | 'DISCOUNT_OVERRIDE' 
+  | 'CREDIT_LIMIT_OVERRIDE' 
+  | 'DRAWER_OPEN' 
+  | 'STOCK_ADJUSTMENT' 
+  | 'PIN_LOGIN' 
+  | 'DAY_END_CLOSE';
+
+export type ActivitySeverity = 'INFO' | 'WARN' | 'CRITICAL';
+
+export interface ActivityLog {
+  id: string;
+  shopId: string;
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  actionType: ActivityActionType;
+  actionTitleTe: string;
+  actionTitleEn: string;
+  details?: string;
+  severity: ActivitySeverity;
+  timestamp: number;
+}
+
 export type AccountType = 'CASH' | 'BANK' | 'PETTY_CASH' | 'UPI_WALLET';
 
 export interface BankAccount {
