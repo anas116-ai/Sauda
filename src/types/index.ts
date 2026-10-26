@@ -340,6 +340,38 @@ export interface Gstr1Report {
   hsnSummary: GstTaxSlabBreakdown[];
 }
 
+export interface Gstr3bReport {
+  periodMonthYear: string;
+  // 3.1 Outward Taxable Supplies
+  outwardTaxablePaise: number;
+  outwardCgstPaise: number;
+  outwardSgstPaise: number;
+  outwardIgstPaise: number;
+  outwardTotalTaxPaise: number;
+  // 4.0 Eligible ITC (Input Tax Credit from inward purchases)
+  itcTaxablePaise: number;
+  itcCgstPaise: number;
+  itcSgstPaise: number;
+  itcIgstPaise: number;
+  itcTotalTaxPaise: number;
+  // Net Tax Payable (Outward - ITC)
+  netCgstPayablePaise: number;
+  netSgstPayablePaise: number;
+  netIgstPayablePaise: number;
+  netTotalPayablePaise: number;
+}
+
+export interface Gstr9Report {
+  financialYear: string;
+  totalAnnualTurnoverPaise: number;
+  taxableTurnoverPaise: number;
+  exemptedTurnoverPaise: number;
+  totalTaxPaidPaise: number;
+  totalItcClaimedPaise: number;
+  b2bTurnoverPaise: number;
+  b2cTurnoverPaise: number;
+}
+
 export type CustomerLedgerEntryType = 'DEBIT_SALE' | 'CREDIT_PAYMENT' | 'REVERSAL_REFUND';
 
 export interface CustomerLedgerEntry {

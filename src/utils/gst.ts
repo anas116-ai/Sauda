@@ -10,7 +10,15 @@
  * - GSTR-1 Return Aggregation & 1-Click JSON/CSV Export for CA Audits
  */
 
-import { type Bill, type Shop, type Gstr1Report, type GstTaxSlabBreakdown } from '../types';
+import { 
+  type Bill, 
+  type Shop, 
+  type Gstr1Report, 
+  type Gstr3bReport, 
+  type Gstr9Report, 
+  type GstTaxSlabBreakdown,
+  type PurchaseInward 
+} from '../types';
 
 export const INDIAN_STATE_GST_CODES: Record<string, string> = {
   '36': 'Telangana (36)',
@@ -311,6 +319,151 @@ export function exportGstr1Csv(bills: Bill[], shop: Shop | null) {
   const a = document.createElement('a');
   a.href = url;
   a.download = `GSTR1_Sales_Register_${shop?.gstin || 'SAUDA'}_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Aggregates finalized sales and purchase inwards into standard GSTR-3B monthly summary
+ */
+export function generateGstr3bSummary(
+  bills: Bill[], 
+  inwards: PurchaseInward[], 
+  period = 'October 2026'
+): Gstr3bReport {
+  const gstr1 = generateGstr1Summary(bills, period);
+
+  // 4.0 Input Tax Credit (ITC) from inward purchases
+  let itcTaxablePaise = 0;
+  let itcTotalTaxPaise = 0;
+
+  for (const inw of inwards) {
+    itcTaxablePaise += inw.subtotalPaise;
+    itcTotalTaxPaise += inw.taxPaise;
+  }
+
+  const itcCgstPaise = Math.round(itcTotalTaxPaise / 2);
+  const itcSgstPaise = itcTotalTaxPaise - itcCgstPaise;
+  const itcIgstPaise = 0;
+
+  // Net Tax Payable
+  const netCgstPayablePaise = Math.max(0, gstr1.totalCgstPaise - itcCgstPaise);
+  const netSgstPayablePaise = Math.max(0, gstr1.totalSgstPaise - itcSgstPaise);
+  const netIgstPayablePaise = Math.max(0, gstr1.totalIgstPaise - itcIgstPaise);
+  const netTotalPayablePaise = netCgstPayablePaise + netSgstPayablePaise + netIgstPayablePaise;
+
+  return {
+    periodMonthYear: period,
+    outwardTaxablePaise: gstr1.totalTaxablePaise,
+    outwardCgstPaise: gstr1.totalCgstPaise,
+    outwardSgstPaise: gstr1.totalSgstPaise,
+    outwardIgstPaise: gstr1.totalIgstPaise,
+    outwardTotalTaxPaise: gstr1.totalTaxPaise,
+    itcTaxablePaise,
+    itcCgstPaise,
+    itcSgstPaise,
+    itcIgstPaise,
+    itcTotalTaxPaise,
+    netCgstPayablePaise,
+    netSgstPayablePaise,
+    netIgstPayablePaise,
+    netTotalPayablePaise,
+  };
+}
+
+/**
+ * Aggregates annual data for GSTR-9 annual return
+ */
+export function generateGstr9Summary(
+  bills: Bill[],
+  inwards: PurchaseInward[],
+  year = '2025-2026'
+): Gstr9Report {
+  let totalAnnualTurnoverPaise = 0;
+  let taxableTurnoverPaise = 0;
+  let exemptedTurnoverPaise = 0;
+  let totalTaxPaidPaise = 0;
+  let b2bTurnoverPaise = 0;
+  let b2cTurnoverPaise = 0;
+
+  for (const bill of bills) {
+    if (bill.billStatus !== 'FINALIZED') continue;
+    totalAnnualTurnoverPaise += bill.totalPaise;
+    totalTaxPaidPaise += bill.taxPaise;
+
+    if (bill.invoiceType === 'B2B') {
+      b2bTurnoverPaise += bill.totalPaise;
+    } else {
+      b2cTurnoverPaise += bill.totalPaise;
+    }
+
+    if (bill.taxPaise === 0) {
+      exemptedTurnoverPaise += bill.totalPaise;
+    } else {
+      taxableTurnoverPaise += bill.subtotalPaise;
+    }
+  }
+
+  const totalItcClaimedPaise = inwards.reduce((sum, inw) => sum + inw.taxPaise, 0);
+
+  return {
+    financialYear: year,
+    totalAnnualTurnoverPaise,
+    taxableTurnoverPaise,
+    exemptedTurnoverPaise,
+    totalTaxPaidPaise,
+    totalItcClaimedPaise,
+    b2bTurnoverPaise,
+    b2cTurnoverPaise,
+  };
+}
+
+/**
+ * Export GSTR-3B Computation Sheet in CA CSV format
+ */
+export function exportGstr3bCsv(gstr3b: Gstr3bReport, shop: Shop | null) {
+  const lines: string[] = [];
+  lines.push(`\uFEFF${shop?.name || 'Sri Lakshmi General Store'} - GSTR-3B COMPUTATION SHEET`);
+  lines.push(`GSTIN: ${shop?.gstin || '36AABCS1429B1Z5'}, Period: ${gstr3b.periodMonthYear}`);
+  lines.push(`Exported At: ${new Date().toLocaleString('en-IN')}`);
+  lines.push('');
+  lines.push('Section,Description,Taxable Value (₹),CGST (₹),SGST (₹),IGST (₹),Total Tax (₹)');
+  
+  lines.push([
+    '3.1',
+    '"Outward Taxable Supplies (Sales)"',
+    (gstr3b.outwardTaxablePaise / 100).toFixed(2),
+    (gstr3b.outwardCgstPaise / 100).toFixed(2),
+    (gstr3b.outwardSgstPaise / 100).toFixed(2),
+    (gstr3b.outwardIgstPaise / 100).toFixed(2),
+    (gstr3b.outwardTotalTaxPaise / 100).toFixed(2),
+  ].join(','));
+
+  lines.push([
+    '4.0',
+    '"Eligible Input Tax Credit (ITC on Purchases)"',
+    (gstr3b.itcTaxablePaise / 100).toFixed(2),
+    (gstr3b.itcCgstPaise / 100).toFixed(2),
+    (gstr3b.itcSgstPaise / 100).toFixed(2),
+    (gstr3b.itcIgstPaise / 100).toFixed(2),
+    (gstr3b.itcTotalTaxPaise / 100).toFixed(2),
+  ].join(','));
+
+  lines.push([
+    '5.1',
+    '"Net Tax Payable in Cash / Bank (Outward - ITC)"',
+    '—',
+    (gstr3b.netCgstPayablePaise / 100).toFixed(2),
+    (gstr3b.netSgstPayablePaise / 100).toFixed(2),
+    (gstr3b.netIgstPayablePaise / 100).toFixed(2),
+    (gstr3b.netTotalPayablePaise / 100).toFixed(2),
+  ].join(','));
+
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `GSTR3B_Computation_${shop?.gstin || 'SAUDA'}_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
