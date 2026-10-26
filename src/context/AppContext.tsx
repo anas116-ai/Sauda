@@ -13,8 +13,6 @@ interface AppContextType {
   setActiveTheme: (theme: LuxuryTheme) => void;
   activeLogoConcept: LogoConcept;
   setActiveLogoConcept: (concept: LogoConcept) => void;
-  isLuxuryStudioOpen: boolean;
-  setIsLuxuryStudioOpen: (open: boolean) => void;
   currentUser: User | null;
   currentShop: Shop | null;
   isLocked: boolean;
@@ -44,7 +42,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (saved === 'knot' || saved === 'prism' || saved === 'portal') ? saved : 'knot';
   });
 
-  const [isLuxuryStudioOpen, setIsLuxuryStudioOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentShop, setCurrentShop] = useState<Shop | null>(null);
   const [isLocked, setIsLocked] = useState<boolean>(false);
@@ -116,8 +113,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveTheme,
         activeLogoConcept,
         setActiveLogoConcept,
-        isLuxuryStudioOpen,
-        setIsLuxuryStudioOpen,
         currentUser,
         currentShop,
         isLocked,
