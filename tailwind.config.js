@@ -87,6 +87,45 @@ const copper = {
   900: '#563722',
 };
 
+const chilli = {
+  50: '#FDF4F0',
+  100: '#FBE6DD',
+  200: '#F6C9B8',
+  300: '#EFA48B',
+  400: '#E17654',
+  500: '#C84F2B',
+  600: '#A23A19',
+  700: '#842D13',
+  800: '#69230F',
+  900: '#4D1A0B',
+};
+
+const neel = {
+  50: '#F2F4F9',
+  100: '#E4E8F2',
+  200: '#C7D0E5',
+  300: '#9FB0D4',
+  400: '#6B84BA',
+  500: '#435EA0',
+  600: '#2F4786',
+  700: '#23306B',
+  800: '#1C2655',
+  900: '#161E44',
+};
+
+const paan = {
+  50: '#EFF6F2',
+  100: '#DDECE3',
+  200: '#BBDAC8',
+  300: '#8FC1A6',
+  400: '#5FA380',
+  500: '#3D8461',
+  600: '#2B5A44',
+  700: '#234A38',
+  800: '#1C3B2D',
+  900: '#152C22',
+};
+
 export default {
   content: [
     './index.html',
@@ -102,6 +141,9 @@ export default {
         oxblood,
         brass,
         copper,
+        chilli,
+        neel,
+        paan,
         paper: {
           DEFAULT: '#F7F3EA',
           raised: '#FCFAF4',
