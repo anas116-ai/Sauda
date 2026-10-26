@@ -309,6 +309,24 @@ export interface Customer {
   interestEnabled?: boolean;
   annualInterestRatePercent?: number; // e.g. 12, 18, 24
   gracePeriodDays?: number;           // e.g. 30, 45, 60
+
+  // Feature 8: Customer Loyalty & Rewards Points
+  loyaltyPointsBalance?: number;
+  totalPointsEarned?: number;
+}
+
+export type LoyaltyTransactionType = 'EARNED' | 'REDEEMED' | 'EXPIRED' | 'ADJUSTMENT';
+
+export interface LoyaltyTransaction {
+  id: string;
+  shopId: string;
+  customerId: string;
+  customerName?: string;
+  type: LoyaltyTransactionType;
+  points: number;
+  referenceBillId?: string;
+  notes?: string;
+  timestamp: number;
 }
 
 // ========================

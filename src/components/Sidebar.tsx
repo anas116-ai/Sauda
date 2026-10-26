@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SaudaLogo } from './SaudaLogo';
 import { GlassIcon, GlassIconType } from './GlassIcon';
-import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen, Building2, Scale, ClipboardList, Truck, FileText, ReceiptText } from 'lucide-react';
+import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen, Building2, Scale, ClipboardList, Truck, FileText, ReceiptText, Award } from 'lucide-react';
 
 interface SidebarProps {
   currentTab: string;
@@ -305,6 +305,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
               <span className="font-mono text-[9px] px-1 py-0.5 rounded border border-white/10 text-stone-400 leading-none">
                 GST
+              </span>
+            </button>
+
+            <button
+              type="button"
+              data-testid="book-loyalty"
+              onClick={() => setCurrentTab('loyalty')}
+              className={`group relative w-full flex items-center justify-between gap-2 pl-3 pr-2 py-2 rounded-md text-[12.5px] transition-colors ${
+                currentTab === 'loyalty'
+                  ? 'bg-white/[0.07] text-paper font-semibold'
+                  : 'text-stone-300 font-medium hover:text-paper hover:bg-white/[0.04]'
+              }`}
+            >
+              {currentTab === 'loyalty' && (
+                <span
+                  className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-copper-500"
+                  aria-hidden="true"
+                />
+              )}
+              <span className="flex items-center gap-2.5 min-w-0">
+                <Award className="w-4 h-4 text-amber-400" />
+                <span className="truncate">{t('లాయల్టీ & రివార్డులు (Loyalty)', 'Loyalty & Rewards', 'लॉयल्टी और रिवार्ड्स')}</span>
+              </span>
+              <span className="font-mono text-[9px] px-1 py-0.5 rounded border border-white/10 text-stone-400 leading-none">
+                LOY
               </span>
             </button>
           </div>

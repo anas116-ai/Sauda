@@ -21,7 +21,8 @@ import {
   type AccountTransaction,
   type Estimate,
   type PurchaseOrder,
-  type DeliveryChallan
+  type DeliveryChallan,
+  type LoyaltyTransaction
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -47,6 +48,7 @@ export class LekvyaDatabase extends Dexie {
   estimates!: Table<Estimate, string>;
   purchaseOrders!: Table<PurchaseOrder, string>;
   deliveryChallans!: Table<DeliveryChallan, string>;
+  loyaltyTransactions!: Table<LoyaltyTransaction, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -110,6 +112,10 @@ export class LekvyaDatabase extends Dexie {
 
     this.version(13).stores({
       deliveryChallans: 'id, shopId, challanNumber, customerId, status, createdAt',
+    });
+
+    this.version(14).stores({
+      loyaltyTransactions: 'id, shopId, customerId, type, timestamp, referenceBillId',
     });
   }
 }
@@ -1447,6 +1453,57 @@ export async function seedInitialData() {
           lineTotalPaise: 217500,
         }
       ]
+    });
+  }
+
+  // Seed initial Loyalty Rewards (Feature 8)
+  const loyaltyCount = await db.loyaltyTransactions.count();
+  if (loyaltyCount === 0) {
+    const now = Date.now();
+    await db.loyaltyTransactions.bulkPut([
+      {
+        id: 'lt-001',
+        shopId: defaultShopId,
+        customerId: 'cust-001',
+        customerName: 'రామయ్య గారు (శ్రీరామ విలాస్ హోటల్)',
+        type: 'EARNED',
+        points: 125,
+        referenceBillId: 'bl-seed-001',
+        notes: 'బిల్లు ₹12,500 కొనుగోలుపై సంపాదించిన లాయల్టీ పాయింట్లు',
+        timestamp: now - 3 * 86400000,
+      },
+      {
+        id: 'lt-002',
+        shopId: defaultShopId,
+        customerId: 'cust-002',
+        customerName: 'లక్ష్మి గారు (టీ స్టాల్)',
+        type: 'EARNED',
+        points: 60,
+        referenceBillId: 'bl-seed-002',
+        notes: 'బిల్లు ₹6,000 కొనుగోలుపై సంపాదించిన లాయల్టీ పాయింట్లు',
+        timestamp: now - 2 * 86400000,
+      },
+      {
+        id: 'lt-003',
+        shopId: defaultShopId,
+        customerId: 'cust-001',
+        customerName: 'రామయ్య గారు (శ్రీరామ విలాస్ హోటల్)',
+        type: 'REDEEMED',
+        points: -25,
+        referenceBillId: 'bl-seed-003',
+        notes: 'బిల్లు కౌంటర్ వద్ద ₹25 తగ్గింపు కోసం పాయింట్లు వాడారు',
+        timestamp: now - 1 * 86400000,
+      }
+    ]);
+
+    // Update customer balances
+    await db.customers.update('cust-001', {
+      loyaltyPointsBalance: 100,
+      totalPointsEarned: 125,
+    });
+    await db.customers.update('cust-002', {
+      loyaltyPointsBalance: 60,
+      totalPointsEarned: 60,
     });
   }
 }
