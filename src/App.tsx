@@ -12,6 +12,7 @@ import { CashBankScreen } from './features/cashbank/CashBankScreen';
 import { BalanceSheetScreen } from './features/balancesheet/BalanceSheetScreen';
 import { EstimatesScreen } from './features/estimates/EstimatesScreen';
 import { PurchaseOrdersScreen } from './features/purchaseorders/PurchaseOrdersScreen';
+import { DeliveryChallansScreen } from './features/challans/DeliveryChallansScreen';
 
 const MainLayout: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
@@ -80,6 +81,7 @@ const MainLayout: React.FC = () => {
         {currentTab === 'balancesheet' && <BalanceSheetScreen />}
         {currentTab === 'estimates' && <EstimatesScreen />}
         {currentTab === 'purchaseorders' && <PurchaseOrdersScreen />}
+        {currentTab === 'challans' && <DeliveryChallansScreen />}
         {currentTab === 'settings' && <SettingsScreen />}
       </main>
 

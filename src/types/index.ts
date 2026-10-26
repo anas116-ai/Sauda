@@ -131,6 +131,41 @@ export interface PurchaseOrder {
   items: PurchaseOrderItem[];
 }
 
+export type DeliveryChallanStatus = 'DISPATCHED' | 'DELIVERED' | 'INVOICED' | 'CANCELLED';
+
+export interface DeliveryChallanItem {
+  id: string;
+  variantId: string;
+  productNameEn: string;
+  productNameTe: string;
+  variantName: string;
+  unit: string;
+  quantity: number;
+  unitPricePaise: number;
+  lineTotalPaise: number;
+}
+
+export interface DeliveryChallan {
+  id: string;
+  shopId: string;
+  challanNumber: string; // e.g. "DC-2026-0001"
+  customerId?: string;
+  customerName: string;
+  customerPhone?: string;
+  deliveryAddress?: string;
+  vehicleNumber?: string; // e.g. "AP 16 TX 4920"
+  dispatchDate: number;
+  status: DeliveryChallanStatus;
+  totalQuantity: number;
+  subtotalPaise: number;
+  taxPaise: number;
+  totalAmountPaise: number;
+  notes?: string;
+  convertedBillId?: string;
+  createdAt: number;
+  items: DeliveryChallanItem[];
+}
+
 export type UnitType = 'L' | 'ML' | 'KG' | 'G' | 'PCS' | 'PACK';
 
 export interface ProductVariant {

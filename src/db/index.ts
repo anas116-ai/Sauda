@@ -20,7 +20,8 @@ import {
   type BankAccount,
   type AccountTransaction,
   type Estimate,
-  type PurchaseOrder
+  type PurchaseOrder,
+  type DeliveryChallan
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -45,6 +46,7 @@ export class LekvyaDatabase extends Dexie {
   accountTransactions!: Table<AccountTransaction, string>;
   estimates!: Table<Estimate, string>;
   purchaseOrders!: Table<PurchaseOrder, string>;
+  deliveryChallans!: Table<DeliveryChallan, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -104,6 +106,10 @@ export class LekvyaDatabase extends Dexie {
 
     this.version(12).stores({
       purchaseOrders: 'id, shopId, poNumber, supplierId, status, createdAt',
+    });
+
+    this.version(13).stores({
+      deliveryChallans: 'id, shopId, challanNumber, customerId, status, createdAt',
     });
   }
 }
@@ -1392,6 +1398,53 @@ export async function seedInitialData() {
           quantityReceived: 0,
           expectedRatePaise: 41000,
           lineTotalPaise: 410000,
+        }
+      ]
+    });
+  }
+
+  // Seed initial Delivery Challans (Feature 6)
+  const challanCount = await db.deliveryChallans.count();
+  if (challanCount === 0) {
+    await db.deliveryChallans.put({
+      id: 'dc-2026-0001',
+      shopId: defaultShopId,
+      challanNumber: 'DC-2026-0001',
+      customerId: 'cust-003',
+      customerName: 'సుబ్బారావు క్యాటరింగ్ (Subba Rao Catering)',
+      customerPhone: '9848512345',
+      deliveryAddress: 'లక్ష్మీపురం మెయిన్ రోడ్, గుంటూరు',
+      vehicleNumber: 'AP 07 BG 4521 (Tata Ace)',
+      dispatchDate: Date.now() - 3600000,
+      status: 'DISPATCHED',
+      totalQuantity: 3,
+      subtotalPaise: 442500,
+      taxPaise: 22125,
+      totalAmountPaise: 464625,
+      notes: 'పెళ్ళి విందు కోసం ఆర్డర్: 2 బస్తాల బియ్యం + 1 డబ్బా ఆయిల్',
+      createdAt: Date.now() - 3600000,
+      items: [
+        {
+          id: 'dci-1',
+          variantId: 'var-001-10kg',
+          productNameEn: 'Aashirvaad Superior MP Whole Wheat Atta',
+          productNameTe: 'ఆశీర్వాద్ గోధుమ పిండి',
+          variantName: '10 kg Bag',
+          unit: 'KG',
+          quantity: 2,
+          unitPricePaise: 44000,
+          lineTotalPaise: 88000,
+        },
+        {
+          id: 'dci-2',
+          variantId: 'var-002-1L',
+          productNameEn: 'Fortune Sunlite Refined Sunflower Oil',
+          productNameTe: 'ఫార్చ్యూన్ సన్‌ఫ్లవర్ ఆయిల్',
+          variantName: '1 Litre Pouch',
+          unit: 'L',
+          quantity: 15,
+          unitPricePaise: 14500,
+          lineTotalPaise: 217500,
         }
       ]
     });
