@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SaudaLogo } from './SaudaLogo';
 import { GlassIcon, GlassIconType } from './GlassIcon';
-import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen } from 'lucide-react';
+import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen, Building2 } from 'lucide-react';
 
 interface SidebarProps {
   currentTab: string;
@@ -155,6 +155,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
               <span className="font-mono text-[9px] px-1 py-0.5 rounded border border-white/10 text-stone-400 leading-none">
                 JNL
+              </span>
+            </button>
+
+            <button
+              type="button"
+              data-testid="book-cashbank"
+              onClick={() => setCurrentTab('cashbank')}
+              className={`group relative w-full flex items-center justify-between gap-2 pl-3 pr-2 py-2 rounded-md text-[12.5px] transition-colors ${
+                currentTab === 'cashbank'
+                  ? 'bg-white/[0.07] text-paper font-semibold'
+                  : 'text-stone-300 font-medium hover:text-paper hover:bg-white/[0.04]'
+              }`}
+            >
+              {currentTab === 'cashbank' && (
+                <span
+                  className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-copper-500"
+                  aria-hidden="true"
+                />
+              )}
+              <span className="flex items-center gap-2.5 min-w-0">
+                <Building2 className="w-4 h-4 text-neel-300" />
+                <span className="truncate">{t('నగదు & బ్యాంకు (Cash & Bank)', 'Cash & Bank', 'रोकड़ एवं बैंक')}</span>
+              </span>
+              <span className="font-mono text-[9px] px-1 py-0.5 rounded border border-white/10 text-stone-400 leading-none">
+                BNK
               </span>
             </button>
           </div>

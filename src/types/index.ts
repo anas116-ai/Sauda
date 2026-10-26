@@ -26,6 +26,46 @@ export interface User {
   createdAt: number;
 }
 
+export type AccountType = 'CASH' | 'BANK' | 'PETTY_CASH' | 'UPI_WALLET';
+
+export interface BankAccount {
+  id: string;
+  shopId: string;
+  accountType: AccountType;
+  accountName: string;
+  accountNumber?: string;
+  bankName?: string;
+  ifscCode?: string;
+  openingBalancePaise: number;
+  currentBalancePaise: number;
+  isDefault: boolean;
+  isActive: boolean;
+  createdAt: number;
+}
+
+export type AccountTransactionType = 
+  | 'CASH_DEPOSIT'
+  | 'CASH_WITHDRAWAL'
+  | 'UPI_SETTLEMENT'
+  | 'TRANSFER'
+  | 'OWNER_DRAW'
+  | 'CAPITAL_IN'
+  | 'EXPENSE_DIRECT'
+  | 'DIRECT_INCOME';
+
+export interface AccountTransaction {
+  id: string;
+  shopId: string;
+  fromAccountId?: string;
+  toAccountId?: string;
+  transactionType: AccountTransactionType;
+  amountPaise: number;
+  referenceDoc?: string;
+  notes?: string;
+  timestamp: number;
+  createdByUserId?: string;
+}
+
 export type UnitType = 'L' | 'ML' | 'KG' | 'G' | 'PCS' | 'PACK';
 
 export interface ProductVariant {

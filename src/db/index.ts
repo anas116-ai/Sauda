@@ -16,7 +16,9 @@ import {
   type PrinterConfig,
   type CashDrawerLog,
   type WeighingScaleConfig,
-  type DayEndClosingReport
+  type DayEndClosingReport,
+  type BankAccount,
+  type AccountTransaction
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -37,6 +39,8 @@ export class LekvyaDatabase extends Dexie {
   cashDrawerLogs!: Table<CashDrawerLog, string>;
   scaleConfigs!: Table<WeighingScaleConfig, string>;
   dayEndClosings!: Table<DayEndClosingReport, string>;
+  accounts!: Table<BankAccount, string>;
+  accountTransactions!: Table<AccountTransaction, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -83,6 +87,11 @@ export class LekvyaDatabase extends Dexie {
 
     this.version(9).stores({
       dayEndClosings: 'id, shopId, reportNumber, closedAt',
+    });
+
+    this.version(10).stores({
+      accounts: 'id, shopId, accountType, isDefault',
+      accountTransactions: 'id, shopId, fromAccountId, toAccountId, transactionType, timestamp',
     });
   }
 }
@@ -1234,4 +1243,48 @@ export async function seedInitialData() {
       }
     ]);
   }
+
+  // Seed default Cash & Bank accounts if empty
+  const accountCount = await db.accounts.count();
+  if (accountCount === 0) {
+    await db.accounts.bulkPut([
+      {
+        id: 'acc-cash-01',
+        shopId: defaultShopId,
+        accountType: 'CASH',
+        accountName: 'కౌంటర్ క్యాష్ డ్రాయర్ (Main Cash Drawer)',
+        openingBalancePaise: 500000,
+        currentBalancePaise: 1250000,
+        isDefault: true,
+        isActive: true,
+        createdAt: Date.now() - 30 * 86400000,
+      },
+      {
+        id: 'acc-bank-sbi',
+        shopId: defaultShopId,
+        accountType: 'BANK',
+        accountName: 'SBI కరెంట్ ఖాతా (Main Current)',
+        bankName: 'State Bank of India',
+        accountNumber: 'XXXX-XXXX-4512',
+        ifscCode: 'SBIN0001842',
+        openingBalancePaise: 4500000,
+        currentBalancePaise: 6850000,
+        isDefault: false,
+        isActive: true,
+        createdAt: Date.now() - 30 * 86400000,
+      },
+      {
+        id: 'acc-upi-qr',
+        shopId: defaultShopId,
+        accountType: 'UPI_WALLET',
+        accountName: 'ఫోన్‌పే / గూగుల్ పే QR సెటిల్మెంట్',
+        openingBalancePaise: 0,
+        currentBalancePaise: 342000,
+        isDefault: false,
+        isActive: true,
+        createdAt: Date.now() - 30 * 86400000,
+      }
+    ]);
+  }
 }
+
