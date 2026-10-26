@@ -10,29 +10,31 @@
 @layer base {
   :root,
   [data-theme="obsidian-chic"] {
-    /* 60% — Clean Architectural Canvas & Cards Foundation */
-    --paper: #f8f9fa;
-    --paper-raised: #ffffff;
-    --paper-deep: #f1f3f5;
+    /* 60% — Clean Architectural Canvas & Cards Foundation (Miami Nights #F9FCFB & Pure White) */
+    --paper: #F9FCFB;
+    --paper-raised: #FFFFFF;
+    --paper-deep: #EFF8F7;
 
-    /* 30% — Structural Obsidian & Rich Charcoal Hierarchy */
-    --ink: #0b0d13;
-    --ink-soft: #495057;
-    --line: #e2e5e9;
-    --line-strong: #ced4da;
-    --indigo: #0b0d13;
-    --neel: #1c2230;
-    --sage: #343a40;
-    --brass: #f5a3b5;
+    /* 30% — Structural Deep Ocean Pine/Teal & Hierarchy (Miami Nights #0F4953 & #CBF5EF) */
+    --ink: #0A3239;
+    --ink-soft: #244C52;
+    --line: #D5E7E5;
+    --line-strong: #A8CEC9;
+    --indigo: #0F4953;
+    --neel: #16464E;
+    --sage: #1F5A62;
+    --brass: #F98E6E;
+    --mint: #CBF5EF;
+    --blush: #FFCFD2;
 
-    /* 10% — Sharp Focal Accent (Bold Magenta / Vivid Rose) */
-    --copper: #e11d48;
-    --accent: #e11d48;
-    --chilli: #e11d48;
-    --paan: #be123c;
-    --oxblood: #9f1239;
+    /* 10% — Sharp Focal Accent (Miami Nights #F98E6E Coral Terracotta) */
+    --copper: #F98E6E;
+    --accent: #F98E6E;
+    --chilli: #F98E6E;
+    --paan: #0F4953;
+    --oxblood: #C84F3D;
 
-    --shadow-card: 0 4px 16px -4px rgba(11, 13, 19, 0.06), 0 1px 3px rgba(11, 13, 19, 0.02);
+    --shadow-card: 0 4px 20px -4px rgba(15, 73, 83, 0.08), 0 1px 3px rgba(15, 73, 83, 0.03);
     --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 

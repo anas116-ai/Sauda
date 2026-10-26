@@ -119,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </span>
           </div>
           <span className="text-[9px] font-mono text-stone-300 uppercase px-1.5 py-0.5 rounded bg-black/30">
-            {activeTheme === 'organic-forest' ? 'Forest' : activeTheme === 'obsidian-chic' ? 'Chic' : 'Royal'}
+            {activeTheme === 'organic-forest' ? 'Forest' : activeTheme === 'obsidian-chic' ? 'Miami' : 'Royal'}
           </span>
         </button>
       </div>

@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { db } from '../../db';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { 
-  TrendingUp, 
-  ShoppingCart, 
-  BookOpen, 
-  AlertTriangle, 
+import {
+  TrendingUp,
+  ShoppingCart,
+  BookOpen,
+  AlertTriangle,
   CheckCircle2,
   RefreshCw,
-  Package, 
-  Moon, 
-  Trash2, 
-  Eye, 
+  Package,
+  Moon,
+  Trash2,
+  Eye,
   ArrowUpRight,
   Coins,
   QrCode,
@@ -42,10 +42,10 @@ interface DashboardScreenProps {
   onCloseExternalTool?: () => void;
 }
 
-export const DashboardScreen: React.FC<DashboardScreenProps> = ({ 
+export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   onNavigate,
   externalToolModal,
-  onCloseExternalTool 
+  onCloseExternalTool
 }) => {
   const { lang, formatPaise, currentShop, currentUser, t } = useApp();
 
@@ -171,114 +171,126 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 font-sans">
-      
+
       {/* Toast Notification */}
       {statusToast && (
-        <div className="bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-xl flex items-center justify-between animate-fade-in border border-slate-700">
+        <div className="bg-[#0F4953] text-[#F9FCFB] text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl flex items-center justify-between animate-fade-in border border-[#CBF5EF]/30">
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="h-3.5 w-3.5 text-sage-400" strokeWidth={2.2} />
+            <CheckCircle2 className="h-4 w-4 text-[#CBF5EF]" strokeWidth={2.2} />
             <span>{statusToast}</span>
           </div>
-          <button onClick={() => setStatusToast(null)} aria-label="Dismiss" className="ml-3 text-stone-400 transition-colors hover:text-white"><X className="h-3.5 w-3.5" /></button>
+          <button onClick={() => setStatusToast(null)} aria-label="Dismiss" className="ml-3 text-[#CBF5EF]/80 transition-colors hover:text-white"><X className="h-3.5 w-3.5" /></button>
         </div>
       )}
 
-      {/* Ledger header — open, ruled, no floating card */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pb-6 border-b border-stone-200">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[9px] font-medium uppercase tracking-micro text-copper-700">
-            <span className="inline-block w-4 h-px bg-copper-600" aria-hidden="true" />
-            <span>{t('కిరాణా లెడ్జర్', 'Kirana ledger', 'किराना खाता')}</span>
-            <span className="text-stone-400">·</span>
-            <span className="text-stone-500 normal-case tracking-normal">
-              {new Date().toLocaleDateString(lang === 'te' ? 'te-IN' : 'en-IN', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
+      {/* Executive Header Banner — Miami Nights 60-30-10 Luxury Architecture */}
+      <div className="relative overflow-hidden rounded-2xl bg-white border border-[#D5E7E5] p-6 shadow-xs">
+        {/* Subtle ambient luxury mesh glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-[#CBF5EF]/30 via-[#FFCFD2]/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[#0F4953]">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#CBF5EF]/70 text-[#0F4953] border border-[#A8CEC9]/60">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F98E6E] animate-pulse" aria-hidden="true" />
+                <span>{t('కిరాణా లెడ్జర్ · లైవ్', 'Kirana Ledger · Live Telemetry', 'किराना खाता')}</span>
+              </span>
+              <span className="text-[#A8CEC9]">·</span>
+              <span className="text-[#244C52] normal-case tracking-normal font-sans font-medium">
+                {new Date().toLocaleDateString(lang === 'te' ? 'te-IN' : 'en-IN', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
+
+            <h1 className="mt-2.5 text-[26px] sm:text-[32px] font-display font-bold text-[#0A3239] leading-[1.15] truncate">
+              {currentShop?.name || 'Sri Lakshmi General Store'}
+            </h1>
+
+            <div className="mt-2 flex items-center gap-2 text-[12px] text-[#244C52]">
+              <span className="w-2 h-2 rounded-full bg-[#0F4953]" />
+              <span className="font-semibold text-[#0A3239]">{currentUser?.displayName || 'శ్రీనివాస్ గారు'}</span>
+              <span className="text-[#A8CEC9]">/</span>
+              <span className="px-2 py-0.5 rounded text-[10.5px] font-medium bg-[#EFF8F7] text-[#0F4953] border border-[#D5E7E5]">
+                {t('యజమాని (Owner)', 'Store Owner', 'मालिक')}
+              </span>
+            </div>
           </div>
 
-          <h1 className="mt-2.5 text-[26px] sm:text-[32px] font-display font-semibold text-ink leading-[1.1] truncate">
-            {currentShop?.name || 'Sri Lakshmi General Store'}
-          </h1>
+          {/* Primary Action Suite */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => onNavigate('pos')}
+              data-testid="btn-quick-new-bill"
+              className="h-10 px-4 rounded-xl bg-[#F98E6E] hover:bg-[#E57B5A] text-white text-[12.5px] font-bold shadow-md shadow-[#F98E6E]/25 transition-all duration-200 flex items-center gap-2 active:scale-[0.98]"
+            >
+              <ShoppingCart className="w-4 h-4" strokeWidth={2} />
+              <span>{t('కొత్త బిల్లు', '+ New sale', '+ नया बिल')}</span>
+              <span className="font-mono text-[9px] bg-white/25 px-1.5 py-0.5 rounded ml-1 font-semibold">F2</span>
+            </button>
 
-          <p className="mt-2 text-[12px] text-stone-500">
-            <span className="font-medium text-stone-700">{currentUser?.displayName || 'శ్రీనివాస్ గారు'}</span>
-            <span className="mx-2 text-stone-300">/</span>
-            <span>{t('యజమాని', 'Owner', 'मालिक')}</span>
-          </p>
-        </div>
+            <button
+              onClick={() => onNavigate('khata')}
+              data-testid="btn-quick-khata"
+              className="h-10 px-4 rounded-xl border border-[#D5E7E5] bg-white hover:bg-[#EFF8F7] text-[#0A3239] text-[12.5px] font-semibold transition-all duration-200 flex items-center gap-2 active:scale-[0.98] shadow-xs"
+            >
+              <BookOpen className="w-4 h-4 text-[#F98E6E]" strokeWidth={1.8} />
+              <span>{t('ఉధార్ ఖాతా', 'Customer khata', 'ग्राहक खाता')}</span>
+              <span className="font-mono text-[9px] text-[#0F4953]/70 bg-[#CBF5EF]/50 px-1.5 py-0.5 rounded ml-1 font-semibold">F4</span>
+            </button>
 
-        {/* Primary actions */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => onNavigate('pos')}
-            data-testid="btn-quick-new-bill"
-            className="h-10 px-4 bg-indigo-800 hover:bg-indigo-700 text-paper rounded-md text-[12px] font-semibold transition-colors flex items-center gap-2"
-          >
-            <ShoppingCart className="w-4 h-4" strokeWidth={1.5} />
-            <span>{t('కొత్త బిల్లు', '+ New sale', '+ नया बिल')}</span>
-            <span className="font-mono text-[9px] opacity-60 ml-1">F2</span>
-          </button>
+            <button
+              onClick={() => onNavigate('daybook')}
+              data-testid="btn-quick-daybook"
+              className="h-10 px-3.5 rounded-xl border border-[#D5E7E5] bg-white hover:bg-[#EFF8F7] text-[#0A3239] text-[12.5px] font-semibold transition-all duration-200 flex items-center gap-2 active:scale-[0.98] shadow-xs"
+              title="Day Book · Daily Journal"
+            >
+              <FileText className="w-4 h-4 text-[#0F4953]" strokeWidth={1.8} />
+              <span>{t('రోజు పుస్తకం', 'Day book', 'रोज़ नामचा')}</span>
+            </button>
 
-          <button
-            onClick={() => onNavigate('khata')}
-            data-testid="btn-quick-khata"
-            className="h-10 px-4 border border-stone-300 bg-paper-raised hover:bg-stone-50 text-ink rounded-md text-[12px] font-semibold transition-colors flex items-center gap-2"
-          >
-            <BookOpen className="w-4 h-4 text-copper-700" strokeWidth={1.5} />
-            <span>{t('ఉధార్ ఖాతా', 'Customer khata', 'ग्राहक खाता')}</span>
-            <span className="font-mono text-[9px] text-stone-400 ml-1">F4</span>
-          </button>
-
-          <button
-            onClick={() => onNavigate('daybook')}
-            data-testid="btn-quick-daybook"
-            className="h-10 px-3.5 border border-stone-300 bg-paper-raised hover:bg-stone-50 text-ink rounded-md text-[12px] font-semibold transition-colors flex items-center gap-2"
-            title="Day Book · Daily Journal"
-          >
-            <FileText className="w-4 h-4 text-neel-700" strokeWidth={1.5} />
-            <span>{t('రోజు పుస్తకం', 'Day book', 'रोज़ नामचा')}</span>
-          </button>
-
-          <button
-            onClick={() => setShowDayEndModal(true)}
-            data-testid="btn-quick-dayend"
-            className="h-10 px-3 text-stone-600 hover:text-ink hover:bg-stone-100 rounded-md text-[12px] font-medium transition-colors flex items-center gap-2"
-            title="Day-End Z-Report"
-          >
-            <Moon className="w-4 h-4" strokeWidth={1.5} />
-            <span>{t('డే-ఎండ్', 'Day-end', 'दिन का समापन')}</span>
-          </button>
+            <button
+              onClick={() => setShowDayEndModal(true)}
+              data-testid="btn-quick-dayend"
+              className="h-10 px-3.5 rounded-xl border border-[#D5E7E5] bg-white hover:bg-[#EFF8F7] text-[#244C52] hover:text-[#0A3239] text-[12.5px] font-medium transition-all duration-200 flex items-center gap-2 active:scale-[0.98] shadow-xs"
+              title="Day-End Z-Report"
+            >
+              <Moon className="w-4 h-4 text-[#0F4953]" strokeWidth={1.8} />
+              <span>{t('డే-ఎండ్', 'Day-end', 'दिन का समापन')}</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Today at a glance */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        
+
         {/* Card 1: Today's Sales */}
-        <div className="classic-card p-5 flex flex-col justify-between gap-4 hover:border-stone-300 transition-colors">
+        <div className="rounded-2xl bg-white border border-[#D5E7E5] p-5 flex flex-col justify-between gap-4 shadow-xs hover:border-[#A8CEC9] hover:shadow-md transition-all duration-200 group">
           <div className="flex items-start justify-between gap-3">
-            <span className={`text-[9.5px] font-medium uppercase text-stone-500 leading-relaxed ${lang === 'te' ? '' : 'tracking-[0.14em]'}`}>
+            <span className="text-[10px] font-bold uppercase text-[#0F4953] leading-relaxed tracking-wider">
               {t('నేటి మొత్తం అమ్మకాలు', "Today's Sales", 'आज की कुल बिक्री')}
             </span>
-            <TrendingUp className="w-4 h-4 text-copper-700 shrink-0" strokeWidth={1.5} />
+            <div className="w-8 h-8 rounded-xl bg-[#FFF2EE] text-[#F98E6E] flex items-center justify-center shrink-0 border border-[#F98E6E]/20">
+              <TrendingUp className="w-4 h-4" strokeWidth={2} />
+            </div>
           </div>
 
           <div>
-            <div className="font-display text-[28px] leading-none font-semibold tracking-tight text-ink tnum">
+            <div className="font-display text-[30px] sm:text-[34px] leading-none font-bold tracking-tight text-[#0A3239] tnum">
               {formatPaise(todaySalesPaise)}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-stone-200 flex items-center justify-between gap-2 text-[10.5px] font-medium">
-              <span className="text-sage-700 flex items-center gap-1.5">
-                <Coins className="w-3.5 h-3.5" strokeWidth={1.5} />
+            <div className="mt-4 pt-3 border-t border-[#D5E7E5] flex items-center justify-between gap-2 text-[11px] font-medium">
+              <span className="text-[#0F4953] bg-[#EFF8F7] px-2 py-0.5 rounded-md border border-[#D5E7E5] flex items-center gap-1.5">
+                <Coins className="w-3.5 h-3.5 text-[#0F4953]" strokeWidth={1.8} />
                 <span>{t('నగదు', 'Cash', 'नकद')} {formatPaise(todayCashPaise)}</span>
               </span>
-              <span className="text-indigo-700 flex items-center gap-1.5">
-                <QrCode className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span className="text-[#F98E6E] bg-[#FFF2EE] px-2 py-0.5 rounded-md border border-[#F98E6E]/20 flex items-center gap-1.5">
+                <QrCode className="w-3.5 h-3.5 text-[#F98E6E]" strokeWidth={1.8} />
                 <span>{t('యూపీఐ', 'UPI', 'यूपीआई')} {formatPaise(todayUpiPaise)}</span>
               </span>
             </div>
@@ -286,29 +298,31 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
 
         {/* Card 2: Customer Khata Outstanding Debt */}
-        <div className="classic-card p-5 flex flex-col justify-between gap-4 hover:border-stone-300 transition-colors">
+        <div className="rounded-2xl bg-white border border-[#D5E7E5] p-5 flex flex-col justify-between gap-4 shadow-xs hover:border-[#A8CEC9] hover:shadow-md transition-all duration-200 group">
           <div className="flex items-start justify-between gap-3">
-            <span className={`text-[9.5px] font-medium uppercase text-stone-500 leading-relaxed ${lang === 'te' ? '' : 'tracking-[0.14em]'}`}>
+            <span className="text-[10px] font-bold uppercase text-[#0F4953] leading-relaxed tracking-wider">
               {t('కస్టమర్ల మొత్తం ఉధార్ బాకీ', 'Customer Khata Due', 'कुल उधारी बाकी')}
             </span>
-            <BookOpen className="w-4 h-4 text-copper-700 shrink-0" strokeWidth={1.5} />
+            <div className="w-8 h-8 rounded-xl bg-[#FFF2EE] text-[#F98E6E] flex items-center justify-center shrink-0 border border-[#F98E6E]/20">
+              <BookOpen className="w-4 h-4" strokeWidth={2} />
+            </div>
           </div>
 
           <div>
-            <div className="font-display text-[28px] leading-none font-semibold tracking-tight text-oxblood-600 tnum">
+            <div className="font-display text-[30px] sm:text-[34px] leading-none font-bold tracking-tight text-[#C84F3D] tnum">
               {formatPaise(totalOutstandingPaise)}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-stone-200 flex items-center justify-between gap-2 text-[10.5px] font-medium">
-              <span className="text-stone-500">
+            <div className="mt-4 pt-3 border-t border-[#D5E7E5] flex items-center justify-between gap-2 text-[11px] font-medium">
+              <span className="text-[#244C52] bg-[#EFF8F7] px-2 py-0.5 rounded-md border border-[#D5E7E5]">
                 {customers.length} {t('ఖాతాదారులు', 'Customers', 'ग्राहक')}
               </span>
               <button
                 onClick={() => onNavigate('khata')}
-                className="font-semibold text-copper-700 hover:text-copper-800 flex items-center gap-0.5 transition-colors"
+                className="font-bold text-[#F98E6E] hover:text-[#E57B5A] flex items-center gap-1 transition-colors active:scale-95"
               >
                 <span>{t('వసూలు చేయి', 'Collect', 'वसूली')}</span>
-                <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             </div>
           </div>
@@ -337,10 +351,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {lowStockVariants.length} {t('స్టాక్ తక్కువ', 'Low stock', 'कम स्टॉक')}
                 </span>
               ) : (
-                  <span className="inline-flex items-center gap-1 text-sage-700 font-semibold">
-                    {t('స్టాక్ బాగుంది', 'Healthy', 'अच्छा')}
-                    <CheckCircle2 className="h-3 w-3" strokeWidth={2.2} />
-                  </span>
+                <span className="inline-flex items-center gap-1 text-sage-700 font-semibold">
+                  {t('స్టాక్ బాగుంది', 'Healthy', 'अच्छा')}
+                  <CheckCircle2 className="h-3 w-3" strokeWidth={2.2} />
+                </span>
               )}
             </div>
           </div>
@@ -448,7 +462,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* 2-Column Split: Recent Bills with Void/Cancel Option (Left 8 Cols) & Low Stock Alerts (Right 4 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
+
         {/* LEFT COLUMN: Recent Invoices Table with Mistake Rectification (Span 8) */}
         <div className="lg:col-span-8 apple-glass-card p-6 space-y-4">
           <div className="flex items-center justify-between">
@@ -487,8 +501,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 {bills.slice(0, 7).map((bill) => {
                   const isVoided = bill.billStatus === 'CANCELLED';
                   return (
-                    <tr 
-                      key={bill.id} 
+                    <tr
+                      key={bill.id}
                       className={`hover:bg-white/50 transition-colors ${isVoided ? 'opacity-50 bg-rose-50/20' : ''}`}
                     >
                       <td className="py-3 px-3.5 font-mono font-bold text-slate-900">
@@ -504,22 +518,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         {formatPaise(bill.totalPaise)}
                       </td>
                       <td className="py-3 px-3.5 text-center">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border backdrop-blur-sm ${
-                          bill.paymentMethod === 'CASH'
-                            ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
-                            : bill.paymentMethod === 'UPI'
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border backdrop-blur-sm ${bill.paymentMethod === 'CASH'
+                          ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
+                          : bill.paymentMethod === 'UPI'
                             ? 'bg-blue-500/10 text-blue-700 border-blue-500/20'
                             : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
-                        }`}>
+                          }`}>
                           {bill.paymentMethod}
                         </span>
                       </td>
                       <td className="py-3 px-3.5 text-center">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border backdrop-blur-sm ${
-                          isVoided 
-                            ? 'bg-rose-500/15 text-rose-700 border-rose-500/25' 
-                            : 'bg-emerald-500/15 text-emerald-800 border-emerald-500/25'
-                        }`}>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border backdrop-blur-sm ${isVoided
+                          ? 'bg-rose-500/15 text-rose-700 border-rose-500/25'
+                          : 'bg-emerald-500/15 text-emerald-800 border-emerald-500/25'
+                          }`}>
                           {isVoided ? t('రద్దు చేయబడింది', 'VOIDED', 'रद्द') : t('పూర్తయింది', 'PAID', 'सफल')}
                         </span>
                       </td>

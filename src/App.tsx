@@ -80,7 +80,7 @@ const MainLayout: React.FC = () => {
               {activeTheme === 'organic-forest' 
                 ? t('ఆర్గానిక్ ఫారెస్ట్ పాలెట్', 'Organic Forest Palette')
                 : activeTheme === 'obsidian-chic'
-                ? t('అబ్సిడియన్ రోజ్ పాలెట్', 'Obsidian Chic Palette')
+                ? t('మయామి నైట్స్ పాలెట్ (Miami Nights)', 'Miami Nights Palette')
                 : t('రాయల్ గోల్డ్ పాలెట్', 'Royal Gold Palette')}
             </span>
           </div>
@@ -95,11 +95,11 @@ const MainLayout: React.FC = () => {
                     ? 'bg-copper text-white shadow-xs'
                     : 'text-ink-soft hover:text-ink hover:bg-paper-deep/50'
                 }`}
-                title="Obsidian Chic & Bold Rose (60-30-10 Selected Palette)"
+                title="Miami Nights (60-30-10 Reference Palette)"
                 data-testid="theme-btn-obsidian-chic"
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E11D48] border border-white/40" />
-                <span className="font-semibold">{t('అబ్సిడియన్ రోజ్', 'Obsidian Chic')}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#0F4953] border border-[#F98E6E]" />
+                <span className="font-semibold">{t('మయామి నైట్స్', 'Miami Nights')}</span>
               </button>
 
               <button

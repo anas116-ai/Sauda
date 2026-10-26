@@ -46,11 +46,11 @@ export const SaudaLogo: React.FC<SaudaLogoProps> = ({
   const isChic = contextTheme === 'obsidian-chic';
   const isRoyal = contextTheme === 'sovereign-gold';
 
-  const accentColor = isChic ? '#E11D48' : isRoyal ? '#D4AF37' : '#E28D3B';
-  const accentLight = isChic ? '#F5A3B5' : isRoyal ? '#F7E7B4' : '#F6C99D';
+  const accentColor = isChic ? '#F98E6E' : isRoyal ? '#D4AF37' : '#E28D3B';
+  const accentLight = isChic ? '#CBF5EF' : isRoyal ? '#F7E7B4' : '#F6C99D';
   const primaryBrand = onDark 
-    ? (isChic ? '#12151D' : isRoyal ? '#14281E' : '#1E382B')
-    : (isChic ? '#0B0D13' : isRoyal ? '#0F1E17' : '#12231A');
+    ? (isChic ? '#0F4953' : isRoyal ? '#14281E' : '#1E382B')
+    : (isChic ? '#0A3239' : isRoyal ? '#0F1E17' : '#12231A');
 
   return (
     <div className={`flex items-center ${s.gap} select-none ${className}`} aria-label="Sauda — సౌదా">
@@ -68,7 +68,7 @@ export const SaudaLogo: React.FC<SaudaLogoProps> = ({
           <linearGradient id={`gold-grad-${selectedConcept}-${tone}`} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={accentLight} />
             <stop offset="60%" stopColor={accentColor} />
-            <stop offset="100%" stopColor={isChic ? '#9F1239' : isRoyal ? '#8A6715' : '#A24A10'} />
+            <stop offset="100%" stopColor={isChic ? '#E57B5A' : isRoyal ? '#8A6715' : '#A24A10'} />
           </linearGradient>
 
           <linearGradient id={`bg-tile-${selectedConcept}-${tone}`} x1="0%" y1="0%" x2="100%" y2="100%">
