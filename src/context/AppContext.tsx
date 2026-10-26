@@ -36,7 +36,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('sauda_theme');
     return (saved === 'organic-forest' || saved === 'obsidian-chic' || saved === 'sovereign-gold')
       ? saved
-      : 'organic-forest';
+      : 'obsidian-chic';
   });
 
   const [activeLogoConcept, setActiveLogoConceptState] = useState<LogoConcept>(() => {

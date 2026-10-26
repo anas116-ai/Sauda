@@ -89,31 +89,31 @@ const MainLayout: React.FC = () => {
             {/* 3 Live Theme Pills */}
             <div className="flex items-center bg-paper-raised border border-line rounded-lg p-0.5 shadow-xs">
               <button
-                onClick={() => setActiveTheme('organic-forest')}
-                className={`px-2.5 py-1 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
-                  activeTheme === 'organic-forest'
-                    ? 'bg-copper text-white shadow-xs'
-                    : 'text-ink-soft hover:text-ink hover:bg-paper-deep/50'
-                }`}
-                title="Organic Forest & Earth Ochre (Right Reference Palette)"
-                data-testid="theme-btn-organic-forest"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1B3629] border border-white/40" />
-                <span className="hidden sm:inline">{t('ఆర్గానిక్', 'Organic')}</span>
-              </button>
-
-              <button
                 onClick={() => setActiveTheme('obsidian-chic')}
                 className={`px-2.5 py-1 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
                   activeTheme === 'obsidian-chic'
                     ? 'bg-copper text-white shadow-xs'
                     : 'text-ink-soft hover:text-ink hover:bg-paper-deep/50'
                 }`}
-                title="Obsidian Chic & Bold Magenta (Left Reference Palette)"
+                title="Obsidian Chic & Bold Rose (60-30-10 Selected Palette)"
                 data-testid="theme-btn-obsidian-chic"
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-[#EC2D5C] border border-white/40" />
-                <span className="hidden sm:inline">{t('అబ్సిడియన్', 'Obsidian')}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E11D48] border border-white/40" />
+                <span className="font-semibold">{t('అబ్సిడియన్ రోజ్', 'Obsidian Chic')}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTheme('organic-forest')}
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  activeTheme === 'organic-forest'
+                    ? 'bg-copper text-white shadow-xs'
+                    : 'text-ink-soft hover:text-ink hover:bg-paper-deep/50'
+                }`}
+                title="Organic Forest & Earth Ochre"
+                data-testid="theme-btn-organic-forest"
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#1B3629] border border-white/40" />
+                <span className="hidden sm:inline">{t('ఆర్గానిక్', 'Organic')}</span>
               </button>
 
               <button

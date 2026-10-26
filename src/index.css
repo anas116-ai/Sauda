@@ -9,6 +9,33 @@
 
 @layer base {
   :root,
+  [data-theme="obsidian-chic"] {
+    /* 60% — Clean Architectural Canvas & Cards Foundation */
+    --paper: #f8f9fa;
+    --paper-raised: #ffffff;
+    --paper-deep: #f1f3f5;
+
+    /* 30% — Structural Obsidian & Rich Charcoal Hierarchy */
+    --ink: #0b0d13;
+    --ink-soft: #495057;
+    --line: #e2e5e9;
+    --line-strong: #ced4da;
+    --indigo: #0b0d13;
+    --neel: #1c2230;
+    --sage: #343a40;
+    --brass: #f5a3b5;
+
+    /* 10% — Sharp Focal Accent (Bold Magenta / Vivid Rose) */
+    --copper: #e11d48;
+    --accent: #e11d48;
+    --chilli: #e11d48;
+    --paan: #be123c;
+    --oxblood: #9f1239;
+
+    --shadow-card: 0 4px 16px -4px rgba(11, 13, 19, 0.06), 0 1px 3px rgba(11, 13, 19, 0.02);
+    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
   [data-theme="organic-forest"] {
     --paper: #f7f8f5;
     --paper-raised: #ffffff;
@@ -27,27 +54,6 @@
     --brass: #e28d3b;
     --accent: #e28d3b;
     --shadow-card: 0 4px 16px -4px rgba(18, 35, 26, 0.07), 0 1px 3px rgba(18, 35, 26, 0.03);
-    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-
-  [data-theme="obsidian-chic"] {
-    --paper: #f9fafb;
-    --paper-raised: #ffffff;
-    --paper-deep: #f3f4f6;
-    --ink: #090b0e;
-    --ink-soft: #374151;
-    --line: #e5e7eb;
-    --line-strong: #d1d5db;
-    --indigo: #0c0e12;
-    --neel: #1f2937;
-    --chilli: #ec2d5c;
-    --paan: #be123c;
-    --copper: #ec2d5c;
-    --sage: #374151;
-    --oxblood: #9f1239;
-    --brass: #f5a3b5;
-    --accent: #ec2d5c;
-    --shadow-card: 0 4px 16px -4px rgba(12, 14, 18, 0.06), 0 1px 3px rgba(12, 14, 18, 0.02);
     --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 

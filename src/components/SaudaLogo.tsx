@@ -46,11 +46,11 @@ export const SaudaLogo: React.FC<SaudaLogoProps> = ({
   const isChic = contextTheme === 'obsidian-chic';
   const isRoyal = contextTheme === 'sovereign-gold';
 
-  const accentColor = isChic ? '#EC2D5C' : isRoyal ? '#D4AF37' : '#E28D3B';
+  const accentColor = isChic ? '#E11D48' : isRoyal ? '#D4AF37' : '#E28D3B';
   const accentLight = isChic ? '#F5A3B5' : isRoyal ? '#F7E7B4' : '#F6C99D';
   const primaryBrand = onDark 
-    ? (isChic ? '#161920' : isRoyal ? '#14281E' : '#1E382B')
-    : (isChic ? '#0C0E12' : isRoyal ? '#0F1E17' : '#12231A');
+    ? (isChic ? '#12151D' : isRoyal ? '#14281E' : '#1E382B')
+    : (isChic ? '#0B0D13' : isRoyal ? '#0F1E17' : '#12231A');
 
   return (
     <div className={`flex items-center ${s.gap} select-none ${className}`} aria-label="Sauda — సౌదా">
