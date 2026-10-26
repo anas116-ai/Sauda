@@ -9,6 +9,7 @@ import { DashboardScreen } from './features/dashboard/DashboardScreen';
 import { SettingsScreen } from './features/settings/SettingsScreen';
 import { DayBookScreen } from './features/daybook/DayBookScreen';
 import { CashBankScreen } from './features/cashbank/CashBankScreen';
+import { BalanceSheetScreen } from './features/balancesheet/BalanceSheetScreen';
 
 const MainLayout: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
@@ -74,6 +75,7 @@ const MainLayout: React.FC = () => {
         {currentTab === 'khata' && <KhataScreen />}
         {currentTab === 'daybook' && <DayBookScreen />}
         {currentTab === 'cashbank' && <CashBankScreen />}
+        {currentTab === 'balancesheet' && <BalanceSheetScreen />}
         {currentTab === 'settings' && <SettingsScreen />}
       </main>
 
