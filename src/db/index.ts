@@ -18,7 +18,8 @@ import {
   type WeighingScaleConfig,
   type DayEndClosingReport,
   type BankAccount,
-  type AccountTransaction
+  type AccountTransaction,
+  type Estimate
 } from '../types';
 
 export class LekvyaDatabase extends Dexie {
@@ -41,6 +42,7 @@ export class LekvyaDatabase extends Dexie {
   dayEndClosings!: Table<DayEndClosingReport, string>;
   accounts!: Table<BankAccount, string>;
   accountTransactions!: Table<AccountTransaction, string>;
+  estimates!: Table<Estimate, string>;
 
   constructor() {
     super('LekvyaDB');
@@ -92,6 +94,10 @@ export class LekvyaDatabase extends Dexie {
     this.version(10).stores({
       accounts: 'id, shopId, accountType, isDefault',
       accountTransactions: 'id, shopId, fromAccountId, toAccountId, transactionType, timestamp',
+    });
+
+    this.version(11).stores({
+      estimates: 'id, shopId, estimateNumber, customerId, status, createdAt',
     });
   }
 }
@@ -1285,6 +1291,57 @@ export async function seedInitialData() {
         createdAt: Date.now() - 30 * 86400000,
       }
     ]);
+  }
+
+  // Seed initial sample Estimates if empty
+  const estimateCount = await db.estimates.count();
+  if (estimateCount === 0) {
+    await db.estimates.put({
+      id: 'est-2026-0001',
+      shopId: defaultShopId,
+      estimateNumber: 'EST-2026-0001',
+      customerName: 'రాఘవేంద్ర కేటరర్స్ (Raghavendra Caterers)',
+      customerPhone: '9848011223',
+      subtotalPaise: 425000,
+      discountPaise: 15000,
+      totalPaise: 410000,
+      status: 'SENT',
+      validityDays: 7,
+      notes: 'శ్రీరామ నవమి పందిరి పూజ & అన్నదానం సరుకుల కొటేషన్',
+      createdAt: Date.now() - 2 * 86400000,
+      items: [
+        {
+          id: 'est-item-1',
+          variantId: 'var-001-10kg',
+          productNameEn: 'Aashirvaad Superior MP Whole Wheat Atta',
+          productNameTe: 'ఆశీర్వాద్ గోధుమ పిండి',
+          variantName: '10 kg Bag',
+          quantity: 5,
+          unitPricePaise: 47500,
+          lineTotalPaise: 237500,
+        },
+        {
+          id: 'est-item-2',
+          variantId: 'var-002-1L',
+          productNameEn: 'Fortune Sunlite Refined Sunflower Oil',
+          productNameTe: 'ఫార్చ్యూన్ సన్‌ఫ్లవర్ ఆయిల్',
+          variantName: '1 Litre Pouch',
+          quantity: 12,
+          unitPricePaise: 14500,
+          lineTotalPaise: 174000,
+        },
+        {
+          id: 'est-item-3',
+          variantId: 'var-003-1kg',
+          productNameEn: 'Tata Salt Vacuum Evaporated Iodised',
+          productNameTe: 'టాటా ఉప్పు',
+          variantName: '1 kg Pack',
+          quantity: 5,
+          unitPricePaise: 2700,
+          lineTotalPaise: 13500,
+        }
+      ]
+    });
   }
 }
 

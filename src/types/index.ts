@@ -66,6 +66,37 @@ export interface AccountTransaction {
   createdByUserId?: string;
 }
 
+export type EstimateStatus = 'DRAFT' | 'SENT' | 'ACCEPTED' | 'CONVERTED' | 'EXPIRED';
+
+export interface EstimateItem {
+  id: string;
+  variantId: string;
+  productNameEn: string;
+  productNameTe: string;
+  variantName: string;
+  quantity: number;
+  unitPricePaise: number;
+  lineTotalPaise: number;
+}
+
+export interface Estimate {
+  id: string;
+  shopId: string;
+  estimateNumber: string;
+  customerId?: string;
+  customerName: string;
+  customerPhone?: string;
+  subtotalPaise: number;
+  discountPaise: number;
+  totalPaise: number;
+  status: EstimateStatus;
+  validityDays: number;
+  notes?: string;
+  createdAt: number;
+  convertedBillId?: string;
+  items: EstimateItem[];
+}
+
 export type UnitType = 'L' | 'ML' | 'KG' | 'G' | 'PCS' | 'PACK';
 
 export interface ProductVariant {
