@@ -22,6 +22,7 @@ import {
   Network,
   CloudUpload,
   MonitorSmartphone,
+  FileText,
   X
 } from 'lucide-react';
 import type { Bill } from '../../types';
@@ -230,6 +231,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <BookOpen className="w-4 h-4 text-copper-700" strokeWidth={1.5} />
             <span>{t('ఉధార్ ఖాతా', 'Customer khata', 'ग्राहक खाता')}</span>
             <span className="font-mono text-[9px] text-stone-400 ml-1">F4</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('daybook')}
+            data-testid="btn-quick-daybook"
+            className="h-10 px-3.5 border border-stone-300 bg-paper-raised hover:bg-stone-50 text-ink rounded-md text-[12px] font-semibold transition-colors flex items-center gap-2"
+            title="Day Book · Daily Journal"
+          >
+            <FileText className="w-4 h-4 text-neel-700" strokeWidth={1.5} />
+            <span>{t('రోజు పుస్తకం', 'Day book', 'रोज़ नामचा')}</span>
           </button>
 
           <button

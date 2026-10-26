@@ -7,6 +7,7 @@ import { ProductCatalog } from './features/products/ProductCatalog';
 import { KhataScreen } from './features/khata/KhataScreen';
 import { DashboardScreen } from './features/dashboard/DashboardScreen';
 import { SettingsScreen } from './features/settings/SettingsScreen';
+import { DayBookScreen } from './features/daybook/DayBookScreen';
 
 const MainLayout: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
@@ -70,6 +71,7 @@ const MainLayout: React.FC = () => {
         {currentTab === 'pos' && <PosScreen />}
         {currentTab === 'products' && <ProductCatalog />}
         {currentTab === 'khata' && <KhataScreen />}
+        {currentTab === 'daybook' && <DayBookScreen />}
         {currentTab === 'settings' && <SettingsScreen />}
       </main>
 

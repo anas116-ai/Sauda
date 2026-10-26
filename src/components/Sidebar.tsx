@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SaudaLogo } from './SaudaLogo';
 import { GlassIcon, GlassIconType } from './GlassIcon';
-import { ChevronDown, Lock, Wrench, ArrowUpRight } from 'lucide-react';
+import { ChevronDown, Lock, Wrench, ArrowUpRight, BookOpen } from 'lucide-react';
 
 interface SidebarProps {
   currentTab: string;
@@ -127,8 +127,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
 
+        {/* Books & Journal Section */}
+        <div className="mt-4 pt-3 border-t border-white/10">
+          <div className={`px-3 mb-1.5 micro-label text-stone-400 ${lang === 'te' ? 'tracking-normal' : ''}`}>
+            {t('ఖాతా పుస్తకాలు', 'Books & Ledgers', 'खाता पुस्तकें')}
+          </div>
+          <div className="space-y-0.5">
+            <button
+              type="button"
+              data-testid="book-daybook"
+              onClick={() => setCurrentTab('daybook')}
+              className={`group relative w-full flex items-center justify-between gap-2 pl-3 pr-2 py-2 rounded-md text-[12.5px] transition-colors ${
+                currentTab === 'daybook'
+                  ? 'bg-white/[0.07] text-paper font-semibold'
+                  : 'text-stone-300 font-medium hover:text-paper hover:bg-white/[0.04]'
+              }`}
+            >
+              {currentTab === 'daybook' && (
+                <span
+                  className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-copper-500"
+                  aria-hidden="true"
+                />
+              )}
+              <span className="flex items-center gap-2.5 min-w-0">
+                <BookOpen className="w-4 h-4 text-neel-300" />
+                <span className="truncate">{t('రోజు పుస్తకం (Day Book)', 'Day Book', 'रोज़ नामचा')}</span>
+              </span>
+              <span className="font-mono text-[9px] px-1 py-0.5 rounded border border-white/10 text-stone-400 leading-none">
+                JNL
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* Store tools */}
-        <div className="mt-5 pt-4 border-t border-white/10">
+        <div className="mt-4 pt-3 border-t border-white/10">
           <button
             type="button"
             onClick={() => setShowTools(!showTools)}

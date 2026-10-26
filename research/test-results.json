@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T11:56:49.084Z",
+  "generatedAt": "2026-10-26T14:37:44.325Z",
   "url": "http://localhost:5173/",
   "viewport": "1440x950 (desktop) + 390x844 (mobile probe)",
   "total": 46,
@@ -40,12 +40,12 @@
     {
       "name": "P2 · Telugu product search returns matches",
       "pass": true,
-      "detail": "results=2"
+      "detail": "results=7"
     },
     {
       "name": "P3 · English product search returns matches",
       "pass": true,
-      "detail": "results=7"
+      "detail": "results=9"
     },
     {
       "name": "P4 · Add product to cart updates bill total",
