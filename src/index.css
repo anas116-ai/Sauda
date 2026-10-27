@@ -9,75 +9,34 @@
 
 @layer base {
   :root,
-  [data-theme="obsidian-chic"] {
-    /* 60% — Clean Architectural Canvas & Cards Foundation (Miami Nights #F9FCFB & Pure White) */
-    --paper: #F9FCFB;
-    --paper-raised: #FFFFFF;
-    --paper-deep: #EFF8F7;
-
-    /* 30% — Structural Deep Ocean Pine/Teal & Hierarchy (Miami Nights #0F4953 & #CBF5EF) */
-    --ink: #0A3239;
-    --ink-soft: #244C52;
-    --line: #D5E7E5;
-    --line-strong: #A8CEC9;
-    --indigo: #0F4953;
-    --neel: #16464E;
-    --sage: #1F5A62;
-    --brass: #F98E6E;
-    --mint: #CBF5EF;
-    --blush: #FFCFD2;
-
-    /* 10% — Sharp Focal Accent (Miami Nights #F98E6E Coral Terracotta) */
-    --copper: #F98E6E;
-    --accent: #F98E6E;
-    --chilli: #F98E6E;
-    --paan: #0F4953;
-    --oxblood: #C84F3D;
-
-    --shadow-card: 0 4px 20px -4px rgba(15, 73, 83, 0.08), 0 1px 3px rgba(15, 73, 83, 0.03);
-    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-
-  [data-theme="organic-forest"] {
-    --paper: #f7f8f5;
-    --paper-raised: #ffffff;
-    --paper-deep: #eef2ee;
-    --ink: #12231a;
-    --ink-soft: #2e4438;
-    --line: #d6e0d8;
-    --line-strong: #bacabf;
-    --indigo: #1b3629;
-    --neel: #2d4e41;
-    --chilli: #a23a19;
-    --paan: #2b5a44;
-    --copper: #e28d3b;
-    --sage: #2a5843;
-    --oxblood: #7a2e35;
-    --brass: #e28d3b;
-    --accent: #e28d3b;
-    --shadow-card: 0 4px 16px -4px rgba(18, 35, 26, 0.07), 0 1px 3px rgba(18, 35, 26, 0.03);
-    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-
+  [data-theme="obsidian-chic"],
+  [data-theme="organic-forest"],
   [data-theme="sovereign-gold"] {
-    --paper: #fcfaf5;
-    --paper-raised: #ffffff;
-    --paper-deep: #f4f0e6;
-    --ink: #0c1812;
-    --ink-soft: #2a3d31;
-    --line: #e3dccf;
-    --line-strong: #cebea6;
-    --indigo: #0f1e17;
-    --neel: #1c3b2d;
-    --chilli: #9e3d23;
-    --paan: #1e4533;
-    --copper: #d4af37;
-    --sage: #2a5a42;
-    --oxblood: #6b2420;
-    --brass: #d4af37;
-    --accent: #d4af37;
-    --shadow-card: 0 4px 16px -4px rgba(15, 30, 23, 0.08), 0 1px 3px rgba(15, 30, 23, 0.03);
-    --ease-brand: cubic-bezier(0.2, 0.7, 0.2, 1);
+    /* Pure Crisp White Retail Palette with Electric Lime & Deep Charcoal Accents */
+    --paper: #FFFFFF;
+    --paper-raised: #FFFFFF;
+    --paper-deep: #F8FAF9;
+
+    --ink: #111827;
+    --ink-soft: #64748B;
+    --line: #E2E8F0;
+    --line-strong: #CBD5E1;
+    
+    --indigo: #84CC16;
+    --neel: #65A30D;
+    --sage: #84CC16;
+    --brass: #F59E0B;
+    --mint: #F2F9EC;
+    --blush: #F5F7F3;
+
+    --copper: #84CC16;
+    --accent: #84CC16;
+    --chilli: #EF4444;
+    --paan: #84CC16;
+    --oxblood: #DC2626;
+
+    --shadow-card: 0 4px 24px -2px rgba(25, 28, 27, 0.04), 0 1px 4px rgba(25, 28, 27, 0.02);
+    --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   html {
@@ -88,7 +47,7 @@
   body {
     background-color: var(--paper);
     color: var(--ink);
-    font-family: 'Instrument Sans', 'Noto Sans Telugu', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Telugu', system-ui, -apple-system, sans-serif;
     font-feature-settings: 'tnum' 1;
     font-variant-numeric: tabular-nums lining-nums;
     -webkit-font-smoothing: antialiased;
@@ -96,34 +55,18 @@
     min-height: 100vh;
   }
 
-  /* Physical paper: a fine, fixed grain above the canvas, never on top of text alone */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-  }
-
   ::selection {
-    background-color: var(--copper);
-    color: var(--paper-raised);
+    background-color: #84CC16;
+    color: #191C1B;
   }
 
   h1,
-  h2 {
-    font-family: 'Fraunces', 'Noto Sans Telugu', Georgia, serif;
-    font-optical-sizing: auto;
-    font-weight: 600;
-  }
-
+  h2,
   h3,
   h4 {
-    font-family: 'Instrument Sans', 'Noto Sans Telugu', sans-serif;
+    font-family: 'Outfit', 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   /* Telugu carries no letter-spacing — applied per label, never globally. */
