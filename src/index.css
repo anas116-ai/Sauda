@@ -12,30 +12,28 @@
   [data-theme="obsidian-chic"],
   [data-theme="organic-forest"],
   [data-theme="sovereign-gold"] {
-    /* Pure Crisp White Retail Palette with Electric Lime & Deep Charcoal Accents */
+    /* 60-30-10 Luxury Retail Architecture: Pure White #FFFFFF (60%) + Jet Black #111827 (30%) + Royal Blue #2563EB & Accents (10%) */
     --paper: #FFFFFF;
     --paper-raised: #FFFFFF;
-    --paper-deep: #F8FAF9;
+    --paper-deep: #F8FAFC;
 
     --ink: #111827;
-    --ink-soft: #64748B;
+    --ink-soft: #475569;
     --line: #E2E8F0;
     --line-strong: #CBD5E1;
     
-    --indigo: #84CC16;
-    --neel: #65A30D;
-    --sage: #84CC16;
-    --brass: #F59E0B;
-    --mint: #F2F9EC;
-    --blush: #F5F7F3;
+    --primary: #2563EB;
+    --accent: #2563EB;
+    --indigo: #4F46E5;
+    --emerald: #059669;
+    --amber: #F59E0B;
+    --rose: #DC2626;
+    --chilli: #DC2626;
+    --mint: #EFF6FF;
+    --blush: #F8FAFC;
 
-    --copper: #84CC16;
-    --accent: #84CC16;
-    --chilli: #EF4444;
-    --paan: #84CC16;
-    --oxblood: #DC2626;
-
-    --shadow-card: 0 4px 24px -2px rgba(25, 28, 27, 0.04), 0 1px 4px rgba(25, 28, 27, 0.02);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
     --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -47,26 +45,39 @@
   body {
     background-color: var(--paper);
     color: var(--ink);
-    font-family: 'Plus Jakarta Sans', 'Noto Sans Telugu', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'tnum' 1;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Telugu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'tnum' 1, 'cv02' 1, 'cv03' 1, 'cv04' 1;
     font-variant-numeric: tabular-nums lining-nums;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.012em;
     min-height: 100vh;
   }
 
   ::selection {
-    background-color: #84CC16;
-    color: #191C1B;
+    background-color: #2563EB;
+    color: #FFFFFF;
   }
 
   h1,
   h2,
   h3,
-  h4 {
-    font-family: 'Outfit', 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
+  h4,
+  h5,
+  h6 {
+    font-family: 'Instrument Sans', 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.028em;
+  }
+
+  .font-display {
+    font-family: 'Instrument Sans', 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  .font-heading {
+    font-family: 'Instrument Sans', 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
+    letter-spacing: -0.025em;
   }
 
   /* Telugu carries no letter-spacing — applied per label, never globally. */

@@ -144,25 +144,25 @@ export const LanPeerSyncModal: React.FC<LanPeerSyncModalProps> = ({
       className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
       data-testid="lan-sync-modal"
     >
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="px-6 py-4 bg-paper-deep text-ink flex flex-wrap items-center justify-between gap-4 border-b border-stone-300">
+        <div className="px-6 py-4 bg-[#161918] text-white flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-ink-950 text-paper flex items-center justify-center">
-              <Wifi className="w-4 h-4" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#84CC16]/20 border border-[#2563EB]/40 text-[#2563EB] flex items-center justify-center">
+              <Wifi className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-ink font-display">
+                <h2 className="text-xl font-bold tracking-tight text-white font-outfit">
                   {t('లోకల్ వై-ఫై పీర్ సింక్', 'Local Wi-Fi Peer Sync', 'लोकल वाई-फाई पीयर सिंक')}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-micro bg-paper text-sage-700 border border-sage-300 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sage-500" />
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#84CC16]/15 text-[#2563EB] border border-[#2563EB]/30 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
                   <span>LAN Mesh Active</span>
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {t(
                   'ఇంటర్నెట్ లేకుండా కౌంటర్ & గోడౌన్ డివైస్ల రియల్-టైమ్ అనుసంధానం',
                   'Zero-Internet Peer Mesh between Main Billing Counter & Godown Terminal',
@@ -177,27 +177,27 @@ export const LanPeerSyncModal: React.FC<LanPeerSyncModalProps> = ({
               onClick={() => handleTriggerSync()}
               disabled={isSyncing}
               data-testid="lan-sync-now-header-btn"
-              className="px-3.5 py-1.5 rounded-md bg-ink-950 hover:bg-ink-800 disabled:opacity-50 text-paper text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 border border-slate-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} strokeWidth={1.7} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#2563EB] ${isSyncing ? 'animate-spin' : ''}`} strokeWidth={2} />
               <span>{isSyncing ? t('సింక్ అవుతోంది...', 'Syncing...', 'सिंक हो रहा है...') : t('ఇప్పుడే సింక్ చేయి', 'Sync All Now', 'अभी सिंक करें')}</span>
             </button>
 
             <button
               onClick={onClose}
               data-testid="close-lan-sync-btn"
-              className="w-8 h-8 rounded-md border border-stone-300 hover:bg-white hover:text-oxblood-600 text-stone-500 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               aria-label="Close"
             >
-              <X className="w-4 h-4" strokeWidth={1.6} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
         </div>
 
         {/* Sync Success Alert Feedback */}
         {syncSuccessMessage && (
-          <div className="px-6 py-2.5 bg-sage-50 border-b border-sage-200 text-sage-800 text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
-            <CheckCircle2 className="w-4 h-4 text-sage-600" strokeWidth={1.7} />
+          <div className="px-6 py-2.5 bg-[#F2F9EC] border-b border-[#D9F99D] text-[#3F6212] text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
+            <CheckCircle2 className="w-4 h-4 text-[#2563EB]" strokeWidth={2} />
             <span>{syncSuccessMessage}</span>
           </div>
         )}
@@ -479,9 +479,9 @@ export const LanPeerSyncModal: React.FC<LanPeerSyncModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 bg-paper-deep border-t border-stone-300 flex flex-wrap items-center justify-between text-xs text-stone-500">
+        <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sage-500" aria-hidden="true" />
+            <span className="w-2 h-2 rounded-full bg-[#84CC16]" aria-hidden="true" />
             <span>
               {t(
                 'సౌదా ఆఫ్‌లైన్ మెష్: ఇంటర్నెట్ లేకపోయినా దుకాణంలో అన్ని డివైస్లు సింక్ అవుతాయి.',
@@ -495,7 +495,7 @@ export const LanPeerSyncModal: React.FC<LanPeerSyncModalProps> = ({
             <button
               onClick={onClose}
               data-testid="lan-sync-close-footer-btn"
-              className="px-4 py-1.5 rounded-md bg-ink-950 hover:bg-ink-800 text-paper font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#161918] hover:bg-slate-900 text-white font-bold transition-all shadow-xs"
             >
               {t('పూర్తయింది', 'Done', 'संपन्न')}
             </button>

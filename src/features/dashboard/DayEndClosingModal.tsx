@@ -29,6 +29,7 @@ import {
   Calculator
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { exportStoreDataBackup } from '../../utils/multiShopService';
 
 interface DayEndClosingModalProps {
   bills: Bill[];
@@ -176,6 +177,15 @@ export const DayEndClosingModal: React.FC<DayEndClosingModalProps> = ({
 
       await db.dayEndClosings.add(report);
       setFinalizedReport(report);
+
+      // Trigger automatic zero-touch backup download
+      if (shop) {
+        try {
+          await exportStoreDataBackup(shop.id, shop.name);
+        } catch (backupErr) {
+          console.warn('Auto-backup skipped or silent:', backupErr);
+        }
+      }
 
       if (onSuccess) {
         onSuccess(report);

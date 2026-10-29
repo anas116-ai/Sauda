@@ -81,27 +81,27 @@ export const SmartReorderStudioModal: React.FC<SmartReorderStudioModalProps> = (
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-fade-in font-sans">
+    <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-fade-in font-sans">
       <div 
-        className="bg-paper rounded-3xl shadow-elevated border border-stone-300 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden text-ink-800"
+        className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden text-slate-800"
         data-testid="smart-reorder-modal"
       >
         {/* Header Strip */}
-        <div className="px-6 py-4 bg-paper-deep text-ink flex items-center justify-between border-b border-stone-300">
+        <div className="px-6 py-4 bg-[#161918] text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-md bg-ink-950 text-paper flex items-center justify-center">
-              <Zap className="w-4 h-4" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#84CC16]/20 border border-[#2563EB]/40 text-[#2563EB] flex items-center justify-center">
+              <Zap className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center space-x-2.5">
-                <h2 className="font-display text-base sm:text-lg font-semibold tracking-tight">
+                <h2 className="font-outfit text-base sm:text-lg font-bold tracking-tight text-white">
                   {t('స్మార్ట్ పర్చేజ్ రీ-ఆర్డర్ స్టూడియో', 'Smart Purchase Re-order Studio', 'स्मार्ट खरीद पुन: आदेश स्टूडियो')}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-micro bg-paper text-copper-700 border border-stone-300">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#84CC16]/15 text-[#2563EB] border border-[#2563EB]/30">
                   {t('FMCG డిమాండ్ సూచన', 'FMCG DEMAND FORECAST', 'एफएमसीजी मांग पूर्वानुमान')}
                 </span>
               </div>
-              <p className="text-xs text-stone-500">
+              <p className="text-xs text-slate-400">
                 {t(
                   '30 రోజుల విక్రయాల ఆధారంగా రన్‌వే విశ్లేషణ • సప్లయర్ల వారీ వాట్సాప్ పర్చేజ్ ఆర్డర్లు',
                   '30-day velocity runway analysis • Supplier-grouped WhatsApp purchase orders',
@@ -115,87 +115,87 @@ export const SmartReorderStudioModal: React.FC<SmartReorderStudioModalProps> = (
             <button
               onClick={handleDownloadCsv}
               data-testid="btn-download-reorder-csv"
-              className="px-3 py-1.5 rounded-md bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-semibold transition active:scale-95 flex items-center space-x-1.5 shadow-xs"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition active:scale-95 flex items-center space-x-1.5 shadow-xs"
               title="Download CSV PO"
             >
-              <Download className="w-3.5 h-3.5 text-copper-600" strokeWidth={1.7} />
+              <Download className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2} />
               <span>{t('CSV ఎక్స్‌పోర్ట్', 'Export CSV', 'सीएसवी डाउनलोड')}</span>
             </button>
 
             <button
               onClick={onClose}
               data-testid="smart-reorder-close-btn"
-              className="w-9 h-9 rounded-md border border-stone-300 hover:bg-white text-stone-500 flex items-center justify-center transition active:scale-95"
+              className="w-9 h-9 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition active:scale-95"
               aria-label="Close"
             >
-              <X className="w-4 h-4" strokeWidth={1.6} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
         </div>
 
         {/* 4 Bento Telemetry KPI Summary Cards */}
-        <div className="p-6 bg-paper-deep/40 border-b border-stone-200 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-5 bg-slate-50 border-b border-slate-200 grid grid-cols-2 lg:grid-cols-4 gap-3">
           
-          <div className="bg-paper p-4 rounded-md border border-stone-200 flex items-start space-x-3">
-            <AlertOctagon className="w-4 h-4 mt-0.5 text-oxblood-600 shrink-0" strokeWidth={1.6} />
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-start space-x-3">
+            <AlertOctagon className="w-4 h-4 mt-0.5 text-rose-600 shrink-0" strokeWidth={2} />
             <div>
-              <div className="micro-label text-stone-500">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 {t('స్టాక్ అయిపోయింది', 'Critical Stockouts', 'स्टॉक समाप्त')}
               </div>
-              <div className="mt-1 font-display text-xl leading-none text-oxblood-600 tnum">
-                {summary.criticalCount} <span className="font-sans text-xs text-stone-500">{t('వస్తువులు', 'Items', 'सामान')}</span>
+              <div className="mt-1 font-outfit text-xl font-bold leading-none text-rose-600 tnum">
+                {summary.criticalCount} <span className="font-sans text-xs text-slate-500">{t('వస్తువులు', 'Items', 'सामान')}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-paper p-4 rounded-md border border-stone-200 flex items-start space-x-3">
-            <AlertTriangle className="w-4 h-4 mt-0.5 text-brass-600 shrink-0" strokeWidth={1.6} />
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-start space-x-3">
+            <AlertTriangle className="w-4 h-4 mt-0.5 text-amber-500 shrink-0" strokeWidth={2} />
             <div>
-              <div className="micro-label text-stone-500">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 {t('త్వరలో అయిపోయేవి (<7d)', 'Low Stock Runway', 'कम स्टॉक चेतावनी')}
               </div>
-              <div className="mt-1 font-display text-xl leading-none text-brass-700 tnum">
-                {summary.warningCount} <span className="font-sans text-xs text-stone-500">{t('వస్తువులు', 'Items', 'सामान')}</span>
+              <div className="mt-1 font-outfit text-xl font-bold leading-none text-amber-700 tnum">
+                {summary.warningCount} <span className="font-sans text-xs text-slate-500">{t('వస్తువులు', 'Items', 'सामान')}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-paper p-4 rounded-md border border-stone-200 flex items-start space-x-3">
-            <TrendingUp className="w-4 h-4 mt-0.5 text-sage-600 shrink-0" strokeWidth={1.6} />
+          <div className="bg-[#F2F9EC] p-4 rounded-2xl border border-[#D9F99D] shadow-xs flex items-start space-x-3">
+            <TrendingUp className="w-4 h-4 mt-0.5 text-[#2563EB] shrink-0" strokeWidth={2} />
             <div>
-              <div className="micro-label text-stone-500">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#3F6212]">
                 {t('మొత్తం PO విలువ', 'Recommended PO Value', 'अनुशंसित पीओ मूल्य')}
               </div>
-              <div className="mt-1 font-display text-xl leading-none text-sage-700 tnum">
+              <div className="mt-1 font-outfit text-xl font-bold leading-none text-[#3F6212] tnum">
                 {formatPaise(summary.totalPoValuePaise)}
               </div>
             </div>
           </div>
 
-          <div className="bg-paper p-4 rounded-md border border-stone-200 flex items-start space-x-3">
-            <Building2 className="w-4 h-4 mt-0.5 text-indigo-700 shrink-0" strokeWidth={1.6} />
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-start space-x-3">
+            <Building2 className="w-4 h-4 mt-0.5 text-slate-700 shrink-0" strokeWidth={2} />
             <div>
-              <div className="micro-label text-stone-500">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 {t('ఆర్డర్ చేయాల్సిన సప్లయర్లు', 'Suppliers to Order', 'आपूर्तिकर्ता')}
               </div>
-              <div className="mt-1 font-display text-xl leading-none text-indigo-800 tnum">
-                {summary.pendingSuppliersCount} <span className="font-sans text-xs text-stone-500">{t('ఏజెన్సీలు', 'Agencies', 'एजेंसियां')}</span>
+              <div className="mt-1 font-outfit text-xl font-bold leading-none text-slate-900 tnum">
+                {summary.pendingSuppliersCount} <span className="font-sans text-xs text-slate-500">{t('ఏజెన్సీలు', 'Agencies', 'एजेंसियां')}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tab & Search Ribbon */}
-        <div className="px-6 py-3 bg-paper border-b border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="px-6 py-3 bg-white border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           
-          <div className="flex items-center space-x-1 bg-paper-deep p-1 rounded-md text-xs font-semibold border border-stone-200">
+          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold border border-slate-200">
             <button
               onClick={() => setActiveTab('ALL')}
               data-testid="tab-reorder-all"
-              className={`px-3 py-1.5 rounded transition ${
+              className={`px-3 py-1.5 rounded-lg transition ${
                 activeTab === 'ALL'
-                  ? 'bg-paper-raised text-ink shadow-xs font-semibold border border-stone-200'
-                  : 'text-stone-500 hover:text-ink border border-transparent'
+                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               {t('అన్ని సరుకులు', 'All Recommendations', 'सभी सिफारिशें')} ({recommendations.length})
@@ -204,15 +204,15 @@ export const SmartReorderStudioModal: React.FC<SmartReorderStudioModalProps> = (
             <button
               onClick={() => setActiveTab('CRITICAL')}
               data-testid="tab-reorder-critical"
-              className={`px-3 py-1.5 rounded transition flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 ${
                 activeTab === 'CRITICAL'
-                  ? 'bg-paper-raised text-oxblood-700 shadow-xs font-semibold border border-stone-200'
-                  : 'text-stone-500 hover:text-ink border border-transparent'
+                  ? 'bg-rose-50 text-rose-700 shadow-xs font-bold border border-rose-200'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-oxblood-600" aria-hidden="true" />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-600" aria-hidden="true" />
               <span>{t('అత్యవసరం', 'Critical Only', 'अति आवश्यक')}</span>
-              <span className="px-1.5 py-0.2 rounded-full border border-stone-300 text-stone-600 text-[10px] tnum">
+              <span className="px-1.5 py-0.2 rounded-full bg-white text-rose-700 text-[10px] font-bold tnum">
                 {summary.criticalCount}
               </span>
             </button>
@@ -220,15 +220,15 @@ export const SmartReorderStudioModal: React.FC<SmartReorderStudioModalProps> = (
             <button
               onClick={() => setActiveTab('SUPPLIERS')}
               data-testid="tab-reorder-suppliers"
-              className={`px-3 py-1.5 rounded transition flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 ${
                 activeTab === 'SUPPLIERS'
-                  ? 'bg-paper-raised text-indigo-800 shadow-xs font-semibold border border-stone-200'
-                  : 'text-stone-500 hover:text-ink border border-transparent'
+                  ? 'bg-[#F2F9EC] text-[#3F6212] shadow-xs font-bold border border-[#D9F99D]'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" aria-hidden="true" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16]" aria-hidden="true" />
               <span>{t('సప్లయర్ వాట్సాప్ POలు', 'Supplier WhatsApp POs', 'आपूर्तिकर्ता पीओ')}</span>
-              <span className="px-1.5 py-0.2 rounded-full border border-stone-300 text-stone-600 text-[10px] tnum">
+              <span className="px-1.5 py-0.2 rounded-full bg-white text-[#3F6212] text-[10px] font-bold tnum">
                 {supplierGroups.length}
               </span>
             </button>
@@ -431,15 +431,16 @@ export const SmartReorderStudioModal: React.FC<SmartReorderStudioModalProps> = (
         </div>
 
         {/* Modal Footer Strip */}
-        <div className="px-6 py-3.5 bg-paper-deep/70 border-t border-stone-200 flex items-center justify-between">
-          <div className="text-xs text-stone-500 flex items-center space-x-2">
+        <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex items-center justify-between">
+          <div className="text-xs text-slate-500 flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-[#84CC16]" />
             <span>{t('సిఫార్సులు 14 రోజుల బఫర్ స్టాక్ లక్ష్యంతో లెక్కించబడ్డాయి', 'Projections targeting 14-day safety runway', '14 दिनों के सुरक्षित स्टॉक के अनुसार गणना')}</span>
           </div>
 
           <button
             onClick={onClose}
             data-testid="smart-reorder-done-btn"
-            className="px-5 py-2 rounded-md bg-ink-950 hover:bg-ink-800 text-paper text-xs font-semibold transition active:scale-95 shadow-sm"
+            className="px-5 py-2 rounded-xl bg-[#161918] hover:bg-slate-900 text-white text-xs font-bold transition active:scale-95 shadow-xs"
           >
             {t('పూర్తయింది', 'Done', 'संपन्न')}
           </button>

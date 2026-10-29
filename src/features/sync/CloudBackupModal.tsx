@@ -169,25 +169,25 @@ export const CloudBackupModal: React.FC<CloudBackupModalProps> = ({
       className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
       data-testid="cloud-backup-modal"
     >
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="px-6 py-4 bg-paper-deep text-ink flex flex-wrap items-center justify-between gap-4 border-b border-stone-300">
+        <div className="px-6 py-4 bg-[#161918] text-white flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-ink-950 text-paper flex items-center justify-center">
-              <Cloud className="w-4 h-4" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#84CC16]/20 border border-[#2563EB]/40 text-[#2563EB] flex items-center justify-center">
+              <Cloud className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-ink font-display">
+                <h2 className="text-xl font-bold tracking-tight text-white font-outfit">
                   {t('ఎన్‌క్రిప్టెడ్ క్లౌడ్ బ్యాకప్ & రీస్టోర్', 'Encrypted Cloud Backup & Restore', 'एन्क्रिप्टेड क्लाउड बैकअप और रीस्टोर')}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-micro bg-paper text-sage-700 border border-sage-300 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3 h-3" strokeWidth={1.7} />
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#84CC16]/15 text-[#2563EB] border border-[#2563EB]/30 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2} />
                   <span>AES-256 Vault</span>
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {t(
                   'AES-256 ఎన్‌క్రిప్షన్‌తో వ్యాపార డేటా భద్రత & రీస్టోర్',
                   'AES-256 encrypted snapshots, kept private and restorable offline',
@@ -201,18 +201,18 @@ export const CloudBackupModal: React.FC<CloudBackupModalProps> = ({
             <button
               onClick={onClose}
               data-testid="close-backup-modal-btn"
-              className="w-8 h-8 rounded-md border border-stone-300 hover:bg-white hover:text-oxblood-600 text-stone-500 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               aria-label="Close"
             >
-              <X className="w-4 h-4" strokeWidth={1.6} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
         </div>
 
         {/* Success Alert Banner */}
         {backupCreatedSuccess && (
-          <div className="px-6 py-2.5 bg-sage-50 border-b border-sage-200 text-sage-800 text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
-            <CheckCircle2 className="w-4 h-4 text-sage-600" strokeWidth={1.7} />
+          <div className="px-6 py-2.5 bg-[#F2F9EC] border-b border-[#D9F99D] text-[#3F6212] text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
+            <CheckCircle2 className="w-4 h-4 text-[#2563EB]" strokeWidth={2} />
             <span>{t('ఎన్‌క్రిప్టెడ్ బ్యాకప్ ఫైల్ డౌన్‌లోడ్ పూర్తయింది!', 'Encrypted backup downloaded successfully!', 'बैकअप सफलतापूर्वक डाउनलोड हो गया!')}</span>
           </div>
         )}
@@ -508,9 +508,9 @@ export const CloudBackupModal: React.FC<CloudBackupModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 bg-paper-deep border-t border-stone-300 flex flex-wrap items-center justify-between text-xs text-stone-500">
+        <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sage-500" aria-hidden="true" />
+            <span className="w-2 h-2 rounded-full bg-[#84CC16]" aria-hidden="true" />
             <span>
               {t(
                 'సౌదా డేటా వాల్ట్: మీ వ్యాపార లెడ్జర్ కేవలం మీ పాస్‌వర్డ్‌తో మాత్రమే తెరవబడుతుంది.',
@@ -524,7 +524,7 @@ export const CloudBackupModal: React.FC<CloudBackupModalProps> = ({
             <button
               onClick={onClose}
               data-testid="cloud-backup-close-footer-btn"
-              className="px-4 py-1.5 rounded-md bg-ink-950 hover:bg-ink-800 text-paper font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#161918] hover:bg-slate-900 text-white font-bold transition-all shadow-xs"
             >
               {t('పూర్తయింది', 'Done', 'संपन्न')}
             </button>

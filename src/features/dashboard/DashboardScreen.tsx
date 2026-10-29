@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { db } from '../../db';
@@ -14,8 +15,7 @@ import {
   Trash2,
   Eye,
   ArrowUpRight,
-  Coins,
-  QrCode,
+  ArrowRight,
   LineChart,
   Activity,
   PackageSearch,
@@ -26,7 +26,7 @@ import {
   X,
   Search,
   Bell,
-  SlidersHorizontal,
+  Calendar,
   Scale,
   Barcode
 } from 'lucide-react';
@@ -52,7 +52,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   externalToolModal,
   onCloseExternalTool
 }) => {
-  const { lang, formatPaise, currentShop, currentUser, t } = useApp();
+  const { formatPaise, currentShop, currentUser, t } = useApp();
 
   // Modals state
   const [showDayEndModal, setShowDayEndModal] = useState(false);
@@ -66,6 +66,36 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [viewingBill, setViewingBill] = useState<Bill | null>(null);
   const [voidConfirmBill, setVoidConfirmBill] = useState<Bill | null>(null);
   const [statusToast, setStatusToast] = useState<string | null>(null);
+
+  // Dynamic Low Stock Radar Controls (Manual threshold & view all items)
+  const [manualStockThreshold, setManualStockThreshold] = useState<number>(10);
+  const [thresholdMode, setThresholdMode] = useState<'AUTO' | 'MANUAL'>('AUTO');
+  const [showAllLowStock, setShowAllLowStock] = useState<boolean>(false);
+  const [lowStockSearch, setLowStockSearch] = useState<string>('');
+
+  const handleQuickAddStock = async (variantId: string, addQty: number) => {
+    try {
+      const v = await db.variants.get(variantId);
+      if (!v) return;
+      const newStock = Number((v.currentStock + addQty).toFixed(3));
+      await db.variants.update(variantId, { currentStock: newStock });
+      await db.stockMovements.add({
+        id: uuidv4(),
+        variantId,
+        deviceId: 'COUNTER-01',
+        userId: currentUser?.id || 'user-001',
+        movementType: 'PURCHASE_IN',
+        quantityChange: addQty,
+        referenceId: `QUICK-${Date.now()}`,
+        reason: 'Dashboard Quick Stock-In',
+        timestamp: Date.now(),
+      });
+      setStatusToast(t(`స్టాక్ +${addQty} ${v.unit} విజయవంతంగా జోడించబడింది!`, `Stock +${addQty} ${v.unit} added successfully!`));
+      setTimeout(() => setStatusToast(null), 3000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Sync external tool modal triggers from Left Sidebar
   React.useEffect(() => {
@@ -151,8 +181,21 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     }
   }
 
-  // 3. Inventory Stock Valuation & Low Stock
-  const lowStockVariants = variants.filter((v) => v.currentStock <= (v.minStockAlert || 5));
+  // 3. Inventory Stock Valuation & Dynamic Low Stock Filter
+  const lowStockVariants = variants.filter((v) => {
+    const effectiveLimit = thresholdMode === 'MANUAL' ? manualStockThreshold : (v.minStockAlert || 5);
+    const isLow = v.currentStock <= effectiveLimit;
+    if (!isLow) return false;
+    if (!lowStockSearch.trim()) return true;
+    const prod = products.find(p => p.id === v.productId);
+    const q = lowStockSearch.toLowerCase();
+    return (
+      v.variantName.toLowerCase().includes(q) ||
+      v.sku.toLowerCase().includes(q) ||
+      (prod?.nameTe && prod.nameTe.toLowerCase().includes(q)) ||
+      (prod?.nameEn && prod.nameEn.toLowerCase().includes(q))
+    );
+  });
   const totalInventoryValuationPaise = variants.reduce(
     (sum, v) => sum + Math.round(v.currentStock * (v.purchaseCostPaise || v.sellingPricePaise * 0.85)),
     0
@@ -239,7 +282,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         ? Math.max(16, Math.min(95, Math.round((d.totalPaise / maxPaise) * 92)))
         : (d.day === 'We' ? 95 : d.day === 'Sa' ? 80 : d.day === 'Fr' ? 75 : d.day === 'Mo' ? 65 : d.day === 'Th' ? 60 : 50);
 
-      const dotColor = isPeak ? '#84CC16' : valPercent > 70 ? '#0284C7' : valPercent > 50 ? '#F59E0B' : '#94A3B8';
+      const dotColor = isPeak ? '#2563EB' : valPercent > 70 ? '#0284C7' : valPercent > 50 ? '#F59E0B' : '#94A3B8';
       const metricLabel = hasRealSales && d.totalPaise > 0 ? formatPaise(d.totalPaise) : '2,345';
 
       return {
@@ -253,13 +296,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [activeBills, formatPaise]);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 font-sans bg-white min-h-screen text-[#111827]">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 font-sans bg-[#FFFFFF] min-h-screen text-[#111827]">
 
       {/* Toast Notification */}
       {statusToast && (
-        <div className="bg-[#161918] text-[#84CC16] text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl flex items-center justify-between animate-fade-in border border-[#84CC16]/30">
+        <div className="bg-[#111827] text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl flex items-center justify-between animate-fade-in border border-slate-700">
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="h-4 w-4 text-[#84CC16]" strokeWidth={2.2} />
+            <CheckCircle2 className="h-4 w-4 text-emerald-400" strokeWidth={2.2} />
             <span className="text-white">{statusToast}</span>
           </div>
           <button onClick={() => setStatusToast(null)} aria-label="Dismiss" className="ml-3 text-white/70 transition-colors hover:text-white"><X className="h-3.5 w-3.5" /></button>
@@ -275,25 +318,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <input
               type="text"
               placeholder={t('సరుకులు, కస్టమర్లు, బిల్లులు వెతకండి...', 'Search products, customers, bills...')}
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#84CC16] focus:ring-2 focus:ring-[#84CC16]/20 transition-all shadow-xs"
+              className="w-full pl-10 pr-4 py-2 rounded-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 transition-all shadow-xs"
             />
           </div>
           <button 
             type="button"
-            className="p-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 relative shadow-xs shrink-0 transition hover:border-[#84CC16]"
+            className="p-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 relative shadow-xs shrink-0 transition hover:border-[#2563EB]"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#84CC16] ring-2 ring-white animate-pulse" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-white animate-pulse" />
           </button>
         </div>
 
         {/* Real Hardware & Connectivity Telemetry */}
         <div className="flex items-center gap-4 sm:gap-6 self-end sm:self-auto text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
             <div>
-              <div className="text-xs font-outfit font-extrabold text-slate-900 leading-none">
+              <div className="text-xs font-display font-extrabold text-[#111827] leading-none">
                 0ms <span className="text-[10px] font-bold text-slate-500">LATENCY</span>
               </div>
               <div className="text-[9px] uppercase font-bold tracking-wider text-slate-400 mt-0.5">
@@ -303,10 +346,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
           <div className="h-6 w-px bg-slate-200" />
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#84CC16]" />
+            <div className="w-2 h-2 rounded-full bg-emerald-500" />
             <div>
-              <div className="text-xs font-outfit font-extrabold text-slate-900 leading-none">
-                100% <span className="text-[10px] font-bold text-[#84CC16]">OFFLINE</span>
+              <div className="text-xs font-display font-extrabold text-[#111827] leading-none">
+                100% <span className="text-[10px] font-bold text-emerald-600">OFFLINE</span>
               </div>
               <div className="text-[9px] uppercase font-bold tracking-wider text-slate-400 mt-0.5">
                 DEXIE & SQLITE
@@ -317,111 +360,74 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </div>
 
       {/* ── HERO BANNER: RETAIL INTELLIGENCE & POS HUB ────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-[#F2F9EC] border border-slate-200/90 p-6 lg:p-8 shadow-xs">
-        {/* Subtle Ambient Emerald-Citron Glow */}
-        <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-gradient-to-bl from-[#84CC16]/10 via-[#A3E635]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 p-6 lg:p-8 shadow-xs">
+        {/* Subtle Ambient Light Depth */}
+        <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-gradient-to-bl from-blue-500/5 via-slate-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column (7 Cols): Store Identity & Financial Velocity */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10.5px] font-bold text-slate-700 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
-              <span className="uppercase tracking-wider">
-                {t('కిరాణా లెడ్జర్ · లైవ్ POS టెలిమెట్రీ', 'Kirana Ledger · Live POS Telemetry')}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-800 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
+              <span className="uppercase tracking-wider font-mono">
+                {t('లైవ్ కిరాణా ఓఎస్ · ఆఫ్‌లైన్ టెర్మినల్', 'Live Kirana OS · Real-time POS')}
               </span>
             </div>
 
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-outfit font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-                INTELLIGENT RETAIL & POS HUB
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold text-[#111827] tracking-tight leading-[1.12]">
+                {t('కౌంటర్ కంట్రోల్ & లైవ్ అమ్మకాలు', 'Counter Control & Live Operations')}
               </h1>
-              <p className="mt-1.5 text-xs sm:text-sm text-slate-500 font-normal leading-relaxed max-w-xl">
+              <p className="mt-1.5 text-xs sm:text-sm text-slate-600 font-normal leading-relaxed max-w-xl">
                 {t(
-                  'భారతీయ సూపర్ మార్కెట్లు & కిరాణా దుకాణాల కోసం 100% ఆఫ్‌లైన్ బిల్లింగ్, బార్‌కోడ్ స్కానింగ్ & ఉధార్ ఖాతా లెడ్జర్.',
-                  'High-speed 100% offline retail POS, barcode scanning, thermal printing and khata debtor management.'
+                  'భారతీయ సూపర్ మార్కెట్లు & కిరాణా దుకాణాల కోసం 0ms బార్‌కోడ్ బిల్లింగ్, లైవ్ కాటా బరువు, వాట్సాప్ ఉధార్ లెడ్జర్ మరియు రోజువారీ అమ్మకాల కంట్రోల్ హబ్.',
+                  'High-speed 0ms offline retail POS, serial weighing scale sync, dispute-proof WhatsApp khata and real-time inventory management.'
                 )}
               </p>
             </div>
 
-            {/* Live Financial Breakdown Cards: Sales & Cash/UPI Split */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-lg">
-              {/* Mini Card 1: Today's Revenue Progress */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between gap-2.5 shadow-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    {t('నేటి మొత్తం అమ్మకాలు', "Today's Total Sales")}
-                  </span>
-                  <div className="w-6 h-6 rounded-full bg-[#F2F9EC] border border-[#D9F99D] flex items-center justify-center text-[#84CC16]">
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-                <div className="text-xl sm:text-2xl font-outfit font-extrabold text-slate-900 tnum">
-                  {formatPaise(todaySalesPaise)}
-                </div>
-                {/* Electric Lime Progress Bar */}
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-[#A3E635] to-[#84CC16] h-full rounded-full transition-all duration-500" 
-                    style={{ width: `${Math.min(100, Math.max(12, (todaySalesPaise / 500000) * 100))}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Mini Card 2: Cash vs UPI Breakdown */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between gap-2.5 shadow-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    {t('చెల్లింపుల విభజన', 'Payment Breakdown')}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-                    {todayActiveBills.length} {t('బిల్లులు', 'Bills')}
-                  </span>
-                </div>
-                <div className="space-y-1.5 pt-1 text-xs font-semibold">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-slate-600">
-                      <span className="w-2 h-2 rounded-full bg-[#84CC16]" />
-                      {t('నగదు (Cash)', 'Cash')}:
-                    </span>
-                    <span className="font-mono font-bold text-slate-900">{formatPaise(todayCashPaise)}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-slate-600">
-                      <span className="w-2 h-2 rounded-full bg-[#0284C7]" />
-                      {t('యూపీఐ (UPI)', 'UPI')}:
-                    </span>
-                    <span className="font-mono font-bold text-slate-900">{formatPaise(todayUpiPaise)}</span>
-                  </div>
-                </div>
-              </div>
+            {/* Shift & Terminal Active Meta Badges */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>{t('క్యాషియర్: శ్రీనివాస్ గారు (యజమాని)', 'Cashier: Srinivas (Owner)')}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-2xs">
+                <span className="font-mono text-[11px] text-[#2563EB] font-bold">0ms</span>
+                <span>{t('తక్షణ ఆఫ్‌లైన్ ఇంజిన్', 'Local Offline Engine')}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold shadow-2xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>{t('డేటా 100% సురక్షితం', '100% Encrypted & Safe')}</span>
+              </span>
             </div>
 
-            {/* Quick Action Buttons Suite */}
+            {/* Quick Action Buttons Suite (Strict 60-30-10 Colors) */}
             <div className="pt-2 flex flex-wrap items-center gap-2.5">
               <button
                 onClick={() => onNavigate('pos')}
                 data-testid="btn-quick-new-bill"
-                className="h-10 px-4 rounded-xl bg-[#161918] hover:bg-[#252B29] text-[#84CC16] text-xs font-bold shadow-sm transition active:scale-95 flex items-center gap-2 border border-white/10"
+                className="h-10 px-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-sm transition active:scale-95 flex items-center gap-2 border border-blue-600/30"
               >
-                <ShoppingCart className="w-4 h-4 stroke-[2.2]" />
+                <ShoppingCart className="w-4 h-4 text-white stroke-[2.2]" />
                 <span>{t('+ కొత్త బిల్లు', '+ New Sale', '+ नया बिल')}</span>
-                <span className="font-mono text-[9.5px] bg-[#252B29] text-white px-1.5 py-0.5 rounded ml-1">F1</span>
+                <span className="font-mono text-[9.5px] bg-black/25 text-white px-1.5 py-0.5 rounded ml-1 font-bold">F1</span>
               </button>
 
               <button
                 onClick={() => onNavigate('khata')}
                 data-testid="btn-quick-khata"
-                className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-2"
+                className="h-10 px-4 rounded-xl border border-rose-200 bg-white hover:bg-rose-50/50 text-[#111827] text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-2"
               >
-                <BookOpen className="w-4 h-4 text-[#84CC16]" strokeWidth={2.2} />
+                <BookOpen className="w-4 h-4 text-rose-600" strokeWidth={2.2} />
                 <span>{t('ఉధార్ ఖాతా', 'Customer Khata', 'ग्राहक खाता')}</span>
-                <span className="font-mono text-[9.5px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded ml-1">F4</span>
+                <span className="font-mono text-[9.5px] text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded ml-1 font-bold border border-rose-200">F4</span>
               </button>
 
               <button
                 onClick={() => onNavigate('daybook')}
                 data-testid="btn-quick-daybook"
-                className="h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold transition active:scale-95 shadow-xs flex items-center gap-2"
+                className="h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#111827] text-xs font-semibold transition active:scale-95 shadow-xs flex items-center gap-2"
               >
                 <FileText className="w-4 h-4 text-slate-500" strokeWidth={2} />
                 <span>{t('రోజు పుస్తకం', 'Day Book', 'रोज़ नामचा')}</span>
@@ -430,10 +436,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <button
                 onClick={() => setShowDayEndModal(true)}
                 data-testid="btn-quick-dayend"
-                className="h-10 px-3.5 rounded-xl border border-[#D9F99D] bg-[#F2F9EC] hover:bg-[#E2F2D5] text-[#4D7C0F] text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-2"
+                className="h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#111827] text-xs font-semibold transition active:scale-95 shadow-xs flex items-center gap-2"
               >
-                <Moon className="w-4 h-4 text-[#84CC16]" strokeWidth={2} />
+                <Moon className="w-4 h-4 text-slate-600" strokeWidth={2} />
                 <span>{t('డే-ఎండ్ Z', 'Day-End Z', 'दिन का समापन')}</span>
+              </button>
+
+              <button
+                onClick={() => onNavigate('products')}
+                data-testid="btn-quick-products"
+                className="h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#111827] text-xs font-semibold transition active:scale-95 shadow-xs flex items-center gap-2"
+              >
+                <Package className="w-4 h-4 text-slate-600" strokeWidth={2} />
+                <span>{t('సరుకుల స్టాక్', 'Stock Audit')}</span>
+                <span className="font-mono text-[9.5px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded ml-1 font-bold">F3</span>
               </button>
             </div>
           </div>
@@ -443,40 +459,42 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="relative w-full max-w-sm rounded-2xl bg-white border border-slate-200 p-5 shadow-xs space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#84CC16] animate-pulse" />
-                  <span className="text-xs font-bold text-slate-900 truncate">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#2563EB] animate-pulse" />
+                  <span className="text-xs font-bold text-[#111827] truncate">
                     {currentShop?.name || 'Sri Lakshmi Supermarket'}
                   </span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#F2F9EC] text-[#4D7C0F] border border-[#D9F99D] font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-bold">
                   {currentShop?.city || 'Local Store'}
                 </span>
               </div>
 
-              {/* Station Counter 01 Live Telemetry */}
-              <div className="rounded-xl bg-slate-900 p-4 text-white space-y-3">
+              {/* Station Counter 01 Live Telemetry (Clean Light Architecture) */}
+              <div className="rounded-2xl bg-gradient-to-br from-blue-50/60 via-slate-50 to-white p-4 border border-blue-100/90 shadow-2xs space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#84CC16] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse" />
+                  <span className="font-bold text-blue-900 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
                     Billing Counter #01
                   </span>
-                  <span className="font-mono text-[10px] text-slate-400">SHIFT ACTIVE</span>
+                  <span className="font-mono text-[10px] font-bold text-blue-700 bg-blue-100/70 border border-blue-200 px-2 py-0.5 rounded-full">
+                    SHIFT ACTIVE
+                  </span>
                 </div>
 
                 <div className="pt-1 flex items-baseline justify-between">
-                  <span className="text-xs text-slate-300">{t('నగదు గల్లా (Cash in Drawer)', 'Cash in Drawer')}:</span>
-                  <span className="font-outfit font-extrabold text-base text-[#84CC16] tnum">
+                  <span className="text-xs font-semibold text-slate-600">{t('నగదు గల్లా (Cash in Drawer)', 'Cash in Drawer')}:</span>
+                  <span className="font-display font-extrabold text-xl text-[#111827] tnum">
                     {formatPaise(todayCashPaise)}
                   </span>
                 </div>
 
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-[#84CC16] h-full w-[78%] rounded-full" />
+                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-[#2563EB] h-full w-[78%] rounded-full" />
                 </div>
 
-                <div className="pt-1 flex items-center justify-between text-[10.5px] text-slate-400 font-mono">
-                  <span>0ms Latency</span>
-                  <span>{todayActiveBills.length} Bills Completed</span>
+                <div className="pt-1 flex items-center justify-between text-[10.5px] text-slate-500 font-mono">
+                  <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> 0ms Latency</span>
+                  <span className="font-semibold text-slate-700">{todayActiveBills.length} Bills Completed</span>
                 </div>
               </div>
 
@@ -485,7 +503,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <span className="text-slate-500 font-medium">
                   {t('డేటా భద్రత & గోప్యత', 'Local Storage Engine')}
                 </span>
-                <span className="font-outfit font-bold text-[#84CC16] flex items-center gap-1">
+                <span className="font-display font-bold text-emerald-600 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   100% Isolated
                 </span>
@@ -495,124 +513,160 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
       </div>
 
-      {/* ── 4 KPI STAT CARDS STRIP ───────────────────────────────────────── */}
+      {/* ── SECTION HEADER: CORE BUSINESS KPIS & LIVE TELEMETRY ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
+        <div>
+          <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#111827] tracking-tight">
+            {t('వ్యాపార కీలక కొలమానాలు & లైవ్ స్థితి', 'Core Business KPIs & Live Telemetry')}
+          </h2>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            {t('నేటి నికర విక్రయాలు, కౌంటర్ బిల్లులు, ఉధార్ బాకీలు మరియు మొత్తం ఇన్వెంటరీ నిల్వలు', 'Real-time sales velocity, settled invoices, receivables ledger and inventory capital')}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5 text-blue-600" />
+            <span>{t('ఈ రోజు లైవ్ లెక్కలు', 'Live Today')}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* ── 4 KPI STAT CARDS STRIP (Awwwards-Grade Luxury Architecture) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {/* Metric 1: Today's Sales */}
-        <div className="rounded-2xl bg-white border border-slate-200 p-5 flex flex-col justify-between gap-3 shadow-xs hover:border-[#84CC16] transition-all">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#F2F9EC] border border-[#D9F99D] flex items-center justify-center text-[#84CC16]">
-                <TrendingUp className="w-4 h-4 stroke-[2.2]" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                {t('నేటి అమ్మకాలు', "Today's Sales")}
-              </span>
+        {/* Card 1: Today's Net Sales (Crisp Pure White with Emerald Growth) */}
+        <div className="rounded-3xl bg-white text-slate-900 p-6 flex flex-col justify-between relative overflow-hidden shadow-xs border border-slate-200/90 hover:border-emerald-200 transition-all group">
+          <div className="flex items-center justify-between relative z-10">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100">
+              <TrendingUp className="w-5 h-5 stroke-[2.2]" />
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F2F9EC] text-[#4D7C0F] border border-[#D9F99D]">
-              +14.2%
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+              <span>+14.2% {t('వృద్ధి', 'Growth')}</span>
             </span>
           </div>
 
-          <div>
-            <div className="font-outfit text-2xl sm:text-3xl font-extrabold text-slate-900 tnum">
-              {formatPaise(todaySalesPaise)}
+          <div className="pt-5 relative z-10 space-y-3">
+            <div>
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {t('నేటి నికర అమ్మకాలు', "Today's Net Realized Sales")}
+              </div>
+              <div className="font-display text-3xl sm:text-4xl font-extrabold text-[#111827] mt-1 tnum tracking-tight">
+                {formatPaise(todaySalesPaise)}
+              </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-              <span>నగదు: {formatPaise(todayCashPaise)}</span>
-              <span>యూపీఐ: {formatPaise(todayUpiPaise)}</span>
+
+            {/* High-Impact Cash vs UPI Breakdown Pills */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-[11px] text-slate-500">{t('నగదు', 'Cash')}:</span>
+                <span className="font-mono font-bold text-[#111827]">{formatPaise(todayCashPaise)}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                <span className="text-[11px] text-slate-500">{t('యూపీఐ', 'UPI')}:</span>
+                <span className="font-mono font-bold text-[#111827]">{formatPaise(todayUpiPaise)}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Metric 2: Customer Khata Due */}
-        <div className="rounded-2xl bg-white border border-slate-200 p-5 flex flex-col justify-between gap-3 shadow-xs hover:border-rose-400 transition-all">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
-                <BookOpen className="w-4 h-4 stroke-[2.2]" />
+        {/* Card 2: Completed Invoices & Throughput (Crisp Architecture White with Royal Blue Accent) */}
+        <div className="rounded-3xl bg-white text-slate-900 p-6 flex flex-col justify-between relative overflow-hidden shadow-xs border border-slate-200/90 hover:border-blue-200 transition-all group">
+          <div className="flex items-center justify-between relative z-10">
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-100">
+              <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <span className="text-[10.5px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+              0.0ms Instant POS
+            </span>
+          </div>
+
+          <div className="pt-5 relative z-10 space-y-3">
+            <div>
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {t('పూర్తయిన ఇన్వాయిస్‌లు', 'Completed Invoices')}
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                {t('ఉధార్ బాకీ', 'Khata Due')}
+              <div className="font-display text-3xl sm:text-4xl font-extrabold text-slate-900 mt-1 tnum tracking-tight flex items-baseline gap-2">
+                <span>{todayActiveBills.length}</span>
+                <span className="text-sm font-semibold text-slate-500 font-sans">{t('బిల్లులు', 'Invoices')}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+              <span className="text-[11px] text-slate-500">{t('సగటు బిల్లు విలువ', 'Avg Basket')}:</span>
+              <span className="font-mono font-bold text-slate-900">
+                {formatPaise(todayActiveBills.length > 0 ? Math.round(todaySalesPaise / todayActiveBills.length) : 0)}
               </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Khata Receivables & Debtor Ledger (Crisp Architecture White with Terracotta Accent) */}
+        <div className="rounded-3xl bg-white text-slate-900 p-6 flex flex-col justify-between relative overflow-hidden shadow-xs border border-slate-200/90 hover:border-rose-200 transition-all group">
+          <div className="flex items-center justify-between relative z-10">
+            <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-100">
+              <BookOpen className="w-5 h-5 stroke-[2.2]" />
             </div>
             <button
               onClick={() => onNavigate('khata')}
-              className="text-[10px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-0.5 transition active:scale-95"
+              className="px-3 py-1 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold transition active:scale-95 shadow-xs flex items-center gap-1"
             >
-              <span>{t('వసూలు చేయి', 'Collect')}</span>
-              <ArrowUpRight className="w-3 h-3" />
+              <span>{t('వసూలు చేయండి', 'Collect')}</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
           </div>
 
-          <div>
-            <div className="font-outfit text-2xl sm:text-3xl font-extrabold text-slate-900 tnum">
-              {formatPaise(totalOutstandingPaise)}
+          <div className="pt-5 relative z-10 space-y-3">
+            <div>
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {t('కస్టమర్ ఉధార్ బాకీలు', 'Customer Khata Receivables')}
+              </div>
+              <div className="font-display text-3xl sm:text-4xl font-extrabold text-rose-700 mt-1 tnum tracking-tight">
+                {formatPaise(totalOutstandingPaise)}
+              </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-              <span>{customers.length} {t('ఖాతాదారులు', 'Customers')}</span>
-              <span className="text-rose-600 font-bold">{t('రిస్క్ తక్కువ', 'Low Risk')}</span>
+
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+              <span className="text-[11px] text-slate-500">{t('ఖాతాదారులు', 'Debtors')}:</span>
+              <span className="font-semibold text-slate-800">
+                {customers.length} {t('మంది', 'Customers')} · <span className="text-emerald-700 font-bold">{t('సురక్షితం', 'Low Risk')}</span>
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Metric 3: Inventory Valuation */}
-        <div className="rounded-2xl bg-white border border-slate-200 p-5 flex flex-col justify-between gap-3 shadow-xs hover:border-[#84CC16] transition-all">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#F2F9EC] border border-[#D9F99D] flex items-center justify-center text-[#84CC16]">
-                <Package className="w-4 h-4 stroke-[2.2]" />
+        {/* Card 4: Store Inventory & Stock Assets (Crisp Architecture White with Amber Accent) */}
+        <div className="rounded-3xl bg-white text-slate-900 p-6 flex flex-col justify-between relative overflow-hidden shadow-xs border border-slate-200/90 hover:border-amber-200 transition-all group">
+          <div className="flex items-center justify-between relative z-10">
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-100">
+              <Package className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <button
+              onClick={() => onNavigate('products')}
+              className="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition active:scale-95 flex items-center gap-1 border border-slate-200"
+            >
+              <span>{t('సరుకులు', 'Items')}</span>
+              <ArrowRight className="w-3 h-3 text-slate-600" />
+            </button>
+          </div>
+
+          <div className="pt-5 relative z-10 space-y-3">
+            <div>
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {t('మొత్తం ఇన్వెంటరీ విలువ', 'Total Inventory Asset Value')}
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                {t('స్టాక్ విలువ', 'Stock Value')}
-              </span>
-            </div>
-            {lowStockVariants.length > 0 ? (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                {lowStockVariants.length} {t('తక్కువ', 'Low')}
-              </span>
-            ) : (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F2F9EC] text-[#4D7C0F] border border-[#D9F99D]">
-                100% OK
-              </span>
-            )}
-          </div>
-
-          <div>
-            <div className="font-outfit text-2xl sm:text-3xl font-extrabold text-slate-900 tnum">
-              {formatPaise(totalInventoryValuationPaise)}
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-              <span>{variants.length} {t('వస్తువులు', 'Items')}</span>
-              <span className="text-[#84CC16] font-bold">{t('ఆడిట్ పూర్తయింది', 'Audited')}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Metric 4: Total Invoices */}
-        <div className="rounded-2xl bg-white border border-slate-200 p-5 flex flex-col justify-between gap-3 shadow-xs hover:border-[#84CC16] transition-all">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#F2F9EC] border border-[#D9F99D] flex items-center justify-center text-[#84CC16]">
-                <CheckCircle2 className="w-4 h-4 stroke-[2.2]" />
+              <div className="font-display text-3xl sm:text-4xl font-extrabold text-slate-900 mt-1 tnum tracking-tight">
+                {formatPaise(totalInventoryValuationPaise)}
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                {t('నేటి బిల్లులు', 'Total Bills')}
-              </span>
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F2F9EC] text-[#4D7C0F] border border-[#D9F99D]">
-              0ms POS
-            </span>
-          </div>
 
-          <div>
-            <div className="font-outfit text-2xl sm:text-3xl font-extrabold text-slate-900 tnum">
-              {todayActiveBills.length}{' '}
-              <span className="text-sm font-semibold text-slate-500">బిల్లులు</span>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-              <span>సగటు బాస్కెట్:</span>
-              <span className="font-bold text-slate-900">
-                {todayActiveBills.length > 0 ? formatPaise(Math.round(todaySalesPaise / todayActiveBills.length)) : '₹0'}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+              <span className="text-[11px] text-slate-500">{t('యాక్టివ్ వేరియంట్లు', 'Active SKUs')}:</span>
+              <span className="font-semibold text-slate-800">
+                {variants.length} {t('సరుకులు', 'SKUs')} · <span className={lowStockVariants.length > 0 ? "text-amber-600 font-bold" : "text-emerald-700 font-bold"}>
+                  {lowStockVariants.length > 0 ? `${lowStockVariants.length} ${t('తక్కువ', 'Low')}` : t('100% సరిపడా', '100% OK')}
+                </span>
               </span>
             </div>
           </div>
@@ -629,18 +683,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-outfit font-extrabold text-slate-900">
-                  {t('వారం అమ్మకాల ట్రెండ్', 'Weekly Sales Velocity')}
+                <h3 className="text-base font-display font-extrabold text-slate-900 tracking-tight">
+                  {t('వారపు అమ్మకాల సరళి & పీక్ విశ్లేషణ', 'Weekly Sales Velocity & Peak Analysis')}
                 </h3>
                 <p className="text-xs text-slate-500 font-normal mt-0.5">
-                  {t('వారపు అమ్మకాలు మరియు రోజువారీ లావాదేవీల విశ్లేషణ', 'Weekly overview of retail volume generated across counters')}
+                  {t('వారపు రోజువారీ విక్రయాల పరిమాణం మరియు పీక్ డే విశ్లేషణ', 'Weekly retail volume trends and peak trading day telemetry')}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
                 {/* Dot Legends */}
                 <div className="hidden sm:flex items-center gap-3 text-[10.5px] font-semibold text-slate-500">
-                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#84CC16]" /> Peak</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#2563EB]" /> Peak</span>
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#0284C7]" /> Steady</span>
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F59E0B]" /> Limited</span>
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#94A3B8]" /> Standby</span>
@@ -663,10 +717,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     {/* Peak Day Elevated Pill Badge */}
                     {item.isPeak && (
                       <div className="absolute -top-6 flex flex-col items-center z-20">
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#161918] text-[#84CC16] text-[10px] font-mono font-bold shadow-md border border-[#84CC16]/30">
+                        <span className="px-2.5 py-0.5 rounded-full bg-white text-blue-700 text-[10px] font-mono font-bold shadow-xs border border-blue-200">
                           {item.metric}
                         </span>
-                        <div className="w-0.5 h-2 bg-[#161918]" />
+                        <div className="w-0.5 h-2 bg-blue-300" />
                       </div>
                     )}
 
@@ -674,7 +728,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <div 
                       className={`w-full max-w-[28px] sm:max-w-[36px] rounded-full transition-all duration-300 flex flex-col items-center justify-end relative ${
                         item.isPeak
-                          ? 'bg-[#F2F9EC] border border-[#D9F99D] shadow-xs'
+                          ? 'bg-blue-50/70 border border-blue-200 shadow-xs'
                           : 'hover:bg-slate-50'
                       }`}
                       style={{ height: '100%' }}
@@ -685,12 +739,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       {/* Data Point Dot */}
                       <div 
                         className="w-3 h-3 rounded-full border-2 border-white shadow-xs z-10 transition-transform group-hover:scale-125"
-                        style={{ backgroundColor: item.dot, marginBottom: item.val }}
+                        style={{ backgroundColor: item.isPeak ? '#2563EB' : item.dot, marginBottom: item.val }}
                       />
 
                       {/* Bottom Circular Base for Peak Day */}
                       {item.isPeak && (
-                        <div className="w-6 h-6 rounded-full bg-[#84CC16] flex items-center justify-center text-[10px] font-bold text-[#161918] z-10 mb-1">
+                        <div className="w-6 h-6 rounded-full bg-[#2563EB] flex items-center justify-center text-[10px] font-bold text-white z-10 mb-1">
                           {item.day}
                         </div>
                       )}
@@ -712,17 +766,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-outfit font-extrabold text-slate-900">
-                  {t('తాజా బిల్లులు & లావాదేవీలు', 'Recent Store Invoices')}
+                <h3 className="text-base font-display font-extrabold text-[#111827] tracking-tight">
+                  {t('తాజా కౌంటర్ ఇన్వాయిస్‌లు & రసీదులు', 'Recent Counter Invoices & Receipts')}
                 </h3>
                 <p className="text-xs text-slate-500 font-normal mt-0.5">
-                  {t('తప్పుగా వేసిన బిల్లులను రద్దు (Void) చేసే సదుపాయం కలదు', 'View receipts or cancel/void mistakenly created bills')}
+                  {t('కౌంటర్ రసీదులను వీక్షించండి లేదా తప్పుగా వేసిన బిల్లులను రద్దు (Void) చేయండి', 'View receipts or cancel/void mistakenly created bills')}
                 </p>
               </div>
 
               <button
                 onClick={() => onNavigate('pos')}
-                className="text-xs font-bold text-[#84CC16] hover:text-[#65A30D] flex items-center gap-1 transition"
+                className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1 transition"
               >
                 <span>{t('మొత్తం చూడండి', 'View All')}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -750,24 +804,24 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         key={bill.id}
                         className={`hover:bg-slate-50 transition-colors ${isVoided ? 'opacity-50 bg-rose-50/20' : ''}`}
                       >
-                        <td className="py-3 px-3.5 font-mono font-bold text-slate-900">
+                        <td className="py-3 px-3.5 font-mono font-bold text-[#111827]">
                           {bill.billNumber}
                         </td>
                         <td className="py-3 px-3.5 text-slate-500 whitespace-nowrap">
                           {new Date(bill.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </td>
-                        <td className="py-3 px-3.5 text-slate-900 font-medium truncate max-w-[120px]">
+                        <td className="py-3 px-3.5 text-[#111827] font-medium truncate max-w-[120px]">
                           {bill.customerName || t('వాక్-ఇన్ కస్టమర్', 'Walk-in')}
                         </td>
-                        <td className="py-3 px-3.5 text-right font-bold text-slate-900 font-mono">
+                        <td className="py-3 px-3.5 text-right font-bold text-[#111827] font-mono">
                           {formatPaise(bill.totalPaise)}
                         </td>
                         <td className="py-3 px-3.5 text-center">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${bill.paymentMethod === 'CASH'
-                            ? 'bg-[#F2F9EC] text-[#4D7C0F] border-[#D9F99D]'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             : bill.paymentMethod === 'UPI'
-                              ? 'bg-blue-50 text-blue-700 border-blue-200'
-                              : 'bg-amber-50 text-amber-700 border-amber-200'
+                              ? 'bg-blue-50 text-blue-800 border-blue-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
                             }`}>
                             {bill.paymentMethod}
                           </span>
@@ -775,7 +829,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         <td className="py-3 px-3.5 text-center">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${isVoided
                             ? 'bg-rose-50 text-rose-700 border-rose-200'
-                            : 'bg-[#F2F9EC] text-[#4D7C0F] border-[#D9F99D]'
+                            : 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             }`}>
                             {isVoided ? t('రద్దు చేయబడింది', 'VOIDED') : t('పూర్తయింది', 'PAID')}
                           </span>
@@ -814,56 +868,171 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         {/* RIGHT COLUMN (Span 4): Low Stock Radar & Hardware Telemetry */}
         <div className="lg:col-span-4 space-y-6">
 
-          {/* RESTORED: Low Stock Radar with live variant stock & direct reorder button */}
+          {/* RESTORED: Dynamic Low Stock Radar with Manual Threshold & Complete List */}
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <h3 className="text-base font-outfit font-extrabold text-slate-900">
-                  {t('స్టాక్ హెచ్చరికలు', 'Low Stock Radar')}
+                <h3 className="text-base font-display font-extrabold text-slate-900 tracking-tight">
+                  {t('కనిష్ట స్టాక్ రాడార్ & రీ-ఆర్డర్ అలర్ట్స్', 'Low Stock Radar & Re-Order Alerts')}
                 </h3>
               </div>
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                lowStockVariants.length > 0
-                  ? 'bg-amber-50 text-amber-800 border-amber-300'
-                  : 'bg-[#F2F9EC] text-[#4D7C0F] border-[#D9F99D]'
-              }`}>
-                {lowStockVariants.length > 0 ? `${lowStockVariants.length} Items` : '100% OK'}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                  lowStockVariants.length > 0
+                    ? 'bg-amber-50 text-amber-800 border-amber-300'
+                    : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                }`}>
+                  {lowStockVariants.length > 0 ? `${lowStockVariants.length} ఐటమ్స్ తక్కువ` : '100% సరిపడా'}
+                </span>
+              </div>
             </div>
 
-            <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1 text-xs divide-y divide-slate-100">
+            {/* Manual Threshold Filter Controls */}
+            <div className="space-y-2 bg-slate-50/90 p-3 rounded-2xl border border-slate-200/80 text-xs">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[11px] font-bold text-slate-700">
+                  {t('స్టాక్ పరిమితి సెట్ చేయండి (Threshold):', 'Set Stock Alert Limit:')}
+                </span>
+                <span className="text-[10px] text-slate-500 font-mono">
+                  {thresholdMode === 'MANUAL' ? `≤ ${manualStockThreshold}` : 'వస్తువు కనీస పరిమితి'}
+                </span>
+              </div>
+
+              {/* Threshold Preset Chips & Custom Input */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setThresholdMode('AUTO')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition border ${
+                    thresholdMode === 'AUTO'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {t('ఆటో (Auto Min)', 'Auto')}
+                </button>
+                {[5, 10, 20, 50].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => {
+                      setThresholdMode('MANUAL');
+                      setManualStockThreshold(num);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition border ${
+                      thresholdMode === 'MANUAL' && manualStockThreshold === num
+                        ? 'bg-amber-600 text-white border-amber-600'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    ≤ {num}
+                  </button>
+                ))}
+
+                {/* Custom Number Input */}
+                <div className="flex items-center gap-1 ml-auto">
+                  <span className="text-[10px] text-slate-500 font-medium">సొంతం:</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max="9999"
+                    value={thresholdMode === 'MANUAL' ? manualStockThreshold : ''}
+                    placeholder="15"
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      setThresholdMode('MANUAL');
+                      setManualStockThreshold(isNaN(val) ? 0 : val);
+                    }}
+                    className="w-14 px-2 py-0.5 rounded-lg border border-slate-300 text-center font-mono font-bold text-xs bg-white text-slate-900 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Quick Search inside Low Stock */}
+              <div className="relative pt-1">
+                <input
+                  type="text"
+                  value={lowStockSearch}
+                  onChange={(e) => setLowStockSearch(e.target.value)}
+                  placeholder={t('తక్కువ స్టాక్ ఉన్న వస్తువును వెతకండి...', 'Search low stock items...')}
+                  className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-300 font-medium"
+                />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-3 -translate-y-1/2" />
+                {lowStockSearch && (
+                  <button
+                    onClick={() => setLowStockSearch('')}
+                    className="absolute right-2.5 top-3 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[10px] font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* List of Low Stock Items */}
+            <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1 text-xs divide-y divide-slate-100">
               {lowStockVariants.length === 0 ? (
                 <div className="py-8 text-center text-slate-400 space-y-2">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F2F9EC] border border-[#D9F99D] text-[#84CC16] flex items-center justify-center mx-auto shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
                     <CheckCircle2 className="h-6 w-6 stroke-[2.2]" />
                   </div>
                   <div className="font-bold text-slate-800">
-                    {t('అన్ని సరుకులు సరిపడా ఉన్నాయి', 'All Stock Adequate', 'पर्याप्त स्टॉक')}
+                    {t('ఈ పరిమితిలో కొరత ఉన్న సరుకులు లేవు', 'No stockout risks at this limit', 'कोई कमी नहीं')}
                   </div>
                   <div className="text-[11px] text-slate-400">
-                    {t('ప్రస్తుతం స్టాక్ కొరత లేదు', 'Zero stockout risks detected', 'कोई कमी नहीं')}
+                    {thresholdMode === 'MANUAL'
+                      ? `అన్ని సరుకుల నిల్వ ${manualStockThreshold} కంటే ఎక్కువే ఉంది.`
+                      : 'అన్ని సరుకులు సరిపడా ఉన్నాయి.'}
                   </div>
                 </div>
               ) : (
-                lowStockVariants.slice(0, 6).map((v) => {
+                (showAllLowStock ? lowStockVariants : lowStockVariants.slice(0, 6)).map((v) => {
                   const prod = products.find((p) => p.id === v.productId);
+                  const effectiveLimit = thresholdMode === 'MANUAL' ? manualStockThreshold : (v.minStockAlert || 5);
                   return (
-                    <div key={v.id} className="pt-2.5 first:pt-0 flex items-center justify-between">
-                      <div className="truncate pr-2">
-                        <div className="font-bold text-slate-900 truncate">
-                          {prod?.nameTe || v.variantName}
+                    <div key={v.id} className="pt-2.5 first:pt-0 flex items-center justify-between gap-2">
+                      <div className="truncate flex-1">
+                        <div className="font-bold text-slate-900 truncate flex items-center gap-1.5">
+                          <span>{prod?.nameTe || v.variantName}</span>
+                          {v.currentStock <= 2 && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-rose-100 text-rose-800">
+                              అత్యవసరం
+                            </span>
+                          )}
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate">
-                          {prod?.nameEn || v.sku}
+                        <div className="text-[10px] text-slate-400 truncate flex items-center gap-1.5">
+                          <span>{prod?.nameEn || v.sku}</span>
+                          <span>•</span>
+                          <span className="font-mono">హెచ్చరిక పరిమితి: {effectiveLimit} {v.unit}</span>
                         </div>
                       </div>
-                      <div className="text-right whitespace-nowrap">
-                        <div className="font-bold text-rose-600 font-mono">
-                          {v.currentStock} {v.unit}
+
+                      <div className="flex items-center gap-2 whitespace-nowrap">
+                        <div className="text-right">
+                          <div className={`font-black font-mono text-sm ${v.currentStock === 0 ? 'text-rose-700' : 'text-amber-700'}`}>
+                            {v.currentStock} {v.unit}
+                          </div>
                         </div>
-                        <div className="text-[10px] text-slate-400 font-mono">
-                          {t('కనీసం:', 'Min:', 'न्यूनतम:')} {v.minStockAlert}
+
+                        {/* Quick Stock-In Buttons */}
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleQuickAddStock(v.id, 5)}
+                            title="స్టాక్ +5 కలపండి"
+                            className="px-1.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-bold border border-emerald-200 transition active:scale-95"
+                          >
+                            +5
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickAddStock(v.id, 10)}
+                            title="స్టాక్ +10 కలపండి"
+                            className="px-1.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-bold border border-emerald-200 transition active:scale-95"
+                          >
+                            +10
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -872,13 +1041,26 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               )}
             </div>
 
+            {/* Toggle View All vs Top 6 */}
+            {lowStockVariants.length > 6 && (
+              <button
+                type="button"
+                onClick={() => setShowAllLowStock(!showAllLowStock)}
+                className="w-full py-1.5 text-center text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition"
+              >
+                {showAllLowStock
+                  ? t('కొద్దిగా చూపించు (Show Top 6)', 'Show Top 6 Only')
+                  : t(`మొత్తం ${lowStockVariants.length} వస్తువులను చూడండి (View All ${lowStockVariants.length})`, `View All ${lowStockVariants.length} Items`)}
+              </button>
+            )}
+
             {/* Direct Re-order CTA Button */}
             <button
               onClick={() => setShowSmartReorderModal(true)}
               data-testid="btn-open-smart-reorder"
-              className="w-full h-11 rounded-2xl bg-[#161918] hover:bg-[#252B29] text-[#84CC16] text-xs font-bold transition shadow-sm flex items-center justify-center gap-2 border border-white/10 active:scale-95"
+              className="w-full h-11 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition shadow-2xs flex items-center justify-center gap-2 border border-blue-200 active:scale-95"
             >
-              <RefreshCw className="w-4 h-4" strokeWidth={2} />
+              <RefreshCw className="w-4 h-4 text-blue-600" strokeWidth={2} />
               <span>{t('స్మార్ట్ రీ-ఆర్డర్ ప్రారంభించండి', 'Open Smart Re-orders', 'स्मार्ट री-ऑर्डर खोलें')}</span>
             </button>
           </div>
@@ -886,12 +1068,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           {/* Connected Hardware Peripherals Strip */}
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="text-base font-outfit font-extrabold text-slate-900">
+              <h3 className="text-base font-display font-extrabold text-[#111827] tracking-tight">
                 {t('పరికరాల కనెక్టివిటీ', 'Connected Peripherals')}
               </h3>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-[#84CC16]">Active</span>
-                <div className="w-7 h-4 rounded-full bg-[#84CC16] p-0.5 flex items-center justify-end">
+                <span className="text-xs font-bold text-emerald-700">Active</span>
+                <div className="w-7 h-4 rounded-full bg-emerald-500 p-0.5 flex items-center justify-end">
                   <div className="w-3 h-3 rounded-full bg-white shadow-xs" />
                 </div>
               </div>
@@ -900,30 +1082,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="space-y-2.5 text-xs">
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <Barcode className="w-4 h-4 text-[#84CC16]" />
-                  <span className="font-semibold text-slate-900">2D Barcode Scanner</span>
+                  <Barcode className="w-4 h-4 text-blue-600" />
+                  <span className="font-semibold text-[#111827]">2D Barcode Scanner</span>
                 </div>
-                <span className="font-mono text-[10px] font-bold text-[#4D7C0F] bg-[#F2F9EC] px-2 py-0.5 rounded-full border border-[#D9F99D]">
+                <span className="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   Connected
                 </span>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <Scale className="w-4 h-4 text-[#84CC16]" />
-                  <span className="font-semibold text-slate-900">RS-232 Weighing Scale</span>
+                  <Scale className="w-4 h-4 text-indigo-600" />
+                  <span className="font-semibold text-[#111827]">RS-232 Weighing Scale</span>
                 </div>
-                <span className="font-mono text-[10px] font-bold text-[#4D7C0F] bg-[#F2F9EC] px-2 py-0.5 rounded-full border border-[#D9F99D]">
+                <span className="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   Active
                 </span>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <FileText className="w-4 h-4 text-[#84CC16]" />
-                  <span className="font-semibold text-slate-900">80mm Thermal Printer</span>
+                  <FileText className="w-4 h-4 text-slate-700" />
+                  <span className="font-semibold text-[#111827]">80mm Thermal Printer</span>
                 </div>
-                <span className="font-mono text-[10px] font-bold text-[#4D7C0F] bg-[#F2F9EC] px-2 py-0.5 rounded-full border border-[#D9F99D]">
+                <span className="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   Ready
                 </span>
               </div>
@@ -933,72 +1115,72 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </div>
 
       {/* ── LEDGER TOOLS RIBBON ────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-[#DFE3DC] bg-white px-4 py-3 shadow-xs">
-        <span className="mr-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[#6E7672]">
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-xs">
+        <span className="mr-2 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
           {t('సాధనాలు', 'Tools')}
         </span>
 
         <button
           onClick={() => setShowSmartReorderModal(true)}
           data-testid="dashboard-smart-reorder-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <PackageSearch className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <PackageSearch className="h-3.5 w-3.5 text-indigo-600" strokeWidth={2} />
           <span>{t('రీ-ఆర్డర్లు', 'Re-orders')}</span>
         </button>
 
-        <span className="h-4 w-px bg-[#DFE3DC]" aria-hidden="true" />
+        <span className="h-4 w-px bg-slate-200" aria-hidden="true" />
 
         <button
           onClick={() => setShowProfitLossModal(true)}
           data-testid="dashboard-pnl-studio-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <LineChart className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <LineChart className="h-3.5 w-3.5 text-emerald-600" strokeWidth={2} />
           <span>{t('లాభ నష్టం', 'Profit & Loss')}</span>
         </button>
 
-        <span className="h-4 w-px bg-[#DFE3DC]" aria-hidden="true" />
+        <span className="h-4 w-px bg-slate-200" aria-hidden="true" />
 
         <button
           onClick={() => setShowStoreHealthModal(true)}
           data-testid="dashboard-store-health-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <Activity className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <Activity className="h-3.5 w-3.5 text-amber-600" strokeWidth={2} />
           <span>{t('స్టోర్ ఆరోగ్యం', 'Store Health')}</span>
         </button>
 
-        <span className="h-4 w-px bg-[#DFE3DC]" aria-hidden="true" />
+        <span className="h-4 w-px bg-slate-200" aria-hidden="true" />
 
         <button
           onClick={() => setShowMultiCounterModal(true)}
           data-testid="dashboard-multi-counter-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <MonitorSmartphone className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <MonitorSmartphone className="h-3.5 w-3.5 text-blue-600" strokeWidth={2} />
           <span>{t('మల్టీ-కౌంటర్', 'Counters')}</span>
         </button>
 
-        <span className="h-4 w-px bg-[#DFE3DC]" aria-hidden="true" />
+        <span className="h-4 w-px bg-slate-200" aria-hidden="true" />
 
         <button
           onClick={() => setShowLanSyncModal(true)}
           data-testid="dashboard-lan-sync-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <Network className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <Network className="h-3.5 w-3.5 text-cyan-600" strokeWidth={2} />
           <span>{t('ల్యాన్ మెష్', 'LAN Mesh')}</span>
         </button>
 
-        <span className="h-4 w-px bg-[#DFE3DC]" aria-hidden="true" />
+        <span className="h-4 w-px bg-slate-200" aria-hidden="true" />
 
         <button
           onClick={() => setShowCloudBackupModal(true)}
           data-testid="dashboard-cloud-backup-btn"
-          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#191C1B] transition hover:bg-[#F2F5F0] border border-transparent hover:border-[#DFE3DC]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-[#111827] transition hover:bg-slate-100 border border-transparent hover:border-slate-200"
         >
-          <CloudUpload className="h-3.5 w-3.5 text-[#84CC16]" strokeWidth={2} />
+          <CloudUpload className="h-3.5 w-3.5 text-purple-600" strokeWidth={2} />
           <span>{t('క్లౌడ్ బ్యాకప్', 'Cloud Backup')}</span>
         </button>
       </div>

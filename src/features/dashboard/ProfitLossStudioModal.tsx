@@ -122,24 +122,24 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
       className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
       data-testid="pnl-studio-modal"
     >
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Modal Header */}
-        <div className="px-6 py-4 bg-paper-deep text-ink flex flex-wrap items-center justify-between gap-4 border-b border-stone-300">
+        <div className="px-6 py-4 bg-[#161918] text-white flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-ink-950 text-paper flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#84CC16]/20 border border-[#2563EB]/40 text-[#2563EB] flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-ink font-display">
+                <h2 className="text-xl font-bold tracking-tight text-white font-outfit">
                   {t('లాభ నష్టాల నివేదిక', 'Profit & Loss Statement')}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-micro bg-paper text-copper-700 border border-stone-300">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#84CC16]/15 text-[#2563EB] border border-[#2563EB]/30">
                   P&L Studio
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {t('స్థూల & నికర లాభాల సమగ్ర గణాంకాలు • Gross & Net Margin Intelligence', 'Real-time Kirana Profitability & Operating Economics')}
               </p>
             </div>
@@ -147,16 +147,16 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
 
           {/* Timeframe Switcher & Actions */}
           <div className="flex items-center gap-2">
-            <div className="bg-paper p-1 rounded-md flex items-center border border-stone-300">
+            <div className="bg-slate-800/80 p-1 rounded-xl flex items-center border border-slate-700">
               {(['TODAY', '7D', '30D', '90D', 'ALL'] as ProfitTimeframe[]).map((tf) => (
                 <button
                   key={tf}
                   onClick={() => setTimeframe(tf)}
                   data-testid={`pnl-timeframe-${tf}`}
-                  className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     timeframe === tf
-                      ? 'bg-ink-950 text-paper shadow-xs font-semibold'
-                      : 'text-stone-500 hover:text-ink hover:bg-white/60'
+                      ? 'bg-[#84CC16] text-[#161918] shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
                   }`}
                 >
                   {tf === 'TODAY' && t('ఈ రోజు', 'Today')}
@@ -171,90 +171,90 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
             <button
               onClick={handleExportCsv}
               data-testid="pnl-export-csv-btn"
-              className="px-3.5 py-1.5 rounded-md bg-paper hover:bg-white text-stone-700 text-xs font-semibold border border-stone-300 flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-colors"
               title="Download CSV for CA / Accounting"
             >
-              <Download className="w-3.5 h-3.5 text-copper-600" strokeWidth={1.7} />
+              <Download className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2} />
               <span>{t('CSV డౌన్‌లోడ్', 'Export CSV')}</span>
             </button>
 
             <button
               onClick={onClose}
               data-testid="close-pnl-modal-btn"
-              className="w-8 h-8 rounded-md border border-stone-300 hover:bg-white hover:text-oxblood-600 text-stone-500 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               aria-label="Close"
             >
-              <X className="w-4 h-4" strokeWidth={1.6} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
         </div>
 
         {/* Bento Financial KPI Bar */}
-        <div className="p-5 bg-paper-deep/50 border-b border-stone-200 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="p-5 bg-slate-50 border-b border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-3">
           
           {/* 1. Net Revenue */}
-          <div className="bg-paper p-4 rounded-md border border-stone-200">
-            <div className="flex items-center justify-between text-stone-500 text-xs font-medium mb-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-1">
               <span>{t('నికర రాబడి', 'Net Sales Revenue')}</span>
-              <DollarSign className="w-3.5 h-3.5 text-copper-600" strokeWidth={1.7} />
+              <DollarSign className="w-4 h-4 text-[#2563EB]" strokeWidth={2} />
             </div>
-            <div className="text-xl sm:text-2xl font-semibold text-ink tracking-tight font-display tnum" data-testid="pnl-net-revenue">
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 font-outfit tnum" data-testid="pnl-net-revenue">
               {formatPaise(report.netRevenuePaise)}
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200 text-[11px] text-stone-500">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
               <span>{report.totalBillsCount} {t('బిల్లులు', 'Bills')}</span>
               {report.totalDiscountsPaise > 0 && (
-                <span className="text-brass-700 font-medium tnum">-{formatPaise(report.totalDiscountsPaise)} డిస్కౌంట్</span>
+                <span className="text-amber-600 font-semibold tnum">-{formatPaise(report.totalDiscountsPaise)} డిస్కౌంట్</span>
               )}
             </div>
           </div>
 
           {/* 2. Cost of Goods Sold (COGS) */}
-          <div className="bg-paper p-4 rounded-md border border-stone-200">
-            <div className="flex items-center justify-between text-stone-500 text-xs font-medium mb-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-1">
               <span>{t('కొనుగోలు అసలు ఖర్చు', 'Cost of Goods (COGS)')}</span>
-              <ShoppingBag className="w-3.5 h-3.5 text-stone-400" strokeWidth={1.6} />
+              <ShoppingBag className="w-4 h-4 text-slate-400" strokeWidth={2} />
             </div>
-            <div className="text-xl sm:text-2xl font-semibold text-ink-800 tracking-tight font-display tnum" data-testid="pnl-total-cogs">
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 font-outfit tnum" data-testid="pnl-total-cogs">
               {formatPaise(report.totalCogsPaise)}
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200 text-[11px] text-stone-500">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
               <span>{t('హోల్‌సేల్ ఇన్వర్డ్ ఖర్చు', 'Wholesale Purchase')}</span>
-              <span className="font-semibold text-stone-700 tnum">{cogsPercent}%</span>
+              <span className="font-semibold text-slate-700 tnum">{cogsPercent}%</span>
             </div>
           </div>
 
           {/* 3. Gross Profit */}
-          <div className="bg-sage-50/60 p-4 rounded-md border border-sage-200">
-            <div className="flex items-center justify-between text-sage-700 text-xs font-semibold mb-1">
+          <div className="bg-[#F2F9EC] p-4 rounded-2xl border border-[#D9F99D] shadow-xs">
+            <div className="flex items-center justify-between text-[#3F6212] text-xs font-bold mb-1">
               <span>{t('స్థూల లాభం', 'Gross Profit')}</span>
-              <span className="px-1.5 py-0.5 rounded border border-sage-300 text-[10px] font-semibold text-sage-800 tnum">
+              <span className="px-2 py-0.5 rounded-full border border-[#D9F99D] bg-white text-[10px] font-bold text-[#3F6212] tnum">
                 {report.grossMarginPercent.toFixed(1)}% {t('మార్జిన్', 'Margin')}
               </span>
             </div>
-            <div className="text-xl sm:text-2xl font-semibold text-sage-700 tracking-tight font-display tnum" data-testid="pnl-gross-profit">
+            <div className="text-xl sm:text-2xl font-bold text-[#3F6212] font-outfit tnum" data-testid="pnl-gross-profit">
               {formatPaise(report.grossProfitPaise)}
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-sage-200 text-[11px] text-sage-700">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#D9F99D]/60 text-[11px] text-[#3F6212]">
               <span>{t('సేల్స్ - కొనుగోలు ఖర్చు', 'Sales - COGS')}</span>
-              <span className="font-semibold tnum">₹{(report.grossProfitPaise / 100).toFixed(0)}</span>
+              <span className="font-bold tnum">₹{(report.grossProfitPaise / 100).toFixed(0)}</span>
             </div>
           </div>
 
           {/* 4. Net Profit (Take-Home) */}
-          <div className="bg-indigo-50/60 p-4 rounded-md border border-indigo-200">
-            <div className="flex items-center justify-between text-indigo-800 text-xs font-semibold mb-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="flex items-center justify-between text-slate-900 text-xs font-bold mb-1">
               <span>{t('నికర లాభం (చేతికి మిగిలేది)', 'Net Profit (Take-Home)')}</span>
-              <span className="px-1.5 py-0.5 rounded border border-indigo-300 text-[10px] font-semibold text-indigo-800 tnum">
+              <span className="px-2 py-0.5 rounded-full border border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-800 tnum">
                 {report.netMarginPercent.toFixed(1)}% {t('నికర', 'Net')}
               </span>
             </div>
-            <div className="text-xl sm:text-2xl font-semibold text-indigo-800 tracking-tight font-display tnum" data-testid="pnl-net-profit">
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 font-outfit tnum" data-testid="pnl-net-profit">
               {formatPaise(report.netProfitPaise)}
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-indigo-200 text-[11px] text-indigo-700">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
               <span>{t('ఖర్చులు తీసివేయగా', 'After Expenses')}</span>
-              <span className="font-semibold text-oxblood-600 tnum">
+              <span className="font-semibold text-rose-600 tnum">
                 -{formatPaise(report.totalOperatingExpensesPaise + report.cashDiscrepancyLossPaise)}
               </span>
             </div>
@@ -263,20 +263,20 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="px-6 border-b border-stone-200 flex items-center justify-between bg-paper">
+        <div className="px-6 border-b border-slate-200 flex items-center justify-between bg-white">
           <div className="flex gap-2">
             <button
               onClick={() => setActiveTab('CATEGORIES')}
               data-testid="pnl-tab-categories"
-              className={`py-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              className={`py-3 px-3.5 text-xs font-bold flex items-center gap-2 border-b-2 transition-all ${
                 activeTab === 'CATEGORIES'
-                  ? 'border-copper-600 text-ink'
-                  : 'border-transparent text-stone-500 hover:text-ink'
+                  ? 'border-[#2563EB] text-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-900'
               }`}
             >
-              <PieChart className="w-3.5 h-3.5" strokeWidth={1.6} />
+              <PieChart className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2} />
               <span>{t('వర్గాల లాభాలు & మార్జిన్లు', 'Category Margins')}</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] border border-stone-300 text-stone-600 font-semibold tnum">
+              <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold tnum">
                 {report.categories.length}
               </span>
             </button>
@@ -284,15 +284,15 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
             <button
               onClick={() => setActiveTab('TOP_DRIVERS')}
               data-testid="pnl-tab-top-drivers"
-              className={`py-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              className={`py-3 px-3.5 text-xs font-bold flex items-center gap-2 border-b-2 transition-all ${
                 activeTab === 'TOP_DRIVERS'
-                  ? 'border-copper-600 text-ink'
-                  : 'border-transparent text-stone-500 hover:text-ink'
+                  ? 'border-[#2563EB] text-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-900'
               }`}
             >
-              <TrendingUp className="w-3.5 h-3.5 text-sage-600" strokeWidth={1.6} />
+              <TrendingUp className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2} />
               <span>{t('టాప్ లాభదాయక వస్తువులు', 'Top Profit Drivers')}</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] border border-sage-300 text-sage-800 font-semibold tnum">
+              <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold tnum">
                 {report.topProfitDrivers.length}
               </span>
             </button>
@@ -300,16 +300,16 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
             <button
               onClick={() => setActiveTab('LOW_MARGINS')}
               data-testid="pnl-tab-low-margins"
-              className={`py-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              className={`py-3 px-3.5 text-xs font-bold flex items-center gap-2 border-b-2 transition-all ${
                 activeTab === 'LOW_MARGINS'
-                  ? 'border-copper-600 text-ink'
-                  : 'border-transparent text-stone-500 hover:text-ink'
+                  ? 'border-[#2563EB] text-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-900'
               }`}
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-brass-600" strokeWidth={1.6} />
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-500" strokeWidth={2} />
               <span>{t('తక్కువ మార్జిన్ హెచ్చరికలు', 'Low Margin Alerts')}</span>
               {report.lossOrLowMarginAlerts.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] border border-brass-300 text-brass-800 font-semibold tnum">
+                <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-900 font-bold tnum">
                   {report.lossOrLowMarginAlerts.length}
                 </span>
               )}
@@ -318,15 +318,15 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
             <button
               onClick={() => setActiveTab('EXPENSES')}
               data-testid="pnl-tab-expenses"
-              className={`py-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              className={`py-3 px-3.5 text-xs font-bold flex items-center gap-2 border-b-2 transition-all ${
                 activeTab === 'EXPENSES'
-                  ? 'border-copper-600 text-ink'
-                  : 'border-transparent text-stone-500 hover:text-ink'
+                  ? 'border-[#2563EB] text-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-900'
               }`}
             >
-              <Receipt className="w-3.5 h-3.5 text-oxblood-500" strokeWidth={1.6} />
+              <Receipt className="w-3.5 h-3.5 text-rose-500" strokeWidth={2} />
               <span>{t('దుకాణ ఖర్చులు & నష్టాలు', 'Store Expenses & Losses')}</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] border border-oxblood-300 text-oxblood-800 font-semibold tnum">
+              <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold tnum">
                 {report.expenses.length}
               </span>
             </button>
@@ -337,9 +337,9 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
             <button
               onClick={() => setShowAddExpense(!showAddExpense)}
               data-testid="pnl-add-expense-toggle-btn"
-              className="px-3 py-1.5 rounded-md bg-paper-deep hover:bg-stone-150 text-oxblood-700 text-xs font-semibold border border-stone-300 flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-200 flex items-center gap-1.5 transition-colors"
             >
-              <Plus className="w-3.5 h-3.5" strokeWidth={1.8} />
+              <Plus className="w-3.5 h-3.5 text-[#2563EB]" strokeWidth={2.5} />
               <span>{t('ఖర్చు నమోదు చేయి', 'Add Petty Expense')}</span>
             </button>
           </div>
@@ -713,9 +713,9 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 bg-paper-deep border-t border-stone-300 flex flex-wrap items-center justify-between text-xs text-stone-500">
+        <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sage-500" aria-hidden="true" />
+            <span className="w-2 h-2 rounded-full bg-[#84CC16]" aria-hidden="true" />
             <span>
               {t(
                 'ప్రతి గణాంకం దుకాణం లెడ్జర్ నుండి నేరుగా వస్తుంది.',
@@ -726,12 +726,12 @@ export const ProfitLossStudioModal: React.FC<ProfitLossStudioModalProps> = ({
 
           <div className="flex items-center gap-3">
             <span>
-              {t('నికర లాభ మార్జిన్:', 'Net Profit Margin:')} <strong className="text-ink tnum">{report.netMarginPercent.toFixed(1)}%</strong>
+              {t('నికర లాభ మార్జిన్:', 'Net Profit Margin:')} <strong className="text-slate-900 font-bold tnum">{report.netMarginPercent.toFixed(1)}%</strong>
             </span>
             <button
               onClick={onClose}
               data-testid="pnl-close-footer-btn"
-              className="px-4 py-1.5 rounded-md bg-ink-950 hover:bg-ink-800 text-paper font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#161918] hover:bg-slate-900 text-white font-bold transition-all shadow-xs"
             >
               {t('పూర్తయింది', 'Done')}
             </button>

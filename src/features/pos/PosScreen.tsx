@@ -67,7 +67,8 @@ import {
   IndianRupee,
   Lightbulb,
   ArrowRight,
-  Check
+  Check,
+  ShoppingCart
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { 
@@ -149,6 +150,20 @@ export const PosScreen: React.FC = () => {
 
   // Quick Add Customer Modal States
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
+
+  // Milestone POS Shelf: Browse all items & Live Stock view
+  const [posViewMode, setPosViewMode] = useState<'SHELF' | 'CART'>('SHELF');
+  const [shelfCategory, setShelfCategory] = useState<string>('ALL');
+  const [shelfSearch, setShelfSearch] = useState<string>('');
+
+  // Interactive Quick Weight / Grams & Kg Selector Modal
+  const [weighModalVariant, setWeighModalVariant] = useState<ProductVariant | null>(null);
+  const [weighModalUnit, setWeighModalUnit] = useState<'KG' | 'GRAMS'>('KG');
+  const [weighModalAmount, setWeighModalAmount] = useState<string>('1');
+
+  // Walk-in Customer Quick WhatsApp Details
+  const [walkinCustName, setWalkinCustName] = useState<string>('');
+  const [walkinCustPhone, setWalkinCustPhone] = useState<string>('');
   const [newCustName, setNewCustName] = useState('');
   const [newCustPhone, setNewCustPhone] = useState('');
   const [newCustVillage, setNewCustVillage] = useState('');
@@ -213,14 +228,53 @@ export const PosScreen: React.FC = () => {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Live queries from local IndexedDB
-  const variants = useLiveQuery(() => db.variants.toArray()) || [];
-  const products = useLiveQuery(() => db.products.toArray()) || [];
-  const customers = useLiveQuery(() => db.customers.toArray()) || [];
-  const customerLedger = useLiveQuery(() => db.customerLedger.toArray()) || [];
-  const allBills = useLiveQuery(() => db.bills.toArray()) || [];
-  const storedPrinterConfig = useLiveQuery(() => db.printerConfigs.toCollection().first());
-  const storedScaleConfig = useLiveQuery(() => db.scaleConfigs.toCollection().first());
+  // Live queries from local IndexedDB scoped to current active shop
+  const products = useLiveQuery(
+    () => currentShop ? db.products.where('shopId').equals(currentShop.id).toArray() : db.products.toArray(),
+    [currentShop?.id]
+  ) || [];
+
+  const variants = useLiveQuery(
+    async () => {
+      if (!currentShop) return db.variants.toArray();
+      const shopProducts = await db.products.where('shopId').equals(currentShop.id).toArray();
+      const shopProdIds = new Set(shopProducts.map(p => p.id));
+      const allVars = await db.variants.toArray();
+      return allVars.filter(v => shopProdIds.has(v.productId));
+    },
+    [currentShop?.id]
+  ) || [];
+
+  const customers = useLiveQuery(
+    () => currentShop ? db.customers.where('shopId').equals(currentShop.id).toArray() : db.customers.toArray(),
+    [currentShop?.id]
+  ) || [];
+
+  const customerLedger = useLiveQuery(
+    async () => {
+      if (!currentShop) return db.customerLedger.toArray();
+      const shopCusts = await db.customers.where('shopId').equals(currentShop.id).toArray();
+      const custIds = new Set(shopCusts.map(c => c.id));
+      const allEntries = await db.customerLedger.toArray();
+      return allEntries.filter(e => custIds.has(e.customerId) || (e as any).shopId === currentShop.id);
+    },
+    [currentShop?.id]
+  ) || [];
+
+  const allBills = useLiveQuery(
+    () => currentShop ? db.bills.where('shopId').equals(currentShop.id).toArray() : db.bills.toArray(),
+    [currentShop?.id]
+  ) || [];
+
+  const storedPrinterConfig = useLiveQuery(
+    () => currentShop ? db.printerConfigs.where('shopId').equals(currentShop.id).first() : db.printerConfigs.toCollection().first(),
+    [currentShop?.id]
+  );
+
+  const storedScaleConfig = useLiveQuery(
+    () => currentShop ? db.scaleConfigs.where('shopId').equals(currentShop.id).first() : db.scaleConfigs.toCollection().first(),
+    [currentShop?.id]
+  );
 
   const getCustomerBalancePaise = (customerId: string) => {
     const entries = customerLedger.filter((l) => l.customerId === customerId);
@@ -661,6 +715,42 @@ export const PosScreen: React.FC = () => {
   };
 
   // Loose Matrix Modal Handlers (F8 / Alt+L)
+  // Handler for clicking any product on the POS Shelf
+  const handleShelfItemClick = (variant: ProductVariant) => {
+    // If loose item (KG / G), open the dedicated Quick Weight Modal
+    if (variant.unit === 'KG' || variant.unit === 'G' || variant.sku.toLowerCase().includes('loose')) {
+      setWeighModalVariant(variant);
+      setWeighModalUnit(variant.unit === 'G' ? 'GRAMS' : 'KG');
+      setWeighModalAmount(variant.unit === 'G' ? '250' : '1');
+    } else {
+      // Packaged item: directly add to cart
+      addToCart(variant, 1);
+      playScannerBeep('success');
+      const prod = productMap.get(variant.productId);
+      triggerScanToast('success', `${prod?.nameTe || variant.variantName} కార్ట్‌కు చేర్చబడింది!`);
+    }
+  };
+
+  const handleConfirmWeighModal = () => {
+    if (!weighModalVariant) return;
+    const amountNum = parseFloat(weighModalAmount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      triggerScanToast('error', 'దయచేసి సరైన బరువును నమోదు చేయండి');
+      return;
+    }
+
+    // Convert to kg if entered in grams
+    const effectiveQtyKg = weighModalUnit === 'GRAMS' ? amountNum / 1000 : amountNum;
+    addToCart(weighModalVariant, effectiveQtyKg);
+    playScannerBeep('success');
+    const prod = productMap.get(weighModalVariant.productId);
+    triggerScanToast(
+      'success',
+      `${prod?.nameTe || weighModalVariant.variantName}: ${effectiveQtyKg} kg (${formatPaise(Math.round(effectiveQtyKg * weighModalVariant.sellingPricePaise))}) బిల్లుకు చేర్చబడింది!`
+    );
+    setWeighModalVariant(null);
+  };
+
   const handleSelectLooseFromModal = (commodity: LooseCommodity) => {
     const varId = `var-${commodity.sku.toLowerCase()}`;
     const found = variants.find((v) => v.id === varId || v.sku === commodity.sku);
@@ -939,6 +1029,13 @@ export const PosScreen: React.FC = () => {
     setShowCreditBreachModal(false);
     setBreachData(null);
     setShowReceiptModal(true);
+    triggerScanToast(
+      'success',
+      t(
+        `బిల్లు #${billNumber} పూర్తయింది! ${cart.length} వస్తువుల స్టాక్ ఆటోమేటిక్‌గా తగ్గించబడింది.`,
+        `Bill #${billNumber} completed! Stock for ${cart.length} items automatically decremented.`
+      )
+    );
   };
 
   // Split Payments Engine (F5) Handlers
@@ -1114,7 +1211,13 @@ export const PosScreen: React.FC = () => {
 
     setShowSplitPaymentModal(false);
     setShowReceiptModal(true);
-    triggerScanToast('success', `స్ప్లిట్ బిల్లు #${billNumber} విజయవంతంగా నమోదయింది!`);
+    triggerScanToast(
+      'success',
+      t(
+        `స్ప్లిట్ బిల్లు #${billNumber} నమోదయింది! ${cart.length} వస్తువుల స్టాక్ ఆటోమేటిక్‌గా తగ్గించబడింది.`,
+        `Split Bill #${billNumber} completed! Stock for ${cart.length} items automatically decremented.`
+      )
+    );
   };
 
   // Sales Return & Item Exchange Handlers (F7)
@@ -1263,11 +1366,13 @@ export const PosScreen: React.FC = () => {
     const targetBill = lastCreatedBill;
     const shopName = currentShop?.name || 'Sri Lakshmi General Store';
     const shopVpa = `${currentShop?.phone || '9848022338'}@ybl`;
-    const custPhone = selectedCustomer?.phone ? selectedCustomer.phone.replace(/[^0-9]/g, '') : '';
+    const walkinClean = walkinCustPhone.replace(/[^0-9]/g, '');
+    const custPhone = selectedCustomer?.phone ? selectedCustomer.phone.replace(/[^0-9]/g, '') : walkinClean;
     const phonePrefix = custPhone.length === 10 ? `91${custPhone}` : custPhone;
 
     let text = 
       `*${shopName}*\n` +
+      `కస్టమర్: *${selectedCustomer?.fullName || walkinCustName || 'నగదు కస్టమర్'}*\n` +
       `🧾 రసీదు (Bill #): *${targetBill?.billNumber || lastBillNumber}*\n` +
       `మొత్తం చెల్లింపు: *${formatPaise(targetBill?.totalPaise || totalPaise)}*\n` +
       `చెల్లింపు పద్ధతి: ${targetBill?.paymentMethod || 'PAID'}\n` +
@@ -1898,202 +2003,465 @@ export const PosScreen: React.FC = () => {
             </div>
           )}
 
-          {/* Active Cart Items Table */}
-          <div className="flex-1 overflow-y-auto p-3">
-            {cart.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slateBase-400">
-                <div className="w-16 h-16 rounded-2xl bg-slateBase-100 flex items-center justify-center mb-3 text-slateBase-400">
-                  <Barcode className="w-8 h-8 stroke-[1.5]" />
-                </div>
-                <p className="font-bold text-sm text-slateBase-700">
-                  {t('కార్ట్ ఖాళీగా ఉంది', 'Cart is currently empty')}
-                </p>
-                <p className="text-xs text-slateBase-500 mt-1 max-w-xs font-medium">
-                  {t(
-                    'బార్‌కోడ్ గన్‌తో వస్తువులను స్కాన్ చేయండి — నేరుగా కార్ట్‌లోకి యాడ్ అవుతాయి',
-                    'Point barcode gun at items to scan — auto adds with zero clicks'
-                  )}
-                </p>
-                <button
-                  onClick={() => setShowReturnModal(true)}
-                  className="mt-4 px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-2xs active:scale-95"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
-                  <span>{t('సేల్స్ రిటర్న్ / ఎక్స్ఛేంజ్ (F7)', 'Process Sales Return / Exchange (F7)')}</span>
-                </button>
-              </div>
-            ) : (
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slateBase-200 bg-slateBase-50/50 text-[11px] uppercase tracking-wider text-slateBase-500 font-bold">
-                    <th className="py-2.5 px-3">{t('వస్తువు', 'Item')}</th>
-                    <th className="py-2.5 px-3 text-center">{t('పరిమాణం', 'Qty')}</th>
-                    <th className="py-2.5 px-3 text-right">{t('ధర', 'Price')}</th>
-                    <th className="py-2.5 px-3 text-right">{t('మొత్తం', 'Total')}</th>
-                    <th className="py-2.5 px-2 text-center"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slateBase-100 text-xs sm:text-sm">
-                  {cart.map((item) => {
-                    const packOptions = getMultiPackOptions(item.variantId, item.productNameEn);
+          {/* Sub-Header: Store Products Shelf vs Active Bill Cart */}
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
+            <div className="flex items-center space-x-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setPosViewMode('SHELF')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                  posViewMode === 'SHELF'
+                    ? 'bg-[#093426] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Grid className="w-3.5 h-3.5" />
+                <span>{t('అందుబాటులో ఉన్న సరుకుల షెల్ఫ్', 'Store Products Shelf')}</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20 font-mono font-bold">
+                  {variants.length}
+                </span>
+              </button>
 
-                    return (
-                      <tr key={item.variantId} className={`hover:bg-slateBase-50 transition ${item.isFreeScheme ? 'bg-emerald-50/40' : item.isReturn ? 'bg-rose-50/60' : ''}`}>
-                        <td className="py-3 px-3">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-semibold text-[12.5px] text-ink leading-tight">
-                              {lang === 'te' ? item.productNameTe : item.productNameEn}
-                            </span>
-                            {item.isFreeScheme && (
-                              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] border border-emerald-300">
-                                <Gift className="w-3 h-3 text-emerald-600" />
-                                <span>100% ఉచిత స్కీమ్ (₹0.00)</span>
-                              </span>
-                            )}
-                            {item.isReturn && (
-                              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-[10px] border border-rose-300">
-                                <RotateCcw className="w-3 h-3 text-rose-600" />
-                                <span>రిటర్న్ / ఎక్స్ఛేంజ్</span>
-                              </span>
-                            )}
-                          </div>
-                          {lang !== 'te' && item.productNameTe && item.productNameTe !== item.productNameEn && (
-                            <div className="text-[10.5px] text-stone-500 mt-0.5">{item.productNameTe}</div>
-                          )}
-                          <div className="text-[10.5px] text-stone-500 mt-0.5 font-mono">
-                            {item.variantName} {item.isReturn && item.returnReason && <span className="text-oxblood-700 italic">({item.returnReason})</span>}
-                          </div>
+              <button
+                type="button"
+                onClick={() => setPosViewMode('CART')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                  posViewMode === 'CART'
+                    ? 'bg-[#093426] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span>{t('బిల్ కార్ట్', 'Bill Cart')}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                  cart.length > 0 ? 'bg-amber-400 text-stone-900' : 'bg-slate-200 text-slate-600'
+                }`}>
+                  {cart.length}
+                </span>
+              </button>
+            </div>
 
-                          {/* FMCG Multi-Packaging Switcher Pills */}
-                          {packOptions && !item.isFreeScheme && (
-                            <div className="flex items-center space-x-1 mt-1.5 flex-wrap gap-1">
-                              <span className="text-[10px] text-slate-400 font-semibold flex items-center">
-                                <Layers className="w-3 h-3 mr-0.5 text-blue-500" />
-                                ప్యాకింగ్:
-                              </span>
-                              {packOptions.map((opt) => {
-                                const isActive = item.packageUnit === opt.key || (!item.packageUnit && opt.multiplier === 1);
-                                return (
-                                  <button
-                                    key={opt.key}
-                                    type="button"
-                                    onClick={() => handleSwitchPack(item, opt)}
-                                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition active:scale-95 border ${
-                                      isActive
-                                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                                        : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
-                                    }`}
-                                    title={`Switch packaging to ${opt.labelEn}`}
-                                  >
-                                    {lang === 'te' ? opt.labelTe : opt.labelEn}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </td>
-                        <td className="py-3 px-3">
-                          <div className="flex items-center justify-center space-x-1">
-                            <button
-                              onClick={() => updateQuantity(item.variantId, -1)}
-                              className="w-7 h-7 bg-slateBase-100 hover:bg-slateBase-200 border border-slateBase-200 rounded-lg flex items-center justify-center text-slateBase-700 active:scale-95 transition"
-                              title={t('తగ్గించు', 'Decrease')}
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <input
-                              type="number"
-                              min="0.001"
-                              step="any"
-                              value={item.quantity}
-                              onChange={(e) => setExactQuantity(item.variantId, e.target.value)}
-                              className="w-14 px-1 py-1 text-center font-bold text-sm tnum text-slateBase-900 bg-white border border-slateBase-300 rounded-lg focus:outline-none focus:border-saudaBlue-600 focus:ring-1 focus:ring-saudaBlue-500/20"
-                              title={t('నేరుగా పరిమాణం నమోదు చేయండి', 'Directly enter quantity')}
-                            />
-                            <button
-                              onClick={() => updateQuantity(item.variantId, 1)}
-                              className="w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center font-bold active:scale-95 transition shadow-2xs"
-                              title={t('పెంచు', 'Increase')}
-                            >
-                              <Plus className="w-3 h-3 stroke-[2.2]" />
-                            </button>
-                          </div>
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <div className="flex items-center justify-end space-x-1.5">
-                            <div className="text-right">
-                              <div className={`text-xs font-semibold tnum ${item.isFreeScheme ? 'line-through text-slate-400' : 'text-slateBase-800'}`}>
-                                {item.isFreeScheme ? '₹0.00' : formatPaise(item.unitPricePaise)}
-                              </div>
-                              {item.discountPaise && !item.isFreeScheme ? (
-                                <div className="text-[10px] text-classicEmerald-600 font-bold">
-                                  - {formatPaise(item.discountPaise)}
-                                </div>
-                              ) : null}
-                            </div>
-
-                            {/* Free Scheme 100% Toggle Button */}
-                            <button
-                              type="button"
-                              onClick={() => toggleFreeScheme(item.variantId)}
-                              className={`p-1 rounded-md transition ${
-                                item.isFreeScheme
-                                  ? 'bg-emerald-500 text-white shadow-2xs'
-                                  : 'text-slateBase-400 hover:text-emerald-600 hover:bg-emerald-50'
-                              }`}
-                              title={item.isFreeScheme ? t('ఉచిత స్కీమ్ రద్దు చేయి', 'Remove Free Scheme') : t('100% ఉచిత స్కీమ్ గా మార్చు (₹0.00)', 'Mark as 100% Free Scheme (₹0.00)')}
-                            >
-                              <Gift className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Return / Exchange Toggle Button */}
-                            <button
-                              type="button"
-                              onClick={() => handleToggleCartItemReturn(item.variantId)}
-                              className={`p-1 rounded-md transition ${
-                                item.isReturn
-                                  ? 'bg-rose-600 text-white shadow-2xs'
-                                  : 'text-slateBase-400 hover:text-rose-600 hover:bg-rose-50'
-                              }`}
-                              title={item.isReturn ? t('సాధారణ సేల్‌గా మార్చు', 'Mark as normal sale') : t('ఈ వస్తువును రిటర్న్/ఎక్స్ఛేంజ్ గా మార్చు', 'Mark this item as Return/Exchange')}
-                            >
-                              <RotateCcw className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Price / Discount Override Button */}
-                            <button
-                              onClick={() => handleOpenEditCartItem(item)}
-                              className="p-1 text-slateBase-400 hover:text-saudaBlue-600 hover:bg-saudaBlue-50 rounded-md transition"
-                              title={t('ధర / డిస్కౌంట్ సవరించు (F9)', 'Override Price or Discount (F9)')}
-                            >
-                              <Edit3 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                        <td className={`py-3 px-3 text-right font-bold tnum ${item.isReturn ? 'text-rose-600 font-black' : 'text-slateBase-900'}`}>
-                          {item.isFreeScheme ? (
-                            <span className="text-emerald-600 font-bold">₹0.00</span>
-                          ) : item.isReturn ? (
-                            <span>-{formatPaise(Math.abs(item.lineTotalPaise))}</span>
-                          ) : (
-                            formatPaise(item.lineTotalPaise)
-                          )}
-                        </td>
-                        <td className="py-3 px-2 text-center">
-                          <button
-                            onClick={() => removeFromCart(item.variantId)}
-                            className="text-slateBase-400 hover:text-classicCrimson-600 p-1 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+            {/* Quick Bill Totals summary in sub-header */}
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] text-slate-500 font-medium">బిల్ మొత్తం:</span>
+              <span className="text-sm font-extrabold text-slate-900 font-mono bg-white px-2.5 py-0.5 rounded-lg border border-slate-200">
+                {formatPaise(totalPaise)}
+              </span>
+            </div>
           </div>
+
+          {/* MAIN LEFT CONTAINER: SHELF VIEW OR CART VIEW */}
+          {posViewMode === 'SHELF' ? (
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-50/50">
+              
+              {/* Shelf Search & Category Filter Bar */}
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pb-1 text-xs">
+                {/* Instant in-shelf quick filter */}
+                <div className="relative min-w-[160px] max-w-[220px]">
+                  <input
+                    type="text"
+                    value={shelfSearch}
+                    onChange={(e) => setShelfSearch(e.target.value)}
+                    placeholder={t('షెల్ఫ్‌లో వెతకండి...', 'Filter items...')}
+                    className="w-full pl-7 pr-5 py-1.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#093426] font-medium"
+                  />
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2" />
+                  {shelfSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setShelfSearch('')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[10px] font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Category Filter Horizontal Scroll */}
+                <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 scrollbar-none flex-1">
+                {[
+                  { id: 'ALL', labelTe: 'అన్ని సరుకులు', labelEn: 'All Items' },
+                  { id: 'LOOSE', labelTe: '⚖️ విడి సరుకులు (Loose / Weighed)', labelEn: 'Loose / Weighed' },
+                  { id: 'RICE_PULSES', labelTe: '🌾 బియ్యం & పప్పులు', labelEn: 'Rice & Pulses' },
+                  { id: 'OILS', labelTe: '🌻 వంట నూనెలు', labelEn: 'Edible Oils' },
+                  { id: 'ESSENTIALS', labelTe: '🧂 నిత్యావసరాలు & ఉప్పు', labelEn: 'Essentials' },
+                  { id: 'PERSONAL_CARE', labelTe: '🧼 సబ్బులు & షాంపూలు', labelEn: 'Personal Care' },
+                  { id: 'BEVERAGES', labelTe: '☕ టీ & పానీయాలు', labelEn: 'Tea & Coffee' },
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setShelfCategory(cat.id)}
+                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition border ${
+                      shelfCategory === cat.id
+                        ? 'bg-[#093426] text-white border-[#093426] shadow-xs'
+                        : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {lang === 'te' ? cat.labelTe : cat.labelEn}
+                  </button>
+                ))}
+                </div>
+              </div>
+
+              {/* Grid of Store Products Shelf */}
+              {(() => {
+                const filtered = variants.filter((v) => {
+                  const prod = productMap.get(v.productId);
+                  const q = (searchQuery || shelfSearch).trim().toLowerCase();
+                  if (q) {
+                    const matchNameEn = prod?.nameEn?.toLowerCase().includes(q);
+                    const matchNameTe = prod?.nameTe?.toLowerCase().includes(q);
+                    const matchVar = v.variantName?.toLowerCase().includes(q);
+                    const matchSku = v.sku?.toLowerCase().includes(q);
+                    const matchBarcode = v.barcodes?.some((b) => b.toLowerCase().includes(q));
+                    if (!matchNameEn && !matchNameTe && !matchVar && !matchSku && !matchBarcode) {
+                      return false;
+                    }
+                  }
+
+                  if (shelfCategory === 'ALL') return true;
+                  if (shelfCategory === 'LOOSE') {
+                    return v.unit === 'KG' || v.unit === 'G' || v.sku.toLowerCase().includes('loose');
+                  }
+                  const c = (prod?.category || '').toLowerCase();
+                  if (shelfCategory === 'RICE_PULSES') return c.includes('rice') || c.includes('pulses') || c.includes('బియ్యం') || c.includes('పప్పులు');
+                  if (shelfCategory === 'OILS') return c.includes('oil') || c.includes('నూనె');
+                  if (shelfCategory === 'ESSENTIALS') return c.includes('essential') || c.includes('spice') || c.includes('నిత్యావసరాలు');
+                  if (shelfCategory === 'PERSONAL_CARE') return c.includes('personal') || c.includes('soap') || c.includes('సబ్బులు') || c.includes('సంరక్షణ');
+                  if (shelfCategory === 'BEVERAGES') return c.includes('beverage') || c.includes('tea') || c.includes('కాఫీ');
+                  return true;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="py-12 text-center text-slate-400 space-y-2">
+                      <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-slate-400 flex items-center justify-center mx-auto shadow-xs">
+                        <Search className="w-6 h-6 stroke-[1.8]" />
+                      </div>
+                      <div className="font-bold text-slate-700 text-sm">
+                        ఈ వర్గంలో సరుకులు కనుగొనబడలేదు
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        వేరే వర్గాన్ని ఎంచుకోండి లేదా శోధన పదాన్ని మార్చండి.
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                    {filtered.map((v) => {
+                      const prod = productMap.get(v.productId);
+                      const isLoose = v.unit === 'KG' || v.unit === 'G' || v.sku.toLowerCase().includes('loose');
+                      const inCart = cart.find((item) => item.variantId === v.id);
+
+                      return (
+                        <div
+                          key={v.id}
+                          className="bg-white rounded-2xl p-3.5 border border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-xs transition flex flex-col justify-between gap-2.5 relative group"
+                        >
+                          <div>
+                            {/* Category & Status Header */}
+                            <div className="flex items-center justify-between gap-1 mb-1.5">
+                              <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full truncate max-w-[130px]">
+                                {prod?.category ? prod.category.split('/')[0] : 'కిరాణా'}
+                              </span>
+                              
+                              {/* Live Stock Badge */}
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono border ${
+                                  v.currentStock <= 0
+                                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                    : v.currentStock <= (v.minStockAlert || 5)
+                                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                    : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                }`}
+                              >
+                                {v.currentStock <= 0
+                                  ? 'నిల్వ లేదు (0)'
+                                  : `${v.currentStock} ${v.unit} నిల్వ`}
+                              </span>
+                            </div>
+
+                            {/* Product Names */}
+                            <h4 className="font-extrabold text-sm text-slate-900 leading-snug line-clamp-1">
+                              {prod?.nameTe || v.variantName}
+                            </h4>
+                            <div className="text-[11px] text-slate-400 line-clamp-1">
+                              {prod?.nameEn || v.sku}
+                            </div>
+                          </div>
+
+                          {/* Price & Action Button Row */}
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <div>
+                              <div className="font-extrabold text-sm text-slate-900 font-mono">
+                                {formatPaise(v.sellingPricePaise)}
+                                <span className="text-[10px] text-slate-400 font-sans font-medium ml-1">
+                                  / {v.unit}
+                                </span>
+                              </div>
+                              {v.mrpPaise > v.sellingPricePaise && (
+                                <div className="text-[10px] text-slate-400 line-through font-mono">
+                                  MRP: {formatPaise(v.mrpPaise)}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* 1-Click Action Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleShelfItemClick(v)}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 active:scale-95 shadow-2xs ${
+                                inCart
+                                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                                  : isLoose
+                                  ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/20'
+                                  : 'bg-[#093426] hover:bg-[#124b38] text-white shadow-[#093426]/20'
+                              }`}
+                            >
+                              {isLoose ? (
+                                <>
+                                  <Scale className="w-3.5 h-3.5" />
+                                  <span>{inCart ? `${inCart.quantity}kg కార్ట్‌లో` : 'బరువు ఎంచుకో'}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                                  <span>{inCart ? `+1 (${inCart.quantity})` : 'చేర్చు'}</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+
+              {/* Sticky bottom bar to view cart if cart has items */}
+              {cart.length > 0 && (
+                <div className="sticky bottom-0 pt-2 pb-1">
+                  <button
+                    type="button"
+                    onClick={() => setPosViewMode('CART')}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-[#093426] to-[#124b38] hover:from-[#124b38] hover:to-[#093426] text-white rounded-2xl font-bold text-xs shadow-lg shadow-[#093426]/30 flex items-center justify-between transition active:scale-98"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-amber-400" />
+                      <span>కార్ట్‌లో {cart.length} వస్తువులు ఉన్నాయి (View Active Cart)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm font-extrabold text-amber-300">
+                        {formatPaise(totalPaise)}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Active Cart Items Table */
+            <div className="flex-1 overflow-y-auto p-3">
+              {cart.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slateBase-400">
+                  <div className="w-16 h-16 rounded-2xl bg-slateBase-100 flex items-center justify-center mb-3 text-slateBase-300">
+                    <Barcode className="w-8 h-8 stroke-[1.5]" />
+                  </div>
+                  <p className="font-bold text-sm text-slateBase-700">
+                    {t('కార్ట్ ఖాళీగా ఉంది', 'Cart is currently empty')}
+                  </p>
+                  <p className="text-xs text-slateBase-400 mt-1 max-w-xs">
+                    {t(
+                      'సరుకుల షెల్ఫ్ నుండి వస్తువులను ఎంచుకోండి లేదా బార్‌కోడ్ గన్‌తో స్కాన్ చేయండి.',
+                      'Pick items from Store Products Shelf or scan with barcode gun.'
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPosViewMode('SHELF')}
+                    className="mt-4 px-4 py-2 bg-[#093426] hover:bg-[#124b38] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95"
+                  >
+                    <Grid className="w-4 h-4" />
+                    <span>{t('సరుకుల షెల్ఫ్ తెరవండి (Browse Store Shelf)', 'Browse Store Shelf')}</span>
+                  </button>
+                </div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slateBase-200 text-[11px] font-bold text-slateBase-500 uppercase tracking-wider">
+                      <th className="py-2.5 px-3">{t('వస్తువు', 'Item')}</th>
+                      <th className="py-2.5 px-3 text-center">{t('పరిమాణం', 'Qty')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('ధర', 'Rate')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('మొత్తం', 'Total')}</th>
+                      <th className="py-2.5 px-2 text-center w-8"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slateBase-100 text-xs">
+                    {cart.map((item) => {
+                      const packOptions = getMultiPackOptions(item.variantId, item.productNameEn);
+
+                      return (
+                        <tr key={item.variantId} className={`hover:bg-slateBase-50 transition ${item.isFreeScheme ? 'bg-emerald-50/30' : ''}`}>
+                          <td className="py-3 px-3">
+                            <div className="font-bold text-slateBase-900 flex items-center space-x-1.5">
+                              <div className="flex items-center space-x-2">
+                                <span>
+                                  {lang === 'te' ? item.productNameTe : item.productNameEn}
+                                </span>
+                                {item.isFreeScheme && (
+                                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black border border-emerald-300">
+                                    <Gift className="w-2.5 h-2.5 stroke-[2.5]" />
+                                    <span>100% ఉచితం</span>
+                                  </span>
+                                )}
+                                {item.isReturn && (
+                                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[9px] font-black border border-rose-300">
+                                    <RotateCcw className="w-2.5 h-2.5 stroke-[2.5]" />
+                                    <span>సేల్స్ రిటర్న్</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            {lang !== 'te' && item.productNameTe && item.productNameTe !== item.productNameEn && (
+                              <div className="text-[10.5px] text-stone-500 mt-0.5">{item.productNameTe}</div>
+                            )}
+                            <div className="text-[11px] text-slateBase-500">
+                              {item.variantName} {item.isReturn && item.returnReason && <span className="text-oxblood-700 italic">({item.returnReason})</span>}
+                            </div>
+
+                            {/* FMCG Packaging Hierarchy Switcher Pills */}
+                            {packOptions && !item.isFreeScheme && (
+                              <div className="flex items-center space-x-1 mt-1.5 flex-wrap gap-1">
+                                <span className="text-[10px] text-slate-400 font-semibold flex items-center">
+                                  <Layers className="w-2.5 h-2.5 mr-0.5 text-blue-500" />
+                                  ప్యాక్:
+                                </span>
+                                {packOptions.map((opt) => {
+                                  const isActive = item.packageUnit === opt.key || (!item.packageUnit && opt.multiplier === 1);
+                                  return (
+                                    <button
+                                      key={opt.key}
+                                      type="button"
+                                      onClick={() => handleSwitchPack(item, opt)}
+                                      className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold transition border ${
+                                        isActive
+                                          ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                                          : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
+                                      }`}
+                                      title={opt.labelEn}
+                                    >
+                                      {opt.labelTe} ({formatPaise(opt.pricePaise)})
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <div className="flex items-center justify-center space-x-1">
+                              <button
+                                onClick={() => updateQuantity(item.variantId, -1)}
+                                className="w-7 h-7 bg-slateBase-100 hover:bg-slateBase-200 border border-slateBase-200 rounded-lg flex items-center justify-center text-slateBase-700 transition"
+                              >
+                                <Minus className="w-3.5 h-3.5" />
+                              </button>
+                              <input
+                                type="number"
+                                step="any"
+                                min="0.001"
+                                className="w-14 text-center font-bold text-slateBase-900 bg-white border border-slateBase-200 rounded-lg py-1 text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none font-mono"
+                                value={item.quantity}
+                                onChange={(e) => setExactQuantity(item.variantId, e.target.value)}
+                              />
+                              <button
+                                onClick={() => updateQuantity(item.variantId, 1)}
+                                className="w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center transition shadow-xs"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 text-right">
+                            <div className="flex items-center justify-end space-x-1.5">
+                              <div className="text-right">
+                                <div className={`text-xs font-semibold tnum ${item.isFreeScheme ? 'line-through text-slate-400' : 'text-slateBase-900'}`}>
+                                  {item.isFreeScheme ? '₹0.00' : formatPaise(item.unitPricePaise)}
+                                </div>
+                                {item.discountPaise && !item.isFreeScheme ? (
+                                  <div className="text-[10px] text-emerald-600 font-mono">
+                                    - {formatPaise(item.discountPaise)}
+                                  </div>
+                                ) : null}
+                              </div>
+
+                              {/* 100% Free Scheme Promotion Toggle */}
+                              <button
+                                type="button"
+                                onClick={() => toggleFreeScheme(item.variantId)}
+                                className={`p-1 rounded transition ${
+                                  item.isFreeScheme
+                                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                                    : 'text-slate-300 hover:text-emerald-600'
+                                }`}
+                                title={item.isFreeScheme ? t('ఉచిత స్కీమ్ రద్దు చేయి', 'Remove Free Scheme') : t('100% ఉచిత ఆఫర్ వర్తింపజేయి', 'Apply 100% Free Scheme')}
+                              >
+                                <Gift className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Sales Return / Exchange Toggle */}
+                              <button
+                                type="button"
+                                onClick={() => handleToggleCartItemReturn(item.variantId)}
+                                className={`p-1 rounded transition ${
+                                  item.isReturn
+                                    ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
+                                    : 'text-slate-300 hover:text-rose-600'
+                                }`}
+                                title={item.isReturn ? t('సాధారణ సేల్‌గా మార్చు', 'Mark as normal sale') : t('ఈ వస్తువును రిటర్న్ / ఎక్స్ఛేంజ్‌గా మార్చు', 'Mark as Sales Return / Exchange')}
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Manual Price / Discount Override */}
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEditCartItem(item)}
+                                className="p-1 text-slateBase-400 hover:text-blue-600 transition"
+                                title="ధర / డిస్కౌంట్ మార్చండి"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                          <td className={`py-3 px-3 text-right font-bold tnum ${item.isReturn ? 'text-rose-600 font-mono' : 'text-slateBase-900 font-mono'}`}>
+                            {item.isFreeScheme ? (
+                              <span className="text-emerald-700 font-bold">₹0.00</span>
+                            ) : item.isReturn ? (
+                              <span>-{formatPaise(Math.abs(item.lineTotalPaise))}</span>
+                            ) : (
+                              formatPaise(item.lineTotalPaise)
+                            )}
+                          </td>
+                          <td className="py-3 px-2 text-center">
+                            <button
+                              onClick={() => removeFromCart(item.variantId)}
+                              className="text-slateBase-400 hover:text-classicCrimson-600 p-1 transition"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
 
           {/* Quick Clear & Park Cart Bar */}
           {cart.length > 0 && (
@@ -2166,23 +2534,56 @@ export const PosScreen: React.FC = () => {
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowKhataModal(true)}
-                    className="flex-1 py-2.5 px-3 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 transition flex items-center justify-center gap-1.5 shadow-xs"
-                  >
-                    <BookOpen className="w-4 h-4 text-blue-600" />
-                    <span>{t('ఖాతా ఎంచుకోండి', 'Select Khata')}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddCustomerModal(true)}
-                    className="py-2.5 px-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1 shadow-xs"
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    <span>{t('+ కొత్తది', '+ New')}</span>
-                  </button>
+                <div className="space-y-2.5">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowKhataModal(true)}
+                      className="flex-1 py-2.5 px-3 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 transition flex items-center justify-center gap-1.5 shadow-xs"
+                    >
+                      <BookOpen className="w-4 h-4 text-blue-600" />
+                      <span>{t('ఖాతాదారుని ఎంచుకోండి (Khata / Dealer)', 'Select Khata')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddCustomerModal(true)}
+                      className="py-2.5 px-3.5 bg-[#093426] hover:bg-[#124b38] text-white rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1 shadow-xs"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      <span>{t('+ కొత్త ఖాతా', '+ New Khata')}</span>
+                    </button>
+                  </div>
+
+                  {/* Direct Walk-in / Cash Customer WhatsApp Bill Bar */}
+                  <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-950">
+                        <Share2 className="w-3.5 h-3.5 text-emerald-700" />
+                        <span>{t('నగదు కస్టమర్ వాట్సాప్ బిల్లు (Walk-in Receipt)', 'Walk-in WhatsApp Bill')}</span>
+                      </div>
+                      <span className="text-[9px] text-emerald-800 font-bold bg-emerald-200/60 px-1.5 py-0.2 rounded-full">
+                        ఖాతా అవసరం లేదు
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        value={walkinCustName}
+                        onChange={(e) => setWalkinCustName(e.target.value)}
+                        placeholder="కస్టమర్ పేరు (ఉదా: రవి)"
+                        className="px-2.5 py-1.5 text-xs rounded-xl border border-emerald-300/80 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium text-slate-900"
+                      />
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={walkinCustPhone}
+                        onChange={(e) => setWalkinCustPhone(e.target.value.replace(/\D/g, ''))}
+                        placeholder="వాట్సాప్ నం: 9848012345"
+                        className="px-2.5 py-1.5 text-xs rounded-xl border border-emerald-300/80 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono font-bold text-slate-900"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -3147,6 +3548,211 @@ export const PosScreen: React.FC = () => {
                         <span>{t('GSTR-1 JSON ఎక్స్‌పోర్ట్', 'Export GSTR-1 JSON')}</span>
                       </button>
                     </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
+      {/* INTERACTIVE DEDICATED QUICK WEIGHT / GRAMS & KG MODAL */}
+      {weighModalVariant && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full border border-slate-200 shadow-2xl animate-in zoom-in-95 duration-150 space-y-4">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200">
+                  <Scale className="w-5 h-5 stroke-[2.2]" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">
+                    {productMap.get(weighModalVariant.productId)?.nameTe || weighModalVariant.variantName}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {productMap.get(weighModalVariant.productId)?.nameEn || weighModalVariant.sku}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setWeighModalVariant(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Live Store Stock & Rate Banner */}
+            <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex items-center justify-between text-xs">
+              <div>
+                <span className="text-slate-500 font-medium">దుకాణంలో నిల్వ: </span>
+                <span className={`font-mono font-extrabold text-sm ${weighModalVariant.currentStock <= 5 ? 'text-rose-600' : 'text-emerald-700'}`}>
+                  {weighModalVariant.currentStock} {weighModalVariant.unit}
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-slate-500 font-medium">ధర: </span>
+                <span className="font-mono font-extrabold text-sm text-slate-900">
+                  {formatPaise(weighModalVariant.sellingPricePaise)} / kg
+                </span>
+              </div>
+            </div>
+
+            {/* Unit Selector: Grams vs Kg */}
+            <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setWeighModalUnit('GRAMS');
+                  setWeighModalAmount('250');
+                }}
+                className={`flex-1 py-2 text-center font-bold text-xs rounded-lg transition-all ${
+                  weighModalUnit === 'GRAMS'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                ⚖️ గ్రాములు (Grams)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setWeighModalUnit('KG');
+                  setWeighModalAmount('1');
+                }}
+                className={`flex-1 py-2 text-center font-bold text-xs rounded-lg transition-all ${
+                  weighModalUnit === 'KG'
+                    ? 'bg-[#093426] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                ⚖️ కిలోలు (Kilograms)
+              </button>
+            </div>
+
+            {/* Quick Increment Chips */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700">
+                త్వరిత ఎంపిక (Quick Presets):
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {weighModalUnit === 'GRAMS' ? (
+                  [
+                    { label: '50g', val: '50' },
+                    { label: '100g', val: '100' },
+                    { label: '250g (పావు kg)', val: '250' },
+                    { label: '500g (అర kg)', val: '500' },
+                    { label: '750g (ముప్పావు kg)', val: '750' },
+                  ].map((p) => (
+                    <button
+                      key={p.val}
+                      type="button"
+                      onClick={() => setWeighModalAmount(p.val)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition border ${
+                        weighModalAmount === p.val
+                          ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                          : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))
+                ) : (
+                  [
+                    { label: '1 kg', val: '1' },
+                    { label: '2 kg', val: '2' },
+                    { label: '3 kg', val: '3' },
+                    { label: '5 kg', val: '5' },
+                    { label: '10 kg', val: '10' },
+                    { label: '25 kg (బస్తా)', val: '25' },
+                  ].map((p) => (
+                    <button
+                      key={p.val}
+                      type="button"
+                      onClick={() => setWeighModalAmount(p.val)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition border ${
+                        weighModalAmount === p.val
+                          ? 'bg-[#093426] text-white border-[#093426] shadow-xs'
+                          : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Manual Numeric Input */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {weighModalUnit === 'GRAMS' ? 'ఎంత గ్రాములు కావాలి? (Enter Grams):' : 'ఎంత కిలోలు కావాలి? (Enter Kg):'}
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step={weighModalUnit === 'GRAMS' ? '10' : '0.1'}
+                  min="0.01"
+                  value={weighModalAmount}
+                  onChange={(e) => setWeighModalAmount(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-[#093426] focus:ring-2 focus:ring-emerald-100 text-base font-mono font-bold text-slate-900"
+                />
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
+                  {weighModalUnit === 'GRAMS' ? 'గ్రాములు (g)' : 'కిలోలు (kg)'}
+                </span>
+              </div>
+            </div>
+
+            {/* Live Calculated Total & Stock Warning */}
+            {(() => {
+              const amt = parseFloat(weighModalAmount) || 0;
+              const effKg = weighModalUnit === 'GRAMS' ? amt / 1000 : amt;
+              const linePaise = Math.round(effKg * weighModalVariant.sellingPricePaise);
+              const isExcess = effKg > weighModalVariant.currentStock;
+
+              return (
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-600">బిల్లు లెక్క:</span>
+                    <div className="text-right">
+                      <span className="text-xs font-mono text-slate-500">
+                        {effKg.toFixed(3)} kg × {formatPaise(weighModalVariant.sellingPricePaise)}/kg ={' '}
+                      </span>
+                      <span className="text-base font-mono font-black text-emerald-700">
+                        {formatPaise(linePaise)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isExcess && (
+                    <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>
+                        హెచ్చరిక: దుకాణంలో ప్రస్తుత నిల్వ {weighModalVariant.currentStock} kg మాత్రమే ఉంది!
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setWeighModalVariant(null)}
+                      className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                    >
+                      రద్దు (Cancel)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleConfirmWeighModal}
+                      className="px-5 py-2.5 bg-[#093426] hover:bg-[#124b38] text-white rounded-xl text-xs font-extrabold shadow-md active:scale-95 transition flex items-center gap-1.5"
+                    >
+                      <Plus className="w-4 h-4 stroke-[2.5]" />
+                      <span>కార్ట్‌కు చేర్చండి ({formatPaise(linePaise)})</span>
+                    </button>
                   </div>
                 </div>
               );

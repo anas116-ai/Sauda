@@ -18,6 +18,10 @@ const TELUGU_NUMBERS: Record<string, number> = {
   'ముప్పావు': 0.75,
   'ఒకటిన్నర': 1.5,
   'రెండున్నర': 2.5,
+  'కేజీన్నర': 1.5,
+  'రెండు కిలోలు': 2,
+  'రెండు కేజీలు': 2,
+  'ఒక లడీ': 1,
 };
 
 // Hindi Numbers Mapping
@@ -111,6 +115,14 @@ const PRODUCT_ALIASES: { keywords: string[]; skuMatches: string[] }[] = [
   {
     keywords: ['పసుపు', 'turmeric', 'haldi'],
     skuMatches: ['TURMERIC-100G'],
+  },
+  {
+    keywords: ['క్లినిక్ ప్లస్', 'క్లినిక్', 'షాంపూ', 'లడీ', 'clinic plus', 'clinic', 'shampoo', 'ladi'],
+    skuMatches: ['CLINIC-SHAMPOO-LADI', 'SHAMPOO-CLINIC-LADI', 'CLINIC-LADI-24', 'var-003-1kg'],
+  },
+  {
+    keywords: ['జీలకర్ర', 'జీరా', 'jeera', 'cumin', 'zeera'],
+    skuMatches: ['JEERA-100G', 'JEERA-LOOSE-1KG', 'CUMIN-100G', 'var-004-1kg'],
   },
 ];
 

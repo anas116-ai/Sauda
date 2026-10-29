@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T18:29:39.083Z",
+  "generatedAt": "2026-10-27T06:16:34.982Z",
   "url": "http://localhost:5173/",
   "viewport": "1440x950 (desktop) + 390x844 (mobile probe)",
   "total": 46,
@@ -40,12 +40,12 @@
     {
       "name": "P2 · Telugu product search returns matches",
       "pass": true,
-      "detail": "results=5"
+      "detail": "results=7"
     },
     {
       "name": "P3 · English product search returns matches",
       "pass": true,
-      "detail": "results=8"
+      "detail": "results=9"
     },
     {
       "name": "P4 · Add product to cart updates bill total",
@@ -170,7 +170,7 @@
     {
       "name": "S5 · Encrypted JSON backup downloads",
       "pass": true,
-      "detail": "Sauda_Backup_2026-10-26.json 88.7KB"
+      "detail": "Sauda_Backup_2026-10-27.json 88.7KB"
     },
     {
       "name": "T-reorder · reorder studio opens",
@@ -190,7 +190,7 @@
     {
       "name": "T-dayend · dayend studio opens",
       "pass": true,
-      "detail": "Day-End Closing & Z-Report Studio 10/26/2026 Reconcile daily"
+      "detail": "Day-End Closing & Z-Report Studio 10/27/2026 Reconcile daily"
     },
     {
       "name": "T-mesh · mesh studio opens",

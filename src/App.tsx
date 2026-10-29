@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { PinLoginModal } from './components/PinLoginModal';
+import { FullLandingPage } from './components/FullLandingPage';
+import { StoreOnboardingModal } from './components/StoreOnboardingModal';
+import { GuidedDemoTourModal } from './components/GuidedDemoTourModal';
+import { GraduationCap } from 'lucide-react';
+
 import { PosScreen } from './features/pos/PosScreen';
 import { ProductCatalog } from './features/products/ProductCatalog';
 import { KhataScreen } from './features/khata/KhataScreen';
@@ -21,7 +26,15 @@ import { ExportCenterScreen } from './features/export/ExportCenterScreen';
 const MainLayout: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [toolModalTrigger, setToolModalTrigger] = useState<string | null>(null);
-  const { isLocked } = useApp();
+  const [showGuidedTour, setShowGuidedTour] = useState<boolean>(false);
+  const { 
+    isLocked, 
+    showOnboardingModal, 
+    setShowOnboardingModal,
+    showGatewayModal,
+    setShowGatewayModal,
+    t
+  } = useApp();
 
   const handleOpenTool = (toolId: string) => {
     setCurrentTab('dashboard');
@@ -58,7 +71,7 @@ const MainLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-paper text-ink flex selection:bg-copper-600 selection:text-paper overflow-hidden font-sans">
+    <div className="relative min-h-screen bg-white text-slate-900 flex selection:bg-[#2563EB] selection:text-white overflow-hidden font-sans">
       {/* Left navigation */}
       <div className="relative z-10">
         <Sidebar
@@ -69,7 +82,20 @@ const MainLayout: React.FC = () => {
       </div>
 
       {/* Main viewport */}
-      <main className="relative z-10 flex-1 min-w-0 h-screen overflow-y-auto bg-paper flex flex-col">
+      <main className="relative z-10 flex-1 min-w-0 h-screen overflow-y-auto bg-white flex flex-col">
+        {/* Floating Top Tour Pill */}
+        <div className="absolute top-3 right-4 z-20 hidden md:flex items-center gap-2">
+          <button
+            type="button"
+            data-testid="header-open-tour-btn"
+            onClick={() => setShowGuidedTour(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white text-[11px] font-bold shadow-md backdrop-blur-sm border border-slate-700/60 transition active:scale-95"
+          >
+            <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{t('🎓 డెమో టూర్ / ఎలా ఉపయోగించాలి?', '🎓 Guided Tour / How to Use')}</span>
+          </button>
+        </div>
+
         {/* Tab Content */}
         <div className="flex-1 min-h-0">
           {currentTab === 'dashboard' && (
@@ -96,8 +122,32 @@ const MainLayout: React.FC = () => {
         </div>
       </main>
 
+      {/* Full-Screen Landing Page & Multi-Store Terminal Gateway */}
+      {showGatewayModal && !showOnboardingModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+          <FullLandingPage onClose={() => setShowGatewayModal(false)} />
+        </div>
+      )}
+
+      {/* Store Onboarding Wizard Modal */}
+      {showOnboardingModal && (
+        <StoreOnboardingModal onClose={() => setShowOnboardingModal(false)} />
+      )}
+
+
+
       {/* Lock Screen PIN Modal */}
       {isLocked && <PinLoginModal />}
+
+      {/* Guided Interactive Demo Tour Modal */}
+      <GuidedDemoTourModal
+        isOpen={showGuidedTour}
+        onClose={() => setShowGuidedTour(false)}
+        onNavigateTab={(tab) => {
+          setCurrentTab(tab);
+          setShowGuidedTour(false);
+        }}
+      />
     </div>
   );
 };

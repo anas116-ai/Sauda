@@ -24,6 +24,7 @@ export interface User {
   pinHash: string; // 4-digit PIN
   isActive: boolean;
   createdAt: number;
+  updatedAt?: number;
 }
 
 export type ActivityActionType = 
@@ -66,6 +67,7 @@ export interface BankAccount {
   isDefault: boolean;
   isActive: boolean;
   createdAt: number;
+  updatedAt?: number;
 }
 
 export type AccountTransactionType = 
@@ -126,6 +128,7 @@ export type PurchaseOrderStatus = 'DRAFT' | 'SENT' | 'PARTIALLY_RECEIVED' | 'COM
 
 export interface PurchaseOrderItem {
   id: string;
+  productId?: string;
   variantId: string;
   productNameEn: string;
   productNameTe: string;
@@ -160,6 +163,7 @@ export type DeliveryChallanStatus = 'DISPATCHED' | 'DELIVERED' | 'INVOICED' | 'C
 
 export interface DeliveryChallanItem {
   id: string;
+  productId?: string;
   variantId: string;
   productNameEn: string;
   productNameTe: string;
@@ -338,6 +342,9 @@ export interface Customer {
   // Feature 8: Customer Loyalty & Rewards Points
   loyaltyPointsBalance?: number;
   totalPointsEarned?: number;
+  village?: string;
+  address?: string;
+  khataBalancePaise?: number;
 }
 
 export type LoyaltyTransactionType = 'EARNED' | 'REDEEMED' | 'EXPIRED' | 'ADJUSTMENT';
@@ -419,6 +426,8 @@ export type CustomerLedgerEntryType = 'DEBIT_SALE' | 'CREDIT_PAYMENT' | 'REVERSA
 
 export interface CustomerLedgerEntry {
   id: string;
+  shopId?: string;
+  billNumber?: string;
   customerId: string;
   entryType: CustomerLedgerEntryType;
   amountPaise: number;
@@ -453,6 +462,7 @@ export type SupplierLedgerEntryType = 'PURCHASE_CREDIT' | 'PAYMENT_DEBIT' | 'RET
 
 export interface SupplierLedgerEntry {
   id: string;
+  shopId?: string;
   supplierId: string;
   entryType: SupplierLedgerEntryType;
   amountPaise: number;
@@ -527,6 +537,7 @@ export interface ProductBatch {
   inwardReferenceId?: string;
   notes?: string;
   createdAt: number;
+  updatedAt?: number;
 }
 
 // ========================
@@ -1045,6 +1056,8 @@ export interface ActiveCounterStatus {
   todayTurnoverPaise: number;
   lastBillNumber?: string;
   lastBillTime?: number;
+  syncStatus?: string;
+  billsIssuedToday?: number;
 }
 
 export interface LiveCartLock {
@@ -1075,6 +1088,8 @@ export interface MultiCounterConsolidation {
   }[];
   totalStoreTurnoverPaise: number;
   totalStoreBillsCount: number;
+  totalCashCollectedPaise?: number;
+  totalUpiCollectedPaise?: number;
 }
 
 // ========================

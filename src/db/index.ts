@@ -123,6 +123,10 @@ export class LekvyaDatabase extends Dexie {
     this.version(15).stores({
       activityLogs: 'id, shopId, userId, actionType, severity, timestamp',
     });
+
+    this.version(16).stores({
+      customerLedger: 'id, shopId, customerId, entryType, timestamp, referenceBillId',
+    });
   }
 }
 
@@ -353,7 +357,7 @@ export async function seedInitialData() {
       purchaseCostPaise: 14500, // ₹145.00
       sellingPricePaise: 17000, // ₹170.00
       mrpPaise: 18000, // ₹180.00
-      currentStock: 25,
+      currentStock: 10,
       minStockAlert: 5,
       barcodes: ['6001'],
       isActive: true,
@@ -984,8 +988,8 @@ export async function seedInitialData() {
       purchaseCostPaise: 3800, // ₹38.00 / kg
       sellingPricePaise: 4400, // ₹44.00 / kg
       mrpPaise: 4800,          // ₹48.00 / kg
-      currentStock: 300,       // 300 kg
-      minStockAlert: 40,
+      currentStock: 20,        // 20 kg initial for retail
+      minStockAlert: 5,
       barcodes: ['7001', 'LOOSE-SUGAR'],
       isActive: true,
     });

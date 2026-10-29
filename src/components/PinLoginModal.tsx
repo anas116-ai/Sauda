@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Lock, Delete, ShieldAlert } from 'lucide-react';
+import { Lock, Delete, ShieldAlert, KeyRound } from 'lucide-react';
 import { SaudaLogo } from './SaudaLogo';
+import { ForgotPinModal } from './ForgotPinModal';
 
 export const PinLoginModal: React.FC = () => {
-  const { isLocked, unlockWithPin, t } = useApp();
+  const { isLocked, unlockWithPin, t, currentShop } = useApp();
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
+  const [showForgotPin, setShowForgotPin] = useState(false);
 
   if (!isLocked) return null;
 
@@ -129,22 +131,31 @@ export const PinLoginModal: React.FC = () => {
             </button>
           </div>
 
-          <div className="mt-6 border-t border-stone-200 pt-3 font-mono text-[10px] leading-relaxed text-stone-500">
-            <span className="uppercase tracking-[0.1em]">{t('టెస్ట్ పిన్‌లు', 'Test PINs')}</span>
-            <div className="mt-1 flex items-center justify-center gap-3">
-              <span>
-                {t('యజమాని', 'Owner')}{' '}
-                <strong className="font-semibold text-ink-900">1234</strong>
-              </span>
-              <span className="h-3 w-px bg-stone-300" />
-              <span>
-                {t('క్యాషియర్', 'Cashier')}{' '}
-                <strong className="font-semibold text-ink-900">0000</strong>
-              </span>
+          <div className="mt-6 border-t border-stone-200 pt-3 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowForgotPin(true)}
+              className="text-xs font-semibold text-stone-700 hover:text-stone-900 hover:underline flex items-center gap-1.5 py-1"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>{t('పిన్ మర్చిపోయారా? (Forgot PIN?)', 'Forgot PIN?')}</span>
+            </button>
+
+            <div className="font-mono text-[10px] leading-relaxed text-stone-500">
+              <span className="uppercase tracking-[0.1em]">{t('టెస్ట్ పిన్‌లు', 'Test PINs')}</span>: {t('యజమాని', 'Owner')} <strong className="font-semibold text-ink-900">1234</strong> | {t('క్యాషియర్', 'Cashier')} <strong className="font-semibold text-ink-900">0000</strong>
             </div>
           </div>
         </div>
       </div>
+
+      <ForgotPinModal
+        isOpen={showForgotPin}
+        onClose={() => setShowForgotPin(false)}
+        shop={currentShop}
+        onPinResetSuccess={(newPin) => {
+          unlockWithPin(newPin);
+        }}
+      />
     </div>
   );
 };

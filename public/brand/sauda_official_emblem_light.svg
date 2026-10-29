@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none" aria-label="SAUDA Brand Logo">
+  <title>SAUDA Official Emblem</title>
+
+  <!-- 1. Dominant Capital 'S' (Bold, flowing, shield-integrated) -->
+  <path d="M 184 62
+           C 184 38, 160 22, 128 22
+           C 94 22, 70 38, 70 66
+           C 70 94, 96 112, 132 124
+           C 168 136, 194 154, 194 186
+           C 194 218, 164 238, 128 238
+           C 106 238, 86 230, 72 216
+           L 84 198
+           C 96 210, 110 218, 128 218
+           C 152 218, 172 204, 172 186
+           C 172 162, 148 148, 114 136
+           C 78 124, 50 104, 50 66
+           C 50 28, 84 4, 128 4
+           C 168 4, 202 24, 204 62
+           Z"
+        fill="#093426"/>
+
+  <!-- 2. Two Symmetrical Protective Hand Shapes (Cradling the lower emblem) -->
+  <!-- Left Hand / Protective Wing: curves down from outer flank, tapering into base apex -->
+  <path d="M 44 116
+           C 44 168, 70 212, 128 248
+           C 125 244, 112 232, 102 218
+           C 76 182, 64 148, 64 116
+           C 64 104, 60 96, 54 94
+           C 48 98, 44 106, 44 116
+           Z"
+        fill="#093426"/>
+  <!-- Inner left cupping thumb/palm feather -->
+  <path d="M 72 152
+           C 72 184, 90 210, 116 226
+           C 110 216, 98 198, 92 180
+           C 86 164, 86 148, 86 142
+           C 86 136, 78 138, 74 142
+           C 72 146, 72 148, 72 152
+           Z"
+        fill="#093426"/>
+
+  <!-- Right Hand / Protective Wing (perfect bilateral symmetry) -->
+  <path d="M 212 116
+           C 212 168, 186 212, 128 248
+           C 131 244, 144 232, 154 218
+           C 180 182, 192 148, 192 116
+           C 192 104, 196 96, 202 94
+           C 208 98, 212 106, 212 116
+           Z"
+        fill="#093426"/>
+  <!-- Inner right cupping thumb/palm feather -->
+  <path d="M 184 152
+           C 184 184, 166 210, 140 226
+           C 146 216, 158 198, 164 180
+           C 170 164, 170 148, 170 142
+           C 170 136, 178 138, 182 142
+           C 184 146, 184 148, 184 152
+           Z"
+        fill="#093426"/>
+
+  <!-- 3. Central Burnt Orange Shopping Cart (Clean, bold, highly legible at small sizes) -->
+  <!-- Centered horizontally around x=128, positioned inside the lower negative space -->
+  <g id="sauda-cart">
+    <!-- Handle -->
+    <path d="M 102 152 L 110 152 L 115 163 L 147 163 L 143 181 L 119 181" 
+          fill="none" 
+          stroke="#DF5E26" 
+          stroke-width="3.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    <!-- Basket Fill Plate -->
+    <polygon points="118,166 144,166 141,178 121,178" fill="#DF5E26"/>
+    <!-- Chassis & Wheels -->
+    <line x1="116" y1="187" x2="142" y2="187" stroke="#DF5E26" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="122" cy="193" r="3.5" fill="#DF5E26"/>
+    <circle cx="137" cy="193" r="3.5" fill="#DF5E26"/>
+  </g>
+</svg>

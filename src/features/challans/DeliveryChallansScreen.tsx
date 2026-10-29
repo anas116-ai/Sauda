@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 
 export const DeliveryChallansScreen: React.FC = () => {
-  const { formatPaise, currentShop, currentUser } = useApp();
+  const { formatPaise, currentShop, currentUser, lang, t } = useApp();
 
   // Modals & form state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -97,23 +97,25 @@ export const DeliveryChallansScreen: React.FC = () => {
       setChallanItems(challanItems.map(i => i.variantId === v.id 
         ? { 
             ...i, 
-            quantity: i.quantity + 1, 
-            lineTotalPaise: (i.quantity + 1) * i.unitPricePaise 
+            quantity: i.quantity + 1,
+            lineTotalPaise: (i.quantity + 1) * i.unitPricePaise
           }
         : i
       ));
     } else {
-      setChallanItems([...challanItems, {
-        id: `dci-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      const newItem: DeliveryChallanItem = {
+        id: `item-${Date.now()}-${v.id}`,
         variantId: v.id,
-        productNameEn: p?.nameEn || v.sku,
-        productNameTe: p?.nameTe || '',
+        productId: v.productId,
+        productNameEn: p?.nameEn || 'Item',
+        productNameTe: p?.nameTe || p?.nameEn || 'Item',
         variantName: v.variantName,
         unit: v.unit,
         quantity: 1,
         unitPricePaise: v.sellingPricePaise,
         lineTotalPaise: v.sellingPricePaise,
-      }]);
+      };
+      setChallanItems([...challanItems, newItem]);
     }
     setProductSearch('');
   };
@@ -122,17 +124,11 @@ export const DeliveryChallansScreen: React.FC = () => {
     setChallanItems(challanItems.map(i => {
       if (i.variantId === variantId) {
         const newQty = Math.max(1, i.quantity + delta);
-        return { ...i, quantity: newQty, lineTotalPaise: newQty * i.unitPricePaise };
-      }
-      return i;
-    }));
-  };
-
-  const handleUpdatePrice = (variantId: string, priceRupees: number) => {
-    const pricePaise = Math.round(priceRupees * 100);
-    setChallanItems(challanItems.map(i => {
-      if (i.variantId === variantId) {
-        return { ...i, unitPricePaise: pricePaise, lineTotalPaise: i.quantity * pricePaise };
+        return {
+          ...i,
+          quantity: newQty,
+          lineTotalPaise: newQty * i.unitPricePaise
+        };
       }
       return i;
     }));
@@ -142,31 +138,30 @@ export const DeliveryChallansScreen: React.FC = () => {
     setChallanItems(challanItems.filter(i => i.variantId !== variantId));
   };
 
-  // Totals for Challan
-  const totalQty = challanItems.reduce((acc, i) => acc + i.quantity, 0);
-  const subtotalPaise = challanItems.reduce((acc, i) => acc + i.lineTotalPaise, 0);
-  const taxPaise = Math.round(subtotalPaise * 0.05); // 5% GST standard estimate
-  const totalAmountPaise = subtotalPaise + taxPaise;
-
-  // Customer selection
+  // Select registered customer
   const handleCustomerSelect = (id: string) => {
     setCustomerId(id);
-    const found = customers.find(c => c.id === id);
-    if (found) {
-      setCustomerName(found.fullName);
-      setCustomerPhone(found.phone || '');
-      setDeliveryAddress(found.villageCity || '');
+    const c = customers.find(cust => cust.id === id);
+    if (c) {
+      setCustomerName(c.fullName);
+      setCustomerPhone(c.phone || '');
+      setDeliveryAddress(c.village || c.address || '');
     }
   };
 
-  // Submit New Challan
+  // Calculations for new Challan
+  const totalQty = challanItems.reduce((acc, i) => acc + i.quantity, 0);
+  const subtotalPaise = challanItems.reduce((acc, i) => acc + i.lineTotalPaise, 0);
+  const totalAmountPaise = subtotalPaise;
+
+  // Submit Challan
   const handleCreateChallan = async () => {
     if (!customerName.trim()) {
-      alert('దయచేసి కస్టమర్ పేరు నమోదు చేయండి (Customer name is required)');
+      alert(t('దయచేసి కస్టమర్ పేరు నమోదు చేయండి', 'Please enter customer name'));
       return;
     }
     if (challanItems.length === 0) {
-      alert('కనీసం ఒక సరుకును చలాన్‌లో చేర్చండి (Add at least 1 item to challan)');
+      alert(t('కనీసం ఒక సరుకును చలాన్‌లో చేర్చండి', 'Add at least 1 item to challan'));
       return;
     }
 
@@ -181,13 +176,13 @@ export const DeliveryChallansScreen: React.FC = () => {
       customerId: customerId || undefined,
       customerName,
       customerPhone,
-      deliveryAddress,
       vehicleNumber,
-      dispatchDate: now,
+      deliveryAddress,
       status: 'DISPATCHED',
+      dispatchDate: now,
       totalQuantity: totalQty,
       subtotalPaise,
-      taxPaise,
+      taxPaise: 0,
       totalAmountPaise,
       notes: challanNotes,
       createdAt: now,
@@ -197,7 +192,7 @@ export const DeliveryChallansScreen: React.FC = () => {
     await db.deliveryChallans.add(newChallan);
     setShowCreateModal(false);
     resetForm();
-    triggerToast(`డెలివరీ చలాన్ #${challanNumber} జారీ చేయబడింది!`);
+    triggerToast(t(`డెలివరీ చలాన్ #${challanNumber} విజయవంతంగా సృష్టించబడింది!`, `Delivery Challan #${challanNumber} created successfully!`));
   };
 
   const resetForm = () => {
@@ -211,19 +206,19 @@ export const DeliveryChallansScreen: React.FC = () => {
     setProductSearch('');
   };
 
-  // Convert Challan to Bill
-  const handleConfirmBill = async () => {
+  // Convert Challan to POS Bill
+  const handleConfirmConvertToBill = async () => {
     if (!billModalChallan) return;
     try {
-      const bill = await convertChallanToBill(
+      await convertChallanToBill(
         billModalChallan.id,
         paymentMethod,
         currentUser?.id || 'user-001'
       );
       setBillModalChallan(null);
-      triggerToast(`చలాన్ #${billModalChallan.challanNumber} విజయవంతంగా బిల్లు #${bill.billNumber} గా మారింది!`);
+      triggerToast(t(`చలాన్ #${billModalChallan.challanNumber} విజయవంతంగా బిల్లుగా మారింది!`, `Challan #${billModalChallan.challanNumber} converted to POS Bill successfully!`));
     } catch (err: unknown) {
-      alert(`లోపం: ${err instanceof Error ? err.message : 'Bill conversion failed'}`);
+      alert(`Error: ${err instanceof Error ? err.message : 'Challan conversion failed'}`);
     }
   };
 
@@ -231,7 +226,7 @@ export const DeliveryChallansScreen: React.FC = () => {
   const handleExportCsv = () => {
     const csv = exportChallansCsv(deliveryChallans, currentShop?.name || 'Sri Lakshmi General Store');
     triggerCsvDownload(csv, `Delivery_Challans_${new Date().toISOString().split('T')[0]}.csv`);
-    triggerToast('డెలివరీ చలాన్ల రిపోర్ట్ CSV డౌన్‌లోడ్ అయ్యింది!');
+    triggerToast(t('డెలివరీ చలాన్ల రిపోర్ట్ CSV డౌన్‌లోడ్ అయ్యింది!', 'Delivery Challans CSV downloaded!'));
   };
 
   // Filtered list
@@ -241,6 +236,7 @@ export const DeliveryChallansScreen: React.FC = () => {
     const matchesSearch = !q || 
       dc.challanNumber.toLowerCase().includes(q) || 
       dc.customerName.toLowerCase().includes(q) ||
+      (dc.customerPhone && dc.customerPhone.includes(q)) ||
       (dc.vehicleNumber && dc.vehicleNumber.toLowerCase().includes(q));
     return matchesStatus && matchesSearch;
   });
@@ -252,24 +248,27 @@ export const DeliveryChallansScreen: React.FC = () => {
   const invoicedChallans = deliveryChallans.filter(dc => dc.status === 'INVOICED');
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-hidden" data-testid="challans-screen">
+    <div className="flex-1 flex flex-col h-full bg-white overflow-hidden" data-testid="challans-screen">
       {/* Top Header */}
-      <div className="p-4 sm:p-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 sm:p-6 bg-white border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
-            <FileText className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-2xl bg-[#F2F9EC] text-[#3F6212] border border-[#D9F99D] flex items-center justify-center font-bold shadow-xs">
+            <FileText className="w-5 h-5 text-[#2563EB]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                డెలివరీ చలాన్లు
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                {t('డెలివరీ చలాన్లు', 'Delivery Challans')}
               </h1>
-              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
-                Delivery Challans
+              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-[#F2F9EC] text-[#3F6212] border border-[#D9F99D]">
+                {t('సరుకు రవాణా', 'Dispatch & Challans')}
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              హోటళ్ళు, కేటరింగ్, శుభకార్యాల ఆర్డర్లకు వస్తువుల రవాణా పత్రాలు & ఒక క్లిక్‌తో బిల్లుగా మార్పు
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              {t(
+                'హోటళ్ళు, కేటరింగ్, శుభకార్యాల ఆర్డర్లకు వస్తువుల రవాణా పత్రాలు & ఒక క్లిక్‌తో బిల్లుగా మార్పు',
+                'Goods dispatch notes for hotels, caterers & events with 1-click POS invoice conversion'
+              )}
             </p>
           </div>
         </div>
@@ -279,18 +278,18 @@ export const DeliveryChallansScreen: React.FC = () => {
           <button
             onClick={handleExportCsv}
             data-testid="challan-export-csv"
-            className="px-3.5 py-2 text-sm font-medium border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2 shadow-sm"
+            className="px-3.5 py-2 text-xs font-semibold border border-slate-200 rounded-xl bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2 shadow-xs"
           >
             <Download className="w-4 h-4 text-slate-500" />
-            <span className="hidden sm:inline">CSV ఎగుమతి</span>
+            <span className="hidden sm:inline">{t('CSV ఎగుమతి', 'Export CSV')}</span>
           </button>
           <button
             onClick={() => { resetForm(); setShowCreateModal(true); }}
             data-testid="btn-create-challan"
-            className="px-4 py-2 text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-2 shadow-md shadow-indigo-600/20"
+            className="px-4 py-2 text-xs font-bold rounded-xl bg-[#161918] hover:bg-slate-900 text-white transition flex items-center gap-2 shadow-xs border border-slate-800 active:scale-95"
           >
-            <Plus className="w-4 h-4" />
-            <span>కొత్త చలాన్ (+ New Challan)</span>
+            <Plus className="w-4 h-4 text-[#2563EB]" />
+            <span>{t('+ కొత్త చలాన్', '+ New Delivery Challan')}</span>
           </button>
         </div>
       </div>
@@ -299,42 +298,42 @@ export const DeliveryChallansScreen: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">మొత్తం చలాన్లు (Total Challans)</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalCount}</h3>
-              <p className="text-xs text-slate-400 mt-1">లైవ్ రికార్డులు</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('మొత్తం చలాన్లు', 'Total Challans')}</p>
+              <h3 className="text-2xl font-bold font-outfit text-slate-900 mt-1">{totalCount}</h3>
+              <p className="text-xs text-slate-400 mt-1">{t('లైవ్ రికార్డులు', 'Live Dispatch Records')}</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-              <FileText className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F2F9EC] border border-[#D9F99D] text-[#3F6212] flex items-center justify-center shadow-xs">
+              <FileText className="w-5 h-5 text-[#2563EB]" />
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">రవాణాలో ఉన్నవి (In-Transit)</p>
-              <h3 className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">{formatPaise(inTransitValuePaise)}</h3>
-              <p className="text-xs text-slate-400 mt-1">{inTransitChallans.length} చలాన్లు డెలివరీలో ఉన్నాయి</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('రవాణాలో ఉన్నవి', 'In-Transit Value')}</p>
+              <h3 className="text-2xl font-bold font-outfit text-slate-900 mt-1">{formatPaise(inTransitValuePaise)}</h3>
+              <p className="text-xs text-slate-400 mt-1">{inTransitChallans.length} {t('చలాన్లు డెలివరీలో ఉన్నాయి', 'challans in transit')}</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <Clock className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 flex items-center justify-center shadow-xs">
+              <Clock className="w-5 h-5 text-slate-500" />
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">బిల్లుగా మారినవి (Invoiced)</p>
-              <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{invoicedChallans.length}</h3>
-              <p className="text-xs text-slate-400 mt-1">ఖాతా / బిల్లు లో చేరినవి</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('బిల్లుగా మారినవి', 'Invoiced to Bills')}</p>
+              <h3 className="text-2xl font-bold font-outfit text-[#3F6212] mt-1">{invoicedChallans.length}</h3>
+              <p className="text-xs text-slate-400 mt-1">{t('ఖాతా / బిల్లు లో చేరినవి', 'Settled to customer accounts')}</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F2F9EC] border border-[#D9F99D] text-[#3F6212] flex items-center justify-center shadow-xs">
+              <CheckCircle2 className="w-5 h-5 text-[#2563EB]" />
             </div>
           </div>
         </div>
 
         {/* Filters and Search Bar */}
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {(['ALL', 'DISPATCHED', 'INVOICED'] as const).map(tab => (
               <button
@@ -342,13 +341,13 @@ export const DeliveryChallansScreen: React.FC = () => {
                 onClick={() => setStatusFilter(tab)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                   statusFilter === tab
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#111827] text-white shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                {tab === 'ALL' && 'అన్నీ (All)'}
-                {tab === 'DISPATCHED' && 'రవాణాలో ఉన్నవి (Dispatched)'}
-                {tab === 'INVOICED' && 'బిల్లు అయినవి (Invoiced)'}
+                {tab === 'ALL' && t('అన్నీ', 'All')}
+                {tab === 'DISPATCHED' && t('రవాణాలో ఉన్నవి', 'Dispatched')}
+                {tab === 'INVOICED' && t('బిల్లు అయినవి', 'Invoiced')}
               </button>
             ))}
           </div>
@@ -359,70 +358,72 @@ export const DeliveryChallansScreen: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="కస్టమర్, వాహనం లేదా చలాన్ నెం శోధించండి..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder={t('కస్టమర్, వాహనం లేదా చలాన్ నెం శోధించండి...', 'Search customer, vehicle or challan no...')}
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
             />
           </div>
         </div>
 
         {/* Challans List */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
           {filteredChallans.length === 0 ? (
             <div className="p-12 text-center text-slate-400">
               <FileText className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p className="text-base font-semibold">ఎలాంటి డెలివరీ చలాన్లు లేవు</p>
-              <p className="text-xs text-slate-500 mt-1">కొత్త చలాన్ రూపొందించడానికి '+ కొత్త చలాన్' పై క్లిక్ చేయండి</p>
+              <p className="text-base font-semibold">{t('ఎలాంటి డెలివరీ చలాన్లు లేవు', 'No delivery challans found')}</p>
+              <p className="text-xs text-slate-500 mt-1">{t('కొత్త చలాన్ రూపొందించడానికి "+ కొత్త చలాన్" పై క్లిక్ చేయండి', 'Click "+ New Delivery Challan" above to create one')}</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-slate-100">
               {filteredChallans.map(dc => {
                 const isExpanded = expandedChallanId === dc.id;
                 const shareUrl = formatChallanWhatsAppShare(dc, currentShop?.name, currentShop?.phone);
 
                 return (
-                  <div key={dc.id} className="p-4 sm:p-5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition">
+                  <div key={dc.id} className="p-4 sm:p-5 hover:bg-slate-50/70 transition">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      {/* Left info */}
+                      {/* Left: Challan info */}
                       <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 border ${
                           dc.status === 'INVOICED'
-                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'
-                            : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400'
+                            ? 'bg-[#F2F9EC] text-[#3F6212] border-[#D9F99D]'
+                            : 'bg-slate-50 text-slate-700 border-slate-200'
                         }`}>
-                          {dc.status === 'INVOICED' ? <Receipt className="w-5 h-5" /> : <Navigation className="w-5 h-5" />}
+                          <Navigation className="w-5 h-5 text-[#2563EB]" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-slate-900 dark:text-white text-base">
+                            <h4 className="font-bold text-slate-900 text-base">
                               {dc.challanNumber}
                             </h4>
-                            <span className={`px-2 py-0.5 text-[11px] font-semibold rounded-full ${
+                            <span className={`px-2 py-0.5 text-[11px] font-semibold rounded-full border ${
                               dc.status === 'INVOICED'
-                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                                : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
+                                ? 'bg-[#F2F9EC] text-[#3F6212] border-[#D9F99D]'
+                                : 'bg-amber-50 text-amber-800 border-amber-200'
                             }`}>
-                              {dc.status === 'INVOICED' ? 'బిల్లు చేయబడింది (Invoiced)' : 'రవాణాలో ఉంది (Dispatched)'}
+                              {dc.status === 'INVOICED' ? t('బిల్లుగా మారింది', 'Invoiced') : t('రవాణాలో ఉంది', 'Dispatched')}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            కస్టమర్: <strong className="text-slate-700 dark:text-slate-300">{dc.customerName}</strong> {dc.customerPhone ? `(📞 ${dc.customerPhone})` : ''} • తేది: {new Date(dc.dispatchDate).toLocaleDateString('en-IN')}
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {t('కస్టమర్:', 'Customer:')} <strong className="text-slate-800">{dc.customerName}</strong> {dc.customerPhone ? `(📞 ${dc.customerPhone})` : ''} • {t('తేది:', 'Date:')} {new Date(dc.createdAt).toLocaleDateString('en-IN')}
                           </p>
-                          {dc.vehicleNumber && (
-                            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mt-0.5">
-                              వాహనం: {dc.vehicleNumber} {dc.deliveryAddress ? `• గమ్యం: ${dc.deliveryAddress}` : ''}
+                          {(dc.vehicleNumber || dc.deliveryAddress) && (
+                            <p className="text-[11px] text-slate-600 font-medium mt-0.5">
+                              {dc.vehicleNumber && `${t('వాహనం:', 'Vehicle:')} ${dc.vehicleNumber}`}
+                              {dc.vehicleNumber && dc.deliveryAddress && ' • '}
+                              {dc.deliveryAddress && `${t('గమ్యం:', 'Destination:')} ${dc.deliveryAddress}`}
                             </p>
                           )}
                         </div>
                       </div>
 
-                      {/* Right info & actions */}
+                      {/* Right: Amounts & Actions */}
                       <div className="flex items-center gap-4 ml-auto">
                         <div className="text-right">
-                          <div className="text-sm font-bold text-slate-900 dark:text-white">
+                          <div className="text-sm font-bold text-slate-900 font-outfit">
                             {formatPaise(dc.totalAmountPaise)}
                           </div>
                           <div className="text-[11px] text-slate-500">
-                            {dc.items.length} సరుకులు ({dc.totalQuantity} యూనిట్లు)
+                            {dc.items.length} {t('సరుకులు', 'Items')} ({dc.totalQuantity} {t('యూనిట్లు', 'Units')})
                           </div>
                         </div>
 
@@ -433,33 +434,33 @@ export const DeliveryChallansScreen: React.FC = () => {
                             href={shareUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            title="WhatsApp లో రవాణా వివరాలు పంపండి"
-                            className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950 transition border border-emerald-200 dark:border-emerald-800/60"
+                            title={t('కస్టమర్‌కు WhatsApp లో చలాన్ పంపండి', 'Share Challan via WhatsApp')}
+                            className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 transition border border-emerald-200"
                           >
                             <MessageCircle className="w-4 h-4" />
                           </a>
 
-                          {/* Convert to Bill button */}
+                          {/* Convert to Bill button (if not invoiced) */}
                           {dc.status !== 'INVOICED' ? (
                             <button
                               onClick={() => setBillModalChallan(dc)}
-                              data-testid={`btn-bill-challan-${dc.id}`}
-                              className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center gap-1.5 shadow-sm"
+                              data-testid={`btn-convert-challan-${dc.id}`}
+                              className="px-3 py-1.5 text-xs font-bold rounded-xl bg-[#161918] hover:bg-slate-900 text-white transition flex items-center gap-1.5 shadow-xs border border-slate-800 active:scale-95"
                             >
-                              <Receipt className="w-3.5 h-3.5" />
-                              <span>బిల్లుగా మార్చు (Bill)</span>
+                              <Receipt className="w-3.5 h-3.5 text-[#2563EB]" />
+                              <span>{t('బిల్లుగా మార్చు', 'Convert to Bill')}</span>
                             </button>
                           ) : (
-                            <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              బిల్లు అయ్యింది
+                            <span className="text-xs text-[#3F6212] font-semibold flex items-center gap-1 bg-[#F2F9EC] border border-[#D9F99D] px-2 py-1 rounded-lg">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#2563EB]" />
+                              {t('బిల్లు పూర్తయింది', 'Billed')}
                             </span>
                           )}
 
                           {/* Expand details toggle */}
                           <button
                             onClick={() => setExpandedChallanId(isExpanded ? null : dc.id)}
-                            className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                            className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition"
                           >
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
@@ -469,28 +470,28 @@ export const DeliveryChallansScreen: React.FC = () => {
 
                     {/* Expandable item details */}
                     {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-3 rounded-xl">
-                        <h5 className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                          రవాణా చేసిన సరుకుల వివరాలు ({dc.items.length} రకాలు):
+                      <div className="mt-4 pt-4 border-t border-slate-100 bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                        <h5 className="text-xs font-bold text-slate-700 mb-2">
+                          {t('సరుకుల జాబితా', 'Dispatched Items List')} ({dc.items.length} {t('రకాలు', 'items')}):
                         </h5>
                         <div className="space-y-1.5 text-xs">
                           {dc.items.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center text-slate-600 dark:text-slate-300 py-1 border-b border-slate-100 dark:border-slate-800/50 last:border-none">
+                            <div key={idx} className="flex justify-between items-center text-slate-600 py-1 border-b border-slate-200/50 last:border-none">
                               <div>
-                                <span className="font-medium text-slate-800 dark:text-slate-200">
-                                  {item.productNameTe || item.productNameEn}
+                                <span className="font-semibold text-slate-800">
+                                  {lang === 'te' ? (item.productNameTe || item.productNameEn) : item.productNameEn}
                                 </span>
                                 <span className="text-slate-400 text-[11px] ml-1.5">({item.variantName})</span>
                               </div>
                               <div className="font-mono">
-                                {item.quantity} {item.unit} × {formatPaise(item.unitPricePaise)} = <strong className="text-slate-900 dark:text-white">{formatPaise(item.lineTotalPaise)}</strong>
+                                {item.quantity} {item.unit} × {formatPaise(item.unitPricePaise)} = <strong className="text-slate-900">{formatPaise(item.lineTotalPaise)}</strong>
                               </div>
                             </div>
                           ))}
                         </div>
                         {dc.notes && (
-                          <div className="mt-3 text-xs text-slate-500 italic bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
-                            గమనిక: {dc.notes}
+                          <div className="mt-3 text-xs text-slate-500 italic bg-white p-2 rounded-lg border border-slate-200">
+                            {t('గమనిక:', 'Note:')} {dc.notes}
                           </div>
                         )}
                       </div>
@@ -506,21 +507,21 @@ export const DeliveryChallansScreen: React.FC = () => {
       {/* ===================== MODAL: CREATE NEW DELIVERY CHALLAN ===================== */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center">
-                  <FileText className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-[#F2F9EC] text-[#3F6212] border border-[#D9F99D] flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[#2563EB]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">కొత్త డెలివరీ చలాన్ (New Delivery Challan)</h3>
-                  <p className="text-xs text-slate-500">సరుకుల రవాణా పత్రం నమోదు & వాహన వివరాలు</p>
+                  <h3 className="text-lg font-bold text-slate-900">{t('కొత్త డెలివరీ చలాన్', 'New Delivery Challan')}</h3>
+                  <p className="text-xs text-slate-500">{t('హోటళ్ళు, ఈవెంట్లు లేదా ఆర్డర్ల రవాణా వివరాలు', 'Goods dispatch details for hotels, catering & events')}</p>
                 </div>
               </div>
               <button 
                 onClick={() => setShowCreateModal(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -528,19 +529,19 @@ export const DeliveryChallansScreen: React.FC = () => {
 
             {/* Modal Body */}
             <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
-              {/* Customer and Logistics */}
+              {/* Customer & Vehicle Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    కస్టమర్ పేరు *
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t('కస్టమర్ పేరు *', 'Customer Name *')}
                   </label>
                   {customers.length > 0 && (
                     <select
                       value={customerId}
                       onChange={e => handleCustomerSelect(e.target.value)}
-                      className="w-full mb-2 p-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100"
+                      className="w-full mb-2 p-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-800"
                     >
-                      <option value="">-- రిజిస్టర్డ్ కస్టమర్‌ను ఎంచుకోండి --</option>
+                      <option value="">{t('-- రిజిస్టర్డ్ కస్టమర్‌ను ఎంచుకోండి --', '-- Select Registered Customer --')}</option>
                       {customers.map(c => (
                         <option key={c.id} value={c.id}>{c.fullName} ({c.phone || 'No phone'})</option>
                       ))}
@@ -550,53 +551,55 @@ export const DeliveryChallansScreen: React.FC = () => {
                     type="text"
                     value={customerName}
                     onChange={e => setCustomerName(e.target.value)}
-                    placeholder="కస్టమర్ పేరు రాయండి"
-                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder={t('కస్టమర్ పేరు రాయండి', 'Enter customer name')}
+                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
                   />
-                  <div className="mt-2">
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      ఫోన్ నెంబర్ (WhatsApp రసీదు)
-                    </label>
-                    <input
-                      type="tel"
-                      value={customerPhone}
-                      onChange={e => setCustomerPhone(e.target.value)}
-                      placeholder="10 అంకెల మొబైల్ నెంబర్"
-                      className="w-full p-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
-                    />
-                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    రవాణా వాహనం నెంబర్ (Vehicle No)
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t('ఫోన్ నెంబర్ (WhatsApp)', 'Phone Number (WhatsApp)')}
+                  </label>
+                  <input
+                    type="tel"
+                    value={customerPhone}
+                    onChange={e => setCustomerPhone(e.target.value)}
+                    placeholder={t('10 అంకెల మొబైల్ నెంబర్', '10-digit mobile number')}
+                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t('రవాణా వాహనం నెంబర్ (Vehicle No)', 'Vehicle / Auto Number')}
                   </label>
                   <input
                     type="text"
                     value={vehicleNumber}
                     onChange={e => setVehicleNumber(e.target.value)}
-                    placeholder="ఉదా: AP 07 BG 4521 (Tata Ace / Auto)"
-                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="AP 07 BG 4521 (Tata Ace)"
+                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
                   />
-                  <div className="mt-2">
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      డెలివరీ గమ్యస్థానం / చిరునామా
-                    </label>
-                    <input
-                      type="text"
-                      value={deliveryAddress}
-                      onChange={e => setDeliveryAddress(e.target.value)}
-                      placeholder="ఉదా: లక్ష్మీపురం కల్యాణ మండపం"
-                      className="w-full p-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
-                    />
-                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t('చేరవలసిన చిరునామా (Destination)', 'Delivery Address')}
+                  </label>
+                  <input
+                    type="text"
+                    value={deliveryAddress}
+                    onChange={e => setDeliveryAddress(e.target.value)}
+                    placeholder={t('డెలివరీ చేయాల్సిన ప్రదేశం', 'Delivery destination location')}
+                    className="w-full p-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+                  />
                 </div>
               </div>
 
               {/* Product Search & Add */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  రవాణా చేసే సరుకులను శోధించి జత చేయండి
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {t('సరుకులను శోధించి చలాన్‌లో చేర్చండి', 'Search & Add Items to Challan')}
                 </label>
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -604,32 +607,32 @@ export const DeliveryChallansScreen: React.FC = () => {
                     type="text"
                     value={productSearch}
                     onChange={e => setProductSearch(e.target.value)}
-                    placeholder="వస్తువు పేరు లేదా SKU టైప్ చేయండి (ఉదా: బియ్యం, నూనె, Dal)..."
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder={t('వస్తువు పేరు లేదా SKU టైప్ చేయండి...', 'Type product name or SKU...')}
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
                   />
                 </div>
 
                 {/* Autocomplete Dropdown */}
                 {filteredVariants.length > 0 && (
-                  <div className="mt-1 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-lg divide-y divide-slate-100 dark:divide-slate-700 max-h-48 overflow-y-auto">
+                  <div className="mt-1 border border-slate-200 rounded-xl bg-white shadow-lg divide-y divide-slate-100 max-h-48 overflow-y-auto">
                     {filteredVariants.map(v => {
                       const p = productMap.get(v.productId);
                       return (
                         <button
                           key={v.id}
                           onClick={() => handleAddItem(v)}
-                          className="w-full text-left p-2.5 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 flex items-center justify-between transition"
+                          className="w-full text-left p-2.5 hover:bg-slate-50 flex items-center justify-between transition"
                         >
                           <div>
-                            <div className="text-xs font-semibold text-slate-800 dark:text-slate-100">
-                              {p?.nameTe || p?.nameEn} <span className="text-slate-400 font-normal">({v.variantName})</span>
+                            <div className="text-xs font-semibold text-slate-800">
+                              {lang === 'te' ? (p?.nameTe || p?.nameEn) : p?.nameEn} <span className="text-slate-400 font-normal">({v.variantName})</span>
                             </div>
                             <div className="text-[11px] text-slate-400">
-                              నిల్వ: {v.currentStock} {v.unit}
+                              SKU: {v.sku} • {t('నిల్వ:', 'Stock:')} {v.currentStock} {v.unit}
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                            <span className="text-xs font-bold text-slate-900 font-mono">
                               {formatPaise(v.sellingPricePaise)}
                             </span>
                           </div>
@@ -640,26 +643,26 @@ export const DeliveryChallansScreen: React.FC = () => {
                 )}
               </div>
 
-              {/* Items Cart Table */}
-              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-                <div className="bg-slate-100 dark:bg-slate-800/80 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 grid grid-cols-12 gap-2">
-                  <div className="col-span-5">సరుకు (Product)</div>
-                  <div className="col-span-3 text-center">పరిమాణం (Qty)</div>
-                  <div className="col-span-2 text-right">ధర (Rate)</div>
-                  <div className="col-span-2 text-right">మొత్తం</div>
+              {/* Items Table */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden">
+                <div className="bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600 grid grid-cols-12 gap-2 border-b border-slate-200">
+                  <div className="col-span-5">{t('సరుకు (Product)', 'Product')}</div>
+                  <div className="col-span-3 text-center">{t('పరిమాణం (Qty)', 'Quantity')}</div>
+                  <div className="col-span-2 text-right">{t('ధర (Rate)', 'Price')}</div>
+                  <div className="col-span-2 text-right">{t('మొత్తం', 'Total')}</div>
                 </div>
 
                 {challanItems.length === 0 ? (
                   <div className="p-6 text-center text-slate-400 text-xs">
-                    ఇంకా ఎలాంటి సరుకులు జోడించలేదు. పై శోధన ద్వారా సరుకులను ఎంచుకోండి.
+                    {t('ఇంకా ఎలాంటి సరుకులు జోడించలేదు. పై శోధన ద్వారా సరుకులను ఎంచుకోండి.', 'No items added yet. Search items above to add.')}
                   </div>
                 ) : (
-                  <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-48 overflow-y-auto">
+                  <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
                     {challanItems.map(item => (
                       <div key={item.variantId} className="px-3 py-2 text-xs grid grid-cols-12 gap-2 items-center">
                         <div className="col-span-5">
-                          <p className="font-semibold text-slate-800 dark:text-slate-200 leading-tight">
-                            {item.productNameTe || item.productNameEn}
+                          <p className="font-semibold text-slate-800 leading-tight">
+                            {lang === 'te' ? (item.productNameTe || item.productNameEn) : item.productNameEn}
                           </p>
                           <p className="text-[10px] text-slate-400">{item.variantName}</p>
                         </div>
@@ -668,33 +671,25 @@ export const DeliveryChallansScreen: React.FC = () => {
                         <div className="col-span-3 flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => handleUpdateQty(item.variantId, -1)}
-                            className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 flex items-center justify-center"
+                            className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 flex items-center justify-center"
                           >
                             -
                           </button>
                           <span className="font-mono font-bold w-7 text-center">{item.quantity}</span>
                           <button
                             onClick={() => handleUpdateQty(item.variantId, 1)}
-                            className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 flex items-center justify-center"
+                            className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 flex items-center justify-center"
                           >
                             +
                           </button>
                         </div>
 
-                        {/* Rate Input */}
-                        <div className="col-span-2 text-right">
-                          <input
-                            type="number"
-                            step="0.5"
-                            value={item.unitPricePaise / 100}
-                            onChange={e => handleUpdatePrice(item.variantId, parseFloat(e.target.value) || 0)}
-                            className="w-16 p-1 text-right text-xs font-mono rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
-                          />
+                        <div className="col-span-2 text-right font-mono text-slate-700">
+                          {formatPaise(item.unitPricePaise)}
                         </div>
 
-                        {/* Line Total & Remove */}
                         <div className="col-span-2 flex items-center justify-end gap-1.5">
-                          <span className="font-mono font-bold text-slate-900 dark:text-white">
+                          <span className="font-mono font-bold text-slate-900">
                             {formatPaise(item.lineTotalPaise)}
                           </span>
                           <button
@@ -710,29 +705,29 @@ export const DeliveryChallansScreen: React.FC = () => {
                 )}
               </div>
 
-              {/* Challan Notes */}
+              {/* Order Notes */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  చలాన్ గమనికలు (Notes)
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {t('రవాణా గమనికలు (Notes)', 'Dispatch Notes')}
                 </label>
                 <input
                   type="text"
                   value={challanNotes}
                   onChange={e => setChallanNotes(e.target.value)}
-                  placeholder="ఉదా: పెళ్ళి విందు కోసం పంపిన సరుకులు"
-                  className="w-full p-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
+                  placeholder={t('ఉదా: సరుకు దింపిన తర్వాత రసీదుపై సంతకం తీసుకోగలరు', 'e.g. Please obtain signature on delivery receipt')}
+                  className="w-full p-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800"
                 />
               </div>
 
               {/* Order Summary box */}
-              <div className="bg-indigo-50/60 dark:bg-indigo-950/20 p-3.5 rounded-2xl border border-indigo-200/50 dark:border-indigo-900/40 flex items-center justify-between">
+              <div className="bg-[#F2F9EC] p-3.5 rounded-2xl border border-[#D9F99D] flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-indigo-900 dark:text-indigo-200 font-medium">మొత్తం పరిమాణం:</span>
-                  <span className="text-sm font-bold text-indigo-900 dark:text-indigo-200 ml-1.5">{totalQty} యూనిట్లు</span>
+                  <span className="text-xs text-[#3F6212] font-medium">{t('మొత్తం పరిమాణం:', 'Total Quantity:')}</span>
+                  <span className="text-sm font-bold text-[#3F6212] ml-1.5">{totalQty} {t('యూనిట్లు', 'Units')}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-indigo-900 dark:text-indigo-200 font-medium mr-2">చలాన్ మొత్తం:</span>
-                  <span className="text-lg font-bold text-indigo-700 dark:text-indigo-300 font-mono">
+                  <span className="text-xs text-[#3F6212] font-medium mr-2">{t('మొత్తం విలువ:', 'Total Value:')}</span>
+                  <span className="text-lg font-bold text-[#3F6212] font-mono">
                     {formatPaise(totalAmountPaise)}
                   </span>
                 </div>
@@ -740,91 +735,93 @@ export const DeliveryChallansScreen: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2 bg-slate-50 dark:bg-slate-800/50">
+            <div className="p-4 border-t border-slate-200 flex items-center justify-end gap-2 bg-slate-50">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-xl transition"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200 rounded-xl transition"
               >
-                రద్దు (Cancel)
+                {t('రద్దు', 'Cancel')}
               </button>
               <button
                 onClick={handleCreateChallan}
                 data-testid="btn-submit-challan"
-                className="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5"
+                className="px-5 py-2 text-xs font-bold bg-[#161918] hover:bg-slate-900 text-white rounded-xl shadow-xs transition flex items-center gap-1.5 border border-slate-800 active:scale-95"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>రవాణా చలాన్ జారీ చేయి (Dispatch Challan)</span>
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB]" />
+                <span>{t('చలాన్ జారీ చేయి', 'Issue Delivery Challan')}</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ===================== MODAL: CONVERT CHALLAN TO INVOICE ===================== */}
+      {/* ===================== MODAL: CONVERT CHALLAN TO POS BILL ===================== */}
       {billModalChallan && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-5 sm:p-6 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-5 sm:p-6 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                <Receipt className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-[#F2F9EC] text-[#3F6212] border border-[#D9F99D] flex items-center justify-center">
+                <Receipt className="w-5 h-5 text-[#2563EB]" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">చలాన్‌ను బిల్లుగా మార్చండి</h3>
-                <p className="text-xs text-slate-500">చలాన్ #{billModalChallan.challanNumber} ను సేల్స్ ఇన్వాయిస్‌గా జారీ చేయడం</p>
+                <h3 className="text-base font-bold text-slate-900">{t('చలాన్‌ను బిల్లుగా మార్చాలా?', 'Convert Challan to POS Invoice?')}</h3>
+                <p className="text-xs text-slate-500">{t(`చలాన్ #${billModalChallan.challanNumber} ను సేల్స్ బిల్లుగా రికార్డ్ చేయడం`, `Recording Challan #${billModalChallan.challanNumber} as sales invoice`)}</p>
               </div>
             </div>
 
-            <div className="p-3 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/50 dark:border-emerald-900/40 text-xs mb-4">
+            <div className="p-3 bg-[#F2F9EC] rounded-xl border border-[#D9F99D] text-xs mb-4">
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">కస్టమర్:</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{billModalChallan.customerName}</span>
+                <span className="text-slate-600">{t('కస్టమర్:', 'Customer:')}</span>
+                <span className="font-semibold text-slate-900">{billModalChallan.customerName}</span>
               </div>
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">సరుకులు:</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{billModalChallan.totalQuantity} యూనిట్లు ({billModalChallan.items.length} రకాలు)</span>
+                <span className="text-slate-600">{t('మొత్తం సరుకులు:', 'Total Quantity:')}</span>
+                <span className="font-semibold text-slate-900">{billModalChallan.totalQuantity} {t('యూనిట్లు', 'Units')}</span>
               </div>
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">బిల్లు మొత్తం:</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">{formatPaise(billModalChallan.totalAmountPaise)}</span>
+                <span className="text-slate-600">{t('బిల్లు మొత్తం:', 'Bill Total:')}</span>
+                <span className="font-bold text-[#3F6212] font-mono">{formatPaise(billModalChallan.totalAmountPaise)}</span>
               </div>
             </div>
 
             <div className="space-y-3 mb-5">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                చెల్లింపు విధానం ఎంచుకోండి (Payment Method)
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {(['KHATA', 'CASH', 'UPI'] as PaymentMethod[]).map(method => (
-                  <button
-                    key={method}
-                    type="button"
-                    onClick={() => setPaymentMethod(method)}
-                    className={`py-2 px-2 text-xs font-semibold rounded-xl border transition ${
-                      paymentMethod === method
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                        : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50'
-                    }`}
-                  >
-                    {method === 'KHATA' ? 'కస్టమర్ ఖాతా (Khata)' : method === 'CASH' ? 'నగదు (Cash)' : 'UPI / QR'}
-                  </button>
-                ))}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {t('చెల్లింపు పద్ధతి ఎంచుకోండి', 'Select Payment Method')}
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['KHATA', 'CASH', 'UPI'] as PaymentMethod[]).map(method => (
+                    <button
+                      key={method}
+                      type="button"
+                      onClick={() => setPaymentMethod(method)}
+                      className={`py-2 px-2 text-xs font-semibold rounded-xl border transition ${
+                        paymentMethod === method
+                          ? 'border-[#2563EB] bg-[#F2F9EC] text-[#3F6212] font-bold'
+                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      {method === 'KHATA' ? t('ఉధార్ (Khata)', 'Khata Due') : method === 'CASH' ? t('నగదు (Cash)', 'Cash') : t('యూపీఐ (UPI)', 'UPI')}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={() => setBillModalChallan(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 rounded-xl transition"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
               >
-                రద్దు (Cancel)
+                {t('రద్దు', 'Cancel')}
               </button>
               <button
-                onClick={handleConfirmBill}
-                data-testid="btn-confirm-convert-bill"
-                className="px-5 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5"
+                onClick={handleConfirmConvertToBill}
+                data-testid="btn-confirm-convert-challan"
+                className="px-5 py-2 text-xs font-bold bg-[#161918] hover:bg-slate-900 text-white rounded-xl shadow-xs transition flex items-center gap-1.5 border border-slate-800 active:scale-95"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>బిల్లు జారీ చేయి (Create Final Bill)</span>
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB]" />
+                <span>{t('బిల్లు జనరేట్ చేయి', 'Generate Invoice')}</span>
               </button>
             </div>
           </div>
@@ -834,7 +831,7 @@ export const DeliveryChallansScreen: React.FC = () => {
       {/* Floating Status Toast */}
       {statusToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in fade-in slide-in-from-bottom-4">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <CheckCircle2 className="w-4 h-4 text-[#2563EB] shrink-0" />
           <span className="text-xs font-medium">{statusToast}</span>
         </div>
       )}

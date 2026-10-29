@@ -28,7 +28,8 @@ import {
   ClipboardCheck,
   RotateCcw,
   CheckCircle2,
-  Edit3
+  Edit3,
+  TrendingUp
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import Papa from 'papaparse';
@@ -114,6 +115,23 @@ export const ProductCatalog: React.FC = () => {
   const [mrp, setMrp] = useState('');
   const [initialStock, setInitialStock] = useState('20');
   const [barcode, setBarcode] = useState('');
+
+  // Comprehensive 7-Section Retail Inventory States
+  const [wholesalePrice, setWholesalePrice] = useState('');
+  const [hsnCode, setHsnCode] = useState('');
+  const [gstRate, setGstRate] = useState('5');
+  const [taxInclusive, setTaxInclusive] = useState(true);
+  const [shelfLocation, setShelfLocation] = useState('Rack A-1, Shelf 2');
+  const [minStockAlert, setMinStockAlert] = useState('5');
+  const [batchNo, setBatchNo] = useState('');
+  const [mfgDate, setMfgDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [expiryDate, setExpiryDate] = useState(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 12);
+    return d.toISOString().split('T')[0];
+  });
+  const [isLooseScaleItem, setIsLooseScaleItem] = useState(false);
+  const [activeFormTab, setActiveFormTab] = useState<'IDENTITY' | 'PRICING' | 'TAX' | 'STOCK' | 'BATCH'>('IDENTITY');
 
   // Purchase Inward Form States (Phase 2 Milestone 2.3)
   const [selectedSupplierId, setSelectedSupplierId] = useState('');
@@ -652,6 +670,8 @@ export const ProductCatalog: React.FC = () => {
       createdAt: Date.now(),
     });
 
+    const cleanBarcode = barcode.trim() || `890${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+
     await db.variants.add({
       id: varId,
       productId: prodId,
@@ -662,8 +682,8 @@ export const ProductCatalog: React.FC = () => {
       sellingPricePaise: Math.round(Number(sellingPrice || 0) * 100),
       mrpPaise: Math.round(Number(mrp || sellingPrice || 0) * 100),
       currentStock: Number(initialStock || 0),
-      minStockAlert: 5,
-      barcodes: barcode ? [barcode.trim()] : [],
+      minStockAlert: Number(minStockAlert || 5),
+      barcodes: [cleanBarcode],
       isActive: true,
     });
 
@@ -680,11 +700,33 @@ export const ProductCatalog: React.FC = () => {
       });
     }
 
+    if (batchNo.trim() || expiryDate) {
+      const expTs = new Date(expiryDate).getTime() || (Date.now() + 365 * 86400000);
+      await db.batches.add({
+        id: uuidv4(),
+        variantId: varId,
+        productId: prodId,
+        batchNumber: batchNo.trim() || `BATCH-${Date.now().toString().slice(-6)}`,
+        initialQuantity: Number(initialStock || 0),
+        remainingQuantity: Number(initialStock || 0),
+        mrpPaise: Math.round(Number(mrp || sellingPrice || 0) * 100),
+        purchaseCostPaise: Math.round(Number(purchasePrice || 0) * 100),
+        sellingPricePaise: Math.round(Number(sellingPrice || 0) * 100),
+        expiryDate: expTs,
+        createdAt: Date.now(),
+      });
+    }
+
     setShowAddModal(false);
     setNameEn('');
     setNameTe('');
     setBrand('');
     setPurchasePrice('');
+    setSellingPrice('');
+    setMrp('');
+    setWholesalePrice('');
+    setBarcode('');
+    setBatchNo('');
     setSellingPrice('');
     setMrp('');
     setBarcode('');
@@ -2076,113 +2118,469 @@ export const ProductCatalog: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL: ADD PRODUCT */}
+      {/* MODAL: ADD PRODUCT (100% Industry-Standard Supermarket & Kirana Form) */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-slateBase-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-slateBase-200">
-            <div className="p-4 border-b border-slateBase-200 bg-slateBase-50/70 flex justify-between items-center">
-              <h3 className="text-sm font-bold text-slateBase-900 flex items-center">
-                <PackagePlus className="w-4 h-4 mr-2 text-saudaBlue-600" />
-                <span>{t('కొత్త వస్తువు నమోదు', 'Add Product')}</span>
-              </h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 text-slateBase-400">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-auto flex flex-col max-h-[92vh]">
+            
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-200 bg-slate-900 text-white flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-emerald-400 border border-white/10">
+                  <PackagePlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight">
+                    {t('కొత్త సరుకు నమోదు (Add New Retail Product)', 'Add New Inventory Item')}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-mono">
+                    {t('బార్‌కోడ్, మార్జిన్ %, GST, ర్యాక్ లొకేషన్ మరియు ఎక్స్‌పైరీ సెట్టింగ్స్', 'Barcode, Margin %, GST, Rack Shelf Locator & Expiry')}
+                  </p>
+                </div>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setShowAddModal(false)} 
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateProduct} className="p-5 space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('వస్తువు పేరు (English) *', 'Name (English) *')}</label>
-                <input
-                  type="text"
-                  required
-                  value={nameEn}
-                  onChange={(e) => setNameEn(e.target.value)}
-                  className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-semibold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('వస్తువు పేరు (తెలుగు)', 'Name (Telugu)')}</label>
-                <input
-                  type="text"
-                  value={nameTe}
-                  onChange={(e) => setNameTe(e.target.value)}
-                  className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-semibold font-telugu"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('కేటగిరీ (Category)', 'Category')}</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-slateBase-50 border border-slateBase-300 rounded-xl text-xs font-bold text-slateBase-900"
+            {/* Navigation Form Tabs */}
+            <div className="flex items-center gap-1 px-6 pt-3 pb-2 bg-slate-50 border-b border-slate-200 text-xs shrink-0 overflow-x-auto">
+              {[
+                { id: 'IDENTITY', label: t('1. గుర్తింపు & బార్‌కోడ్', '1. Identity & Barcode') },
+                { id: 'PRICING', label: t('2. ధరలు & మార్జిన్ %', '2. Pricing & Margin') },
+                { id: 'TAX', label: t('3. GST & HSN', '3. GST & HSN') },
+                { id: 'STOCK', label: t('4. స్టాక్ & ర్యాక్ నంబర్', '4. Stock & Shelf Rack') },
+                { id: 'BATCH', label: t('5. బ్యాచ్ & ఎక్స్‌పైరీ', '5. Batch & Expiry') },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveFormTab(tab.id as any)}
+                  className={`px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap ${
+                    activeFormTab === tab.id
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                  }`}
                 >
-                  <option value="General Groceries / సాధారణ కిరాణా">General Groceries / సాధారణ కిరాణా</option>
-                  <option value="Pulses & Grains / పప్పులు & ధాన్యాలు">Pulses & Grains / పప్పులు & ధాన్యాలు</option>
-                  <option value="Oils & Ghee / నూనెలు & నెయ్యి">Oils & Ghee / నూనెలు & నెయ్యి</option>
-                  <option value="Spices & Masala / మసాలాలు">Spices & Masala / మసాలాలు</option>
-                  <option value="Snacks & Beverages / స్నాక్స్">Snacks & Beverages / స్నాక్స్</option>
-                  <option value="Personal Care / వ్యక్తిగత సంరక్షణ">Personal Care / వ్యక్తిగత సంరక్షణ</option>
-                </select>
-              </div>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('ప్యాక్ సైజ్', 'Variant')}</label>
-                  <input
-                    type="text"
-                    value={variantName}
-                    onChange={(e) => setVariantName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-semibold"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('యూనిట్', 'Unit')}</label>
-                  <select
-                    value={unit}
-                    onChange={(e) => setUnit(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-bold"
-                  >
-                    <option value="KG">కిలో (KG)</option>
-                    <option value="G">గ్రాములు (G)</option>
-                    <option value="L">లీటర్ (L)</option>
-                    <option value="PCS">పీస్ (PCS)</option>
-                  </select>
-                </div>
-              </div>
+            {/* Form Content */}
+            <form onSubmit={handleCreateProduct} className="p-6 space-y-4 overflow-y-auto flex-1">
+              
+              {/* TAB 1: IDENTITY & BARCODE */}
+              {activeFormTab === 'IDENTITY' && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('వస్తువు పేరు (English) *', 'Product Name (English) *')}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={nameEn}
+                        onChange={(e) => setNameEn(e.target.value)}
+                        placeholder="e.g. Aashirvaad Sharbati Atta"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                        autoFocus
+                      />
+                    </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('అమ్మకపు ధర (₹) *', 'Selling (₹) *')}</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={sellingPrice}
-                    onChange={(e) => setSellingPrice(e.target.value)}
-                    className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-bold font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slateBase-700 mb-1">{t('ప్రారంభ నిల్వ', 'Initial Stock')}</label>
-                  <input
-                    type="number"
-                    value={initialStock}
-                    onChange={(e) => setInitialStock(e.target.value)}
-                    className="w-full px-3 py-2 bg-slateBase-50 border rounded-xl text-xs font-bold font-mono"
-                  />
-                </div>
-              </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('వస్తువు పేరు (తెలుగు)', 'Product Name (Telugu)')}
+                      </label>
+                      <input
+                        type="text"
+                        value={nameTe}
+                        onChange={(e) => setNameTe(e.target.value)}
+                        placeholder="ఉదా: ఆశీర్వాద్ గోధుమ పిండి"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 font-telugu focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
 
-              <div className="pt-3 border-t flex justify-end space-x-2.5">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 border rounded-xl text-xs font-bold">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('బ్రాండ్ (Brand)', 'Brand')}
+                      </label>
+                      <input
+                        type="text"
+                        value={brand}
+                        onChange={(e) => setBrand(e.target.value)}
+                        placeholder="e.g. ITC, Freedom, Tata, Generic"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('కేటగిరీ (Category)', 'Category')}
+                      </label>
+                      <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      >
+                        <option value="General Groceries / సాధారణ కిరాణా">General Groceries / సాధారణ కిరాణా</option>
+                        <option value="Pulses & Grains / పప్పులు & ధాన్యాలు">Pulses & Grains / పప్పులు & ధాన్యాలు</option>
+                        <option value="Oils & Ghee / నూనెలు & నెయ్యి">Oils & Ghee / నూనెలు & నెయ్యి</option>
+                        <option value="Spices & Masala / మసాలాలు">Spices & Masala / మసాలాలు</option>
+                        <option value="Snacks & Beverages / స్నాక్స్">Snacks & Beverages / స్నాక్స్</option>
+                        <option value="Personal Care / వ్యక్తిగత సంరక్షణ">Personal Care / వ్యక్తిగత సంరక్షణ</option>
+                        <option value="Dairy & Bakery / డెయిరీ">Dairy & Bakery / డెయిరీ</option>
+                        <option value="Cleaning & Household / శుభ్రత">Cleaning & Household / శుభ్రత</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Barcode & Scanner Input */}
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <BarcodeIcon className="w-4 h-4 text-slate-600" />
+                        <span>{t('బార్‌కోడ్ (13-Digit EAN Barcode)', 'Product Barcode')}</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const autoBc = `890${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+                          setBarcode(autoBc);
+                        }}
+                        className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 underline"
+                      >
+                        {t('ఆటో-బార్‌కోడ్ జనరేట్', 'Auto-Generate EAN')}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={barcode}
+                      onChange={(e) => setBarcode(e.target.value)}
+                      placeholder="e.g. 8901030456123 or scan with barcode gun"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold tracking-wider text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                    />
+                  </div>
+
+                  {/* Loose Weighing Scale Toggle */}
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 bg-white">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {t('విడి సరుకు తూకం స్కేల్ టోగుల్ (Loose Item / Weighing Scale)', 'Loose Weight Item')}
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        {t('చక్కెర, బియ్యం, కందిపప్పు లాంటి కాటా మిషన్ పై తూచే సరుకులకు ఇది ఆన్ చేయండి', 'Enable for items sold by weight via digital scale')}
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={isLooseScaleItem}
+                      onChange={(e) => setIsLooseScaleItem(e.target.checked)}
+                      className="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: PRICING & AUTO-MARGIN */}
+              {activeFormTab === 'PRICING' && (
+                <div className="space-y-4 animate-fade-in">
+                  
+                  {/* Live Profit Margin & Markup Badge */}
+                  {sellingPrice && purchasePrice && Number(sellingPrice) > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-emerald-700" />
+                        <span className="text-xs font-bold text-emerald-900">
+                          {t('లాభం శాతం (Profit Margin):', 'Profit Margin:')}
+                        </span>
+                        <span className="font-mono text-sm font-bold text-emerald-800">
+                          {(((Number(sellingPrice) - Number(purchasePrice)) / Number(sellingPrice)) * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="text-xs text-emerald-700 font-medium">
+                        {t('లాభం ₹:', 'Profit:')} ₹{(Number(sellingPrice) - Number(purchasePrice)).toFixed(2)}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('కొనుగోలు ధర / Purchase Cost (₹) *', 'Purchase Cost (₹) *')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={purchasePrice}
+                        onChange={(e) => setPurchasePrice(e.target.value)}
+                        placeholder="e.g. 85.00"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('అమ్మకపు ధర / Retail Price (₹) *', 'Retail Selling Price (₹) *')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        required
+                        value={sellingPrice}
+                        onChange={(e) => setSellingPrice(e.target.value)}
+                        placeholder="e.g. 100.00"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('గరిష్ట రిటైల్ ధర (MRP ₹)', 'Maximum Retail Price (MRP ₹)')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={mrp}
+                        onChange={(e) => setMrp(e.target.value)}
+                        placeholder="e.g. 110.00"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('హోల్‌సేల్ ధర / Wholesale (₹)', 'Wholesale Price (₹)')}
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={wholesalePrice}
+                        onChange={(e) => setWholesalePrice(e.target.value)}
+                        placeholder="e.g. 92.00"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">{t('ప్యాక్ సైజ్ (Variant)', 'Variant Pack Size')}</label>
+                      <input
+                        type="text"
+                        value={variantName}
+                        onChange={(e) => setVariantName(e.target.value)}
+                        placeholder="e.g. 1 kg, 500g, 1L, Ladi 24pcs"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">{t('కొలత యూనిట్', 'Unit of Measure')}</label>
+                      <select
+                        value={unit}
+                        onChange={(e) => setUnit(e.target.value as any)}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      >
+                        <option value="KG">కిలో (KG)</option>
+                        <option value="G">గ్రాములు (G)</option>
+                        <option value="L">లీటర్ (L)</option>
+                        <option value="ML">మి.లీ (ML)</option>
+                        <option value="PCS">పీస్ / నెంబర్ (PCS)</option>
+                        <option value="PACK">ప్యాకెట్ (PACK)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: GST & TAX */}
+              {activeFormTab === 'TAX' && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('HSN కోడ్ (HSN Code)', 'HSN Code')}
+                      </label>
+                      <input
+                        type="text"
+                        value={hsnCode}
+                        onChange={(e) => setHsnCode(e.target.value)}
+                        placeholder="e.g. 0713, 1701, 1512"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('GST స్లాబ్ (GST Tax Slab)', 'GST Tax Rate')}
+                      </label>
+                      <select
+                        value={gstRate}
+                        onChange={(e) => setGstRate(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      >
+                        <option value="0">0% (మినహాయింపు / Exempted Groceries)</option>
+                        <option value="5">5% (నూనెలు, ప్యాకేజ్డ్ నిత్యావసరాలు)</option>
+                        <option value="12">12% (డెయిరీ, బేకరీ)</option>
+                        <option value="18">18% (సోప్స్, టూత్‌పేస్ట్, బిస్కట్స్)</option>
+                        <option value="28">28% (లగ్జరీ, ఎరేటెడ్ డ్రింక్స్)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {t('ధరలో GST కలిసి ఉందా? (Tax Inclusive in MRP)', 'Tax Inclusive in MRP')}
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        {t('భారతీయ కిరాణా మార్కెట్‌లో MRP ధరల్లో సాధారణంగా పన్ను కలిసి ఉంటుంది', 'Retail prices in India typically include GST')}
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={taxInclusive}
+                      onChange={(e) => setTaxInclusive(e.target.checked)}
+                      className="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: STOCK & SHELF RACK */}
+              {activeFormTab === 'STOCK' && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('ప్రారంభ నిల్వ / Initial Stock *', 'Initial Stock *')}
+                      </label>
+                      <input
+                        type="number"
+                        value={initialStock}
+                        onChange={(e) => setInitialStock(e.target.value)}
+                        placeholder="20"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('కనీస హెచ్చరిక స్టాక్ (Min Low Stock Alert)', 'Min Stock Alert Threshold')}
+                      </label>
+                      <input
+                        type="number"
+                        value={minStockAlert}
+                        onChange={(e) => setMinStockAlert(e.target.value)}
+                        placeholder="5"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      {t('షాపులో అర / ర్యాక్ నంబర్ (Store Shelf / Rack Locator)', 'Shelf / Rack Locator in Store')}
+                    </label>
+                    <input
+                      type="text"
+                      value={shelfLocation}
+                      onChange={(e) => setShelfLocation(e.target.value)}
+                      placeholder="e.g. Rack A-1, Shelf 3 (లేదా కౌంటర్ వెనుక)"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      {t('కొత్త సేల్స్ బాయ్ అయినా సరుకును త్వరగా గుర్తించడానికి ఇది సహాయపడుతుంది.', 'Helps sales staff find items in seconds on the shop floor.')}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 5: BATCH & EXPIRY */}
+              {activeFormTab === 'BATCH' && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('బ్యాచ్ నంబర్ (Batch Number)', 'Batch Number')}
+                      </label>
+                      <input
+                        type="text"
+                        value={batchNo}
+                        onChange={(e) => setBatchNo(e.target.value)}
+                        placeholder="e.g. B-2026-OCT-01"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                        {t('ఎక్స్‌పైరీ తేదీ (Expiry Date)', 'Expiry Date')}
+                      </label>
+                      <input
+                        type="date"
+                        value={expiryDate}
+                        onChange={(e) => setExpiryDate(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      {t('తయారీ తేదీ (Mfg Date)', 'Manufacturing Date')}
+                    </label>
+                    <input
+                      type="date"
+                      value={mfgDate}
+                      onChange={(e) => setMfgDate(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2.5 border border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition"
+                >
                   {t('రద్దు చేయండి', 'Cancel')}
                 </button>
-                <button type="submit" className="px-5 py-2 bg-saudaBlue-600 text-white rounded-xl text-xs font-bold">
-                  {t('సేవ్ చేయండి', 'Save')}
-                </button>
+
+                <div className="flex items-center gap-2">
+                  {activeFormTab !== 'BATCH' ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const tabs: ('IDENTITY' | 'PRICING' | 'TAX' | 'STOCK' | 'BATCH')[] = ['IDENTITY', 'PRICING', 'TAX', 'STOCK', 'BATCH'];
+                        const nextIdx = tabs.indexOf(activeFormTab) + 1;
+                        if (nextIdx < tabs.length) setActiveFormTab(tabs[nextIdx]);
+                      }}
+                      className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl text-xs font-bold transition"
+                    >
+                      {t('తదుపరి విభాగం →', 'Next Step →')}
+                    </button>
+                  ) : null}
+
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-xs"
+                  >
+                    {t('సరుకును సేవ్ చేయండి', 'Save Product')}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

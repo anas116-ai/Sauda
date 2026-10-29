@@ -1,0 +1,163 @@
+[
+  {
+    "id": "01",
+    "name": "ల్యాండింగ్ పేజీ (Landing Page & Overview)",
+    "file": "01_landing_page.png",
+    "status": "PASS",
+    "note": "Clean luxury Framer/Apple-grade hero & 6 visual pillars"
+  },
+  {
+    "id": "02",
+    "name": "స్టోర్ లాగిన్ & టెర్మినల్ (Store Login & Terminal)",
+    "file": "02_store_gateway.png",
+    "status": "PASS",
+    "note": "Multi-store selector, 4-digit PIN pad, 3-step onboarding guide"
+  },
+  {
+    "id": "03",
+    "name": "డాష్‌బోర్డ్ (Dashboard)",
+    "file": "03_dashboard.png",
+    "status": "PASS",
+    "note": "Unified canonical logo, Warm Golden Amber Stock Valuation card, 4 KPI stats"
+  },
+  {
+    "id": "04",
+    "name": "POS బిల్లింగ్ కౌంటర్ (POS Billing)",
+    "file": "04_pos_billing.png",
+    "status": "PASS",
+    "note": "Instant laser barcode scan, weight scale sync, split tender, real-time stock auto-decrement"
+  },
+  {
+    "id": "05",
+    "name": "సరుకులు & స్టాక్ ఇన్వెంటరీ (Products & Stock)",
+    "file": "05_inventory_stock.png",
+    "status": "PASS",
+    "note": "Product catalog, batch expiry tracking, barcode generation, multi-MRP"
+  },
+  {
+    "id": "06",
+    "name": "కస్టమర్ ఉధార్ ఖాతా (Customer Khata)",
+    "file": "06_customer_khata.png",
+    "status": "PASS",
+    "note": "Customer balances, WhatsApp ledger dispatch, credit limit safety alerts"
+  },
+  {
+    "id": "07",
+    "name": "రోజు పుస్తకం (Day Book)",
+    "file": "07_day_book.png",
+    "status": "PASS",
+    "note": "Daily sales journal, debit/credit audit trail, date filtering"
+  },
+  {
+    "id": "08",
+    "name": "నగదు & బ్యాంకు (Cash & Bank)",
+    "file": "08_cash_bank.png",
+    "status": "PASS",
+    "note": "Physical drawer cash, bank accounts, contra transfers"
+  },
+  {
+    "id": "09",
+    "name": "ఆస్తి అప్పుల పట్టిక (Balance Sheet)",
+    "file": "09_balance_sheet.png",
+    "status": "PASS",
+    "note": "Assets vs liabilities, net retail worth, working capital"
+  },
+  {
+    "id": "10",
+    "name": "అంచనా పత్రాలు (Estimates & Quotes)",
+    "file": "10_estimates.png",
+    "status": "PASS",
+    "note": "Draft quotation generator, 1-click convert to confirmed invoice"
+  },
+  {
+    "id": "11",
+    "name": "కొనుగోలు ఆర్డర్లు (Purchase Orders)",
+    "file": "11_purchase_orders.png",
+    "status": "PASS",
+    "note": "Wholesale supplier PO generation, goods inward verification"
+  },
+  {
+    "id": "12",
+    "name": "డెలివరీ చలాన్లు (Delivery Challans)",
+    "file": "12_delivery_challans.png",
+    "status": "PASS",
+    "note": "Vehicle dispatch records, bulk transport tracking"
+  },
+  {
+    "id": "13",
+    "name": "GST రిటర్న్స్ & ఆడిట్ (GST Reports)",
+    "file": "13_gst_reports.png",
+    "status": "PASS",
+    "note": "GSTR-1, GSTR-3B monthly breakdowns, B2B/B2C summaries"
+  },
+  {
+    "id": "14",
+    "name": "లాయల్టీ & రివార్డులు (Loyalty & Rewards)",
+    "file": "14_loyalty_rewards.png",
+    "status": "PASS",
+    "note": "Customer point accumulation, discount coupon redemption"
+  },
+  {
+    "id": "15",
+    "name": "స్టాఫ్ ఆడిట్ లాగ్ (Staff Audit Log)",
+    "file": "15_staff_audit_log.png",
+    "status": "PASS",
+    "note": "Operator action audit trail, price overrides, drawer openings"
+  },
+  {
+    "id": "16",
+    "name": "డేటా ఎగుమతి & ట్యాలీ (Export Center)",
+    "file": "16_export_center.png",
+    "status": "PASS",
+    "note": "1-click export to Tally XML, Excel, CSV formats"
+  },
+  {
+    "id": "17",
+    "name": "స్మార్ట్ రీ-ఆర్డర్ స్టూడియో (Smart Re-orders)",
+    "file": "17_smart_reorders_modal.png",
+    "status": "PASS",
+    "note": "Predictive FMCG re-order points based on daily velocity"
+  },
+  {
+    "id": "18",
+    "name": "లాభ నష్టాల స్టూడియో (Profit & Loss)",
+    "file": "18_profit_loss_modal.png",
+    "status": "PASS",
+    "note": "Gross profit margins, COGS, operating expense reconciliation"
+  },
+  {
+    "id": "19",
+    "name": "స్టోర్ హెల్త్ ఆడిట్ (Store Health)",
+    "file": "19_store_health_modal.png",
+    "status": "PASS",
+    "note": "Store health score, dead-stock capital trap diagnostics"
+  },
+  {
+    "id": "20",
+    "name": "మల్టీ-కౌంటర్ కన్సాలిడేషన్ (Multi-Counter)",
+    "file": "20_multi_counter_modal.png",
+    "status": "PASS",
+    "note": "Multi-terminal sales consolidation, master register sync"
+  },
+  {
+    "id": "21",
+    "name": "వై-ఫై మెష్ పీర్ సింక్ (Wi-Fi LAN Mesh)",
+    "file": "21_lan_mesh_modal.png",
+    "status": "PASS",
+    "note": "Zero-cloud LAN peer discovery and real-time offline database sync"
+  },
+  {
+    "id": "22",
+    "name": "ఎన్‌క్రిప్టెడ్ క్లౌడ్ బ్యాకప్ (Cloud Backup)",
+    "file": "22_cloud_backup_modal.png",
+    "status": "PASS",
+    "note": "Encrypted local DB snapshots and automated cloud backup vault"
+  },
+  {
+    "id": "23",
+    "name": "డే-ఎండ్ క్లోజింగ్ Z-రిపోర్ట్ (Day-End Closing)",
+    "file": "23_dayend_closing_modal.png",
+    "status": "PASS",
+    "note": "Cash drawer reconciliation, daily ledger freeze, print Z-report"
+  }
+]

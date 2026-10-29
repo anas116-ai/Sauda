@@ -16,7 +16,7 @@
 | **Loyverse** | Global POS + back office | Best-designed POS interaction model: open tickets, customer display, loyalty, stocktakes, employee rights. The UX benchmark. |
 | **Khatabook** | Ledger-first khata app | The habit Sauda inherits: fast udhar entry, WhatsApp reminders, simple language. The adoption benchmark. |
 | **Dukaan** | Online storefront for local sellers | Catalogue + WhatsApp commerce; relevant to the "online store" gap. |
-| **Marg / GoFrugal** | Traditional Indian retail ERP | What large kirana chains use: price lists, godown transfer, schemes, secondary sales. The depth benchmark. |
+| **Legacy Indian Retail ERP** | Traditional Indian retail ERP | What large kirana chains use: price lists, godown transfer, schemes, secondary sales. The depth benchmark. |
 
 Sources read directly:
 - https://vyaparapp.in/blog/vyapar-app-features/ (Vyapar complete feature list, updated 18 Dec 2025)

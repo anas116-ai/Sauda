@@ -16,7 +16,10 @@ import {
   Coins,
   LockOpen,
   Scale,
-  Gauge
+  Gauge,
+  Trash2,
+  ArrowLeft,
+  AlertTriangle
 } from 'lucide-react';
 import { type PrinterConfig, type Bill, type Customer, type ScaleProtocol } from '../../types';
 import { ThermalReceipt } from '../../components/ThermalReceipt';
@@ -39,6 +42,38 @@ export const SettingsScreen: React.FC = () => {
   const storedPrinterConfig = useLiveQuery(() => db.printerConfigs.toCollection().first());
   const storedScaleConfig = useLiveQuery(() => db.scaleConfigs.toCollection().first());
   const drawerLogs = useLiveQuery(() => db.cashDrawerLogs.reverse().toArray()) || [];
+
+  // Cash Drawer Audit Logs Filtering & Management
+  const [drawerFilter, setDrawerFilter] = useState<'ALL' | 'SALE' | 'MANUAL' | 'EXPENSE'>('ALL');
+  const [confirmClearLogs, setConfirmClearLogs] = useState(false);
+  const [adminPinInput, setAdminPinInput] = useState('');
+  const [clearError, setClearError] = useState<string | null>(null);
+
+  const handleDeleteDrawerLog = async (id: string) => {
+    try {
+      await db.cashDrawerLogs.delete(id);
+    } catch (e) {
+      console.error('Failed to delete drawer log:', e);
+    }
+  };
+
+  const handleClearAllDrawerLogs = async () => {
+    if (adminPinInput.trim() && adminPinInput.trim() !== '1234') {
+      setClearError(t('తప్పుడు అడ్మిన్ పిన్! (డిఫాల్ట్: 1234)', 'Incorrect Admin PIN! (Default: 1234)'));
+      return;
+    }
+    await db.cashDrawerLogs.clear();
+    setConfirmClearLogs(false);
+    setAdminPinInput('');
+    setClearError(null);
+  };
+
+  const filteredDrawerLogs = drawerLogs.filter((log) => {
+    if (drawerFilter === 'SALE') return log.eventType === 'SALE_AUTO_KICK';
+    if (drawerFilter === 'MANUAL') return log.eventType === 'MANUAL_NO_SALE' || log.eventType === 'DRAWER_COUNT_AUDIT';
+    if (drawerFilter === 'EXPENSE') return log.eventType === 'PETTY_CASH_EXPENSE' || log.eventType === 'CASH_DROP';
+    return true;
+  });
 
   // ---------------------------------------------------------------------------
   // Phase 3.3: Digital Weighing Scale States
@@ -318,6 +353,22 @@ export const SettingsScreen: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
       
+      {/* Back Navigation Bar */}
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => {
+            const posNav = document.querySelector('[data-testid="nav-pos"]') as HTMLButtonElement | null;
+            if (posNav) posNav.click();
+            else window.history.back();
+          }}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold transition shadow-xs"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{t('← ప్రధాన బిల్లింగ్ / డాష్‌బోర్డ్‌కు వెళ్ళండి', '← Back to POS Counter / Dashboard')}</span>
+        </button>
+      </div>
+
       {/* Settings Header */}
       <div className="apple-glass-card p-6 flex items-center justify-between">
         <div>
@@ -587,21 +638,21 @@ export const SettingsScreen: React.FC = () => {
       {/* ========================================================================= */}
       {/* PHASE 3.2: ELECTRONIC CASH DRAWER HARDWARE & AUDIT LOGS                  */}
       {/* ========================================================================= */}
-      <div className="apple-glass-card p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-white/60">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-200">
           <div>
-            <h3 className="text-sm font-bold text-slateBase-900 flex items-center font-sans">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center">
               <Coins className="w-4 h-4 mr-2 text-amber-600" />
               <span>{t('ఎలక్ట్రానిక్ క్యాష్ డ్రాయర్ & ఆడిట్ లాగ్ (Cash Drawer Hardware & Audit)', 'Electronic Cash Drawer & Audit Logs')}</span>
             </h3>
-            <p className="text-xs text-slateBase-500 mt-0.5 font-medium">
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
               {t('RJ11/12 కనెక్షన్, మాన్యువల్ ఓపెనింగ్స్, చిల్లర మార్పులు మరియు సేఫ్ డ్రాప్ ఆడిట్ హిస్టరీ', 'RJ11 drawer kick pulse, opening float, petty cash payouts and security event logs')}
             </p>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
             {drawerTestSuccess && (
-              <span className="text-xs font-bold text-classicEmerald-700 flex items-center">
+              <span className="text-xs font-bold text-emerald-700 flex items-center">
                 <Check className="w-4 h-4 mr-1" />
                 {t('డ్రాయర్ కిక్ టెస్ట్ విజయవంతం!', 'Drawer kick test success!')}
               </span>
@@ -609,78 +660,165 @@ export const SettingsScreen: React.FC = () => {
             <button
               type="button"
               onClick={handleTestDrawerKick}
-              className="py-2 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold rounded-xl text-xs transition border border-amber-300 flex items-center space-x-1.5 active:scale-95 shadow-subtle"
+              className="py-2 px-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs transition border border-slate-200 flex items-center space-x-1.5 shadow-xs"
             >
-              <LockOpen className="w-3.5 h-3.5 text-amber-600" />
-              <span>{t('డ్రాయర్ టెస్ట్ కిక్ (Test Kick)', 'Test Drawer Kick')}</span>
+              <LockOpen className="w-3.5 h-3.5 text-slate-600" />
+              <span>{t('డ్రాయర్ టెస్ట్ కిక్', 'Test Drawer Kick')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setConfirmClearLogs(true)}
+              className="py-2 px-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 flex items-center space-x-1.5 shadow-xs"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <span>{t('లాగ్స్ క్లియర్ చేయండి', 'Clear Audit Logs')}</span>
             </button>
           </div>
         </div>
 
+        {/* Clear Logs PIN Confirmation Dialog */}
+        {confirmClearLogs && (
+          <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 space-y-3 animate-fade-in">
+            <div className="flex items-center gap-2 text-rose-900 font-bold text-xs">
+              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{t('ఆడిట్ లాగ్స్ క్లియర్ చేయడానికి అడ్మిన్ పిన్ నమోదు చేయండి (డిఫాల్ట్: 1234)', 'Enter Admin PIN to clear cash drawer logs (Default: 1234)')}</span>
+            </div>
+
+            {clearError && (
+              <div className="text-[11px] font-bold text-rose-700">{clearError}</div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="password"
+                maxLength={4}
+                value={adminPinInput}
+                onChange={(e) => {
+                  setAdminPinInput(e.target.value.replace(/\D/g, ''));
+                  setClearError(null);
+                }}
+                placeholder="PIN"
+                className="w-24 px-3 py-1.5 rounded-lg border border-rose-300 text-center font-mono text-sm font-bold bg-white text-slate-900"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleClearAllDrawerLogs}
+                className="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs"
+              >
+                {t('శాశ్వతంగా తొలగించు', 'Confirm Clear All')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmClearLogs(false);
+                  setAdminPinInput('');
+                  setClearError(null);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 font-bold text-xs"
+              >
+                {t('రద్దు చేయి', 'Cancel')}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Cash Drawer Summary Bento Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-          <div className="p-3.5 bg-slateBase-50 rounded-xl border border-slateBase-200">
-            <div className="text-[10px] font-bold text-slateBase-500 uppercase tracking-wider">{t('ఈ రోజు ఓపెనింగ్స్', 'Today Openings')}</div>
-            <div className="text-2xl font-syne font-black text-slateBase-900 mt-1 tnum">{drawerLogs.length}</div>
-            <div className="text-[10px] text-slateBase-400 mt-0.5">{t('మొత్తం డ్రాయర్ ఈవెంట్లు', 'Total kick events')}</div>
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t('ఈ రోజు ఓపెనింగ్స్', 'Today Openings')}</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 mt-1">{drawerLogs.length}</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">{t('మొత్తం డ్రాయర్ ఈవెంట్లు', 'Total kick events')}</div>
           </div>
 
-          <div className="p-3.5 bg-classicEmerald-50/60 rounded-xl border border-classicEmerald-200">
-            <div className="text-[10px] font-bold text-classicEmerald-700 uppercase tracking-wider">{t('నగదు సేల్స్ కిక్స్', 'Sales Auto-Kicks')}</div>
-            <div className="text-2xl font-syne font-black text-classicEmerald-800 mt-1 tnum">
+          <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200">
+            <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">{t('నగదు సేల్స్ కిక్స్', 'Sales Auto-Kicks')}</div>
+            <div className="text-2xl font-bold font-mono text-emerald-800 mt-1">
               {drawerLogs.filter(l => l.eventType === 'SALE_AUTO_KICK').length}
             </div>
-            <div className="text-[10px] text-classicEmerald-600 mt-0.5">{t('ఆటోమేటిక్ నగదు బిల్లులు', 'Cash checkout kicks')}</div>
+            <div className="text-[10px] text-emerald-600 mt-0.5">{t('ఆటోమేటిక్ నగదు బిల్లులు', 'Cash checkout kicks')}</div>
           </div>
 
-          <div className="p-3.5 bg-saudaBlue-50/60 rounded-xl border border-saudaBlue-200">
-            <div className="text-[10px] font-bold text-saudaBlue-700 uppercase tracking-wider">{t('మాన్యువల్ / చిల్లర', 'Manual / Float')}</div>
-            <div className="text-2xl font-syne font-black text-saudaBlue-800 mt-1 tnum">
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">{t('మాన్యువల్ / చిల్లర', 'Manual / Float')}</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 mt-1">
               {drawerLogs.filter(l => l.eventType === 'MANUAL_NO_SALE' || l.eventType === 'DRAWER_COUNT_AUDIT').length}
             </div>
-            <div className="text-[10px] text-saudaBlue-600 mt-0.5">{t('చిల్లర / కౌంటింగ్', 'Change & audits')}</div>
+            <div className="text-[10px] text-slate-500 mt-0.5">{t('చిల్లర / కౌంటింగ్', 'Change & audits')}</div>
           </div>
 
-          <div className="p-3.5 bg-classicCrimson-50/60 rounded-xl border border-classicCrimson-200">
-            <div className="text-[10px] font-bold text-classicCrimson-700 uppercase tracking-wider">{t('పెట్టీ క్యాష్ ఖర్చులు', 'Petty Cash')}</div>
-            <div className="text-2xl font-syne font-black text-classicCrimson-800 mt-1 tnum">
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">{t('పెట్టీ క్యాష్ ఖర్చులు', 'Petty Cash')}</div>
+            <div className="text-2xl font-bold font-mono text-slate-900 mt-1">
               {drawerLogs.filter(l => l.eventType === 'PETTY_CASH_EXPENSE').length}
             </div>
-            <div className="text-[10px] text-classicCrimson-600 mt-0.5">{t('టీ, క్లీనింగ్ ఖర్చులు', 'Store cash expense')}</div>
+            <div className="text-[10px] text-slate-500 mt-0.5">{t('టీ, క్లీనింగ్ ఖర్చులు', 'Store cash expense')}</div>
           </div>
         </div>
 
+        {/* Filter Controls Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+            {(['ALL', 'SALE', 'MANUAL', 'EXPENSE'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setDrawerFilter(mode)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                  drawerFilter === mode
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {mode === 'ALL'
+                  ? t(`అన్నీ (${drawerLogs.length})`, `All (${drawerLogs.length})`)
+                  : mode === 'SALE'
+                  ? t('సేల్స్ బిల్లులు', 'Sales Kicks')
+                  : mode === 'MANUAL'
+                  ? t('మాన్యువల్ ఓపెన్స్', 'Manual Opens')
+                  : t('ఖర్చులు', 'Expenses')}
+              </button>
+            ))}
+          </div>
+
+          <span className="text-xs text-slate-500">
+            {t(`ఫలితాలు: ${filteredDrawerLogs.length}`, `Showing: ${filteredDrawerLogs.length}`)}
+          </span>
+        </div>
+
         {/* Drawer Event Audit History Table */}
-        <div className="border border-slateBase-200 rounded-xl overflow-hidden">
+        <div className="border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slateBase-50 border-b border-slateBase-200 text-[10px] uppercase font-bold text-slateBase-500">
+            <thead className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500 font-mono">
               <tr>
                 <th className="py-2.5 px-3.5">{t('ఈవెంట్ రకం', 'Event Type')}</th>
                 <th className="py-2.5 px-3.5">{t('సిబ్బంది / యూజర్', 'Cashier User')}</th>
                 <th className="py-2.5 px-3.5">{t('కారణం / వివరాలు', 'Reason & Reference')}</th>
                 <th className="py-2.5 px-3.5 text-right">{t('మొత్తం (₹)', 'Amount')}</th>
                 <th className="py-2.5 px-3.5 text-right">{t('సమయం & తేదీ', 'Time & Date')}</th>
+                <th className="py-2.5 px-3.5 text-center">{t('చర్య', 'Action')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slateBase-100">
-              {drawerLogs.length === 0 ? (
+            <tbody className="divide-y divide-slate-100">
+              {filteredDrawerLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-6 text-center text-slateBase-400">
+                  <td colSpan={6} className="py-6 text-center text-slate-400">
                     {t('ఎలాంటి డ్రాయర్ ఈవెంట్లు నమోదు కాలేదు', 'No cash drawer activity recorded yet')}
                   </td>
                 </tr>
               ) : (
-                drawerLogs.slice(0, 15).map((log) => (
-                  <tr key={log.id} className="hover:bg-slateBase-50/60 transition">
+                filteredDrawerLogs.slice(0, 30).map((log) => (
+                  <tr key={log.id} className="hover:bg-slate-50 transition">
                     <td className="py-2.5 px-3.5">
                       <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         log.eventType === 'SALE_AUTO_KICK'
-                          ? 'bg-classicEmerald-100 text-classicEmerald-800'
+                          ? 'bg-emerald-100 text-emerald-800'
                           : log.eventType === 'PETTY_CASH_EXPENSE'
-                          ? 'bg-classicCrimson-100 text-classicCrimson-800'
+                          ? 'bg-rose-100 text-rose-800'
                           : log.eventType === 'CASH_DROP'
                           ? 'bg-amber-100 text-amber-800'
-                          : 'bg-saudaBlue-100 text-saudaBlue-800'
+                          : 'bg-slate-100 text-slate-800'
                       }`}>
                         {log.eventType === 'SALE_AUTO_KICK'
                           ? t('నగదు సేల్', 'Sale Kick')
@@ -691,17 +829,27 @@ export const SettingsScreen: React.FC = () => {
                           : t('మాన్యువల్', 'Manual Open')}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3.5 font-bold text-slateBase-900">
+                    <td className="py-2.5 px-3.5 font-bold text-slate-900">
                       {log.userName}
                     </td>
-                    <td className="py-2.5 px-3.5 text-slateBase-700">
-                      {log.reason} {log.billNumber && <span className="font-mono text-saudaBlue-600 font-bold ml-1">({log.billNumber})</span>}
+                    <td className="py-2.5 px-3.5 text-slate-700">
+                      {log.reason} {log.billNumber && <span className="font-mono text-emerald-700 font-bold ml-1">({log.billNumber})</span>}
                     </td>
-                    <td className="py-2.5 px-3.5 text-right font-mono font-bold text-slateBase-900">
+                    <td className="py-2.5 px-3.5 text-right font-mono font-bold text-slate-900">
                       {log.amountPaise ? formatPaise(log.amountPaise) : '—'}
                     </td>
-                    <td className="py-2.5 px-3.5 text-right text-slateBase-500 font-mono text-[11px]">
+                    <td className="py-2.5 px-3.5 text-right text-slate-500 font-mono text-[11px]">
                       {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(log.timestamp).toLocaleDateString()}
+                    </td>
+                    <td className="py-2.5 px-3.5 text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDrawerLog(log.id)}
+                        className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                        title={t('ఈ లాగ్‌ను తొలగించండి', 'Delete this log entry')}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </td>
                   </tr>
                 ))

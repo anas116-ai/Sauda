@@ -4,10 +4,12 @@ import { db } from '../../db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { 
   type Customer, 
+  type CustomerLedgerEntry,
   type Supplier, 
   type SupplierLedgerEntryType,
   type PaymentMethod 
 } from '../../types';
+import { DisputeProofModal } from '../../components/DisputeProofModal';
 import { 
   BookOpen, 
   Search, 
@@ -77,6 +79,7 @@ export const KhataScreen: React.FC = () => {
 
   // Milestone 4.4: Multi-Customer Bulk Settlement Modal State
   const [showBulkSettlementModal, setShowBulkSettlementModal] = useState<boolean>(false);
+  const [proofEntry, setProofEntry] = useState<CustomerLedgerEntry | null>(null);
 
   // Add customer form states
   const [newCustFullName, setNewCustFullName] = useState('');
@@ -118,11 +121,38 @@ export const KhataScreen: React.FC = () => {
   const [creditPeriodDays, setCreditPeriodDays] = useState(15);
   const [categoriesInput, setCategoriesInput] = useState('');
 
-  // Live queries from Dexie IndexedDB
-  const customers = useLiveQuery(() => db.customers.toArray()) || [];
-  const customerLedger = useLiveQuery(() => db.customerLedger.toArray()) || [];
-  const suppliers = useLiveQuery(() => db.suppliers.toArray()) || [];
-  const supplierLedger = useLiveQuery(() => db.supplierLedger.toArray()) || [];
+  // Live queries from Dexie IndexedDB scoped to current active shop
+  const customers = useLiveQuery(
+    () => currentShop ? db.customers.where('shopId').equals(currentShop.id).toArray() : db.customers.toArray(),
+    [currentShop?.id]
+  ) || [];
+
+  const customerLedger = useLiveQuery(
+    async () => {
+      if (!currentShop) return db.customerLedger.toArray();
+      const shopCusts = await db.customers.where('shopId').equals(currentShop.id).toArray();
+      const custIds = new Set(shopCusts.map(c => c.id));
+      const allEntries = await db.customerLedger.toArray();
+      return allEntries.filter(e => custIds.has(e.customerId) || (e as any).shopId === currentShop.id);
+    },
+    [currentShop?.id]
+  ) || [];
+
+  const suppliers = useLiveQuery(
+    () => currentShop ? db.suppliers.where('shopId').equals(currentShop.id).toArray() : db.suppliers.toArray(),
+    [currentShop?.id]
+  ) || [];
+
+  const supplierLedger = useLiveQuery(
+    async () => {
+      if (!currentShop) return db.supplierLedger.toArray();
+      const shopSuppliers = await db.suppliers.where('shopId').equals(currentShop.id).toArray();
+      const suppIds = new Set(shopSuppliers.map(s => s.id));
+      const allEntries = await db.supplierLedger.toArray();
+      return allEntries.filter(e => suppIds.has(e.supplierId) || (e as any).shopId === currentShop.id);
+    },
+    [currentShop?.id]
+  ) || [];
 
   // Auto-select first supplier or customer if none selected
   React.useEffect(() => {
@@ -1610,6 +1640,16 @@ export const KhataScreen: React.FC = () => {
                               </div>
                             </div>
                             <button
+                              type="button"
+                              data-testid={`proof-khata-entry-${e.id}`}
+                              onClick={() => setProofEntry(e)}
+                              className="px-2.5 py-1 text-[11px] font-bold text-copper-700 bg-copper-50 hover:bg-copper-100 border border-copper-200/80 rounded-lg transition flex items-center gap-1 shadow-2xs"
+                              title={t('వివాద రహిత రసీదు రుజువు చూడండి', 'View Itemized Dispute-Proof Slip')}
+                            >
+                              <FileText className="w-3.5 h-3.5 text-copper-600" />
+                              <span>{t('ప్రూఫ్', 'Proof')}</span>
+                            </button>
+                            <button
                               data-testid={`edit-khata-entry-${e.id}`}
                               onClick={() => handleOpenEditEntry(e.id, e.amountPaise, e.notes || '', 'CUSTOMER')}
                               className="p-1.5 text-slateBase-400 hover:text-saudaBlue-600 hover:bg-saudaBlue-50 rounded-lg transition"
@@ -2434,6 +2474,18 @@ export const KhataScreen: React.FC = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Itemized Dispute Proof Slip Modal */}
+      {proofEntry && selectedCustomer && (
+        <DisputeProofModal
+          entry={proofEntry}
+          customer={selectedCustomer}
+          shop={currentShop}
+          onClose={() => setProofEntry(null)}
+          formatPaise={formatPaise}
+          t={t}
+        />
       )}
 
     </div>

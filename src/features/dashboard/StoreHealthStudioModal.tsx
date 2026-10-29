@@ -56,13 +56,10 @@ export const StoreHealthStudioModal: React.FC<StoreHealthStudioModalProps> = ({
   }, [bills, variants, customerLedger, customers, cashDrawerLogs, dayEndClosings]);
 
   // Color scheme based on overall score
-  let scoreBadgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
   let scoreRingColor = 'text-emerald-500';
   if (report.overallScore < 50) {
-    scoreBadgeColor = 'bg-rose-50 text-rose-700 border-rose-200';
     scoreRingColor = 'text-rose-500';
   } else if (report.overallScore < 70) {
-    scoreBadgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
     scoreRingColor = 'text-amber-500';
   }
 
@@ -77,21 +74,21 @@ export const StoreHealthStudioModal: React.FC<StoreHealthStudioModalProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="px-6 py-4 bg-paper-deep text-ink flex flex-wrap items-center justify-between gap-4 border-b border-stone-300">
+        <div className="px-6 py-4 bg-[#161918] text-white flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-ink-950 text-paper flex items-center justify-center">
-              <Activity className="w-4 h-4" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#84CC16]/20 border border-[#2563EB]/40 text-[#2563EB] flex items-center justify-center">
+              <Activity className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-ink font-display">
+                <h2 className="text-xl font-bold tracking-tight text-white font-outfit">
                   {t('స్టోర్ హెల్త్ & భవిష్యత్ అంచనాలు', 'Store Health & Sales Forecast', 'स्टोर हेल्थ और बिक्री पूर्वानुमान')}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-micro bg-paper text-copper-700 border border-stone-300">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#84CC16]/15 text-[#2563EB] border border-[#2563EB]/30">
                   Vitality Index
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {t(
                   'వ్యాపార సామర్థ్యం & 14 రోజుల అమ్మకాల సరళి',
                   'Business Vitality Index & 14-Day Sales Velocity Forecast',
@@ -102,20 +99,20 @@ export const StoreHealthStudioModal: React.FC<StoreHealthStudioModalProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className={`px-3 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 bg-paper ${scoreBadgeColor}`}>
-              <ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.7} />
+            <div className="px-3 py-1 rounded-xl text-xs font-bold border flex items-center gap-1.5 bg-slate-800 text-[#2563EB] border-slate-700">
+              <ShieldCheck className="w-4 h-4 text-[#2563EB]" strokeWidth={2} />
               <span className="tnum">{report.overallScore} / 100</span>
-              <span className="text-stone-400">•</span>
+              <span className="text-slate-500">•</span>
               <span>{t(report.gradeLabelTe, report.gradeLabelEn, report.gradeLabelHi)}</span>
             </div>
 
             <button
               onClick={onClose}
               data-testid="close-store-health-btn"
-              className="w-8 h-8 rounded-md border border-stone-300 hover:bg-white hover:text-oxblood-600 text-stone-500 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               aria-label="Close"
             >
-              <X className="w-4 h-4" strokeWidth={1.6} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
         </div>
@@ -422,9 +419,9 @@ export const StoreHealthStudioModal: React.FC<StoreHealthStudioModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 bg-paper-deep border-t border-stone-300 flex flex-wrap items-center justify-between text-xs text-stone-500">
+        <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sage-500" aria-hidden="true" />
+            <span className="w-2 h-2 rounded-full bg-[#84CC16]" aria-hidden="true" />
             <span>
               {t(
                 'ఈ స్కోరు మీ దుకాణం లెడ్జర్ ఆధారంగా ప్రతి రోజు తాజాగా లెక్కించబడుతుంది.',
@@ -438,7 +435,7 @@ export const StoreHealthStudioModal: React.FC<StoreHealthStudioModalProps> = ({
             <button
               onClick={onClose}
               data-testid="store-health-close-footer-btn"
-              className="px-4 py-1.5 rounded-md bg-ink-950 hover:bg-ink-800 text-paper font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#161918] hover:bg-slate-900 text-white font-bold transition-all shadow-xs"
             >
               {t('పూర్తయింది', 'Done', 'संपन्न')}
             </button>

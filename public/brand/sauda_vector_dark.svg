@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="35 55 230 310" width="100%" height="100%" fill="none">
+  <!-- Clean Standalone Vector Mark without any background box -->
+  <!-- Upper Hook & Diagonal Spine -->
+  <path d="M 245 88 
+           L 105 88 
+           C 70 88, 55 110, 55 138 
+           C 55 174, 85 194, 126 214 
+           L 165 234 
+           C 212 256, 252 284, 252 334 
+           C 252 344, 248 354, 240 362 
+           C 240 362, 230 330, 204 314 
+           C 178 298, 145 284, 110 264 
+           C 70 240, 42 208, 42 165 
+           C 42 108, 85 64, 142 64 
+           L 245 64 
+           Z" 
+        fill="#F4EFE6" />
+
+  <!-- Left Cupping Hand -->
+  <path d="M 44 175 
+           C 44 235, 80 295, 125 345 
+           L 125 320 
+           C 95 280, 72 245, 68 190 
+           Z" 
+        fill="#F4EFE6" />
+  <path d="M 88 220 
+           C 90 248, 102 272, 118 288 
+           C 112 272, 108 252, 108 232 
+           C 108 220, 114 212, 122 206 
+           C 110 206, 98 212, 88 220 Z" 
+        fill="#F4EFE6" />
+
+  <!-- Right Cupping Hand -->
+  <path d="M 252 215 
+           C 252 270, 218 318, 172 345 
+           L 172 322 
+           C 202 298, 228 265, 230 215 
+           Z" 
+        fill="#F4EFE6" />
+  <path d="M 210 242 
+           C 208 266, 196 288, 180 302 
+           C 186 288, 190 270, 190 252 
+           C 190 240, 184 232, 176 226 
+           C 188 226, 200 232, 210 242 Z" 
+        fill="#F4EFE6" />
+
+  <!-- Central Base Shopping Basket (Burnt Orange #DF5E26) -->
+  <g transform="translate(108, 245)">
+    <!-- Basket Rim -->
+    <rect x="0" y="0" width="84" height="6" rx="3" fill="#DF5E26" />
+    <!-- Basket Body Trapezoid -->
+    <path d="M 4 6 L 80 6 L 68 46 L 16 46 Z" fill="none" stroke="#DF5E26" stroke-width="5" stroke-linejoin="round" />
+    <!-- Basket Grid Lines -->
+    <line x1="8" y1="18" x2="76" y2="18" stroke="#DF5E26" stroke-width="3.5" />
+    <line x1="12" y1="31" x2="72" y2="31" stroke="#DF5E26" stroke-width="3.5" />
+    
+    <line x1="26" y1="6" x2="28" y2="46" stroke="#DF5E26" stroke-width="3" />
+    <line x1="42" y1="6" x2="42" y2="46" stroke="#DF5E26" stroke-width="3" />
+    <line x1="58" y1="6" x2="56" y2="46" stroke="#DF5E26" stroke-width="3" />
+
+    <!-- Basket Wheel / Base Wheels -->
+    <circle cx="30" cy="56" r="6.5" fill="#DF5E26" />
+    <circle cx="54" cy="56" r="6.5" fill="#DF5E26" />
+  </g>
+</svg>
