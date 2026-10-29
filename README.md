@@ -1,94 +1,129 @@
-# 🛒 Sauda (సౌదా) — Next-Gen Offline-First Kirana & General Store Management System
+<div align="center">
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?logo=typescript)](https://www.typescriptlang.org/)
+<img src="public/brand/sauda_official_lockup_dark.svg" alt="Sauda Brand Lockup" width="540" />
+
+### Next-Gen Offline-First Kirana & Retail Management ERP
+**భారతీయ కిరాణా, జనరల్ స్టోర్స్ మరియు రిటైల్ వ్యాపారాల కోసం రూపొందించబడిన అత్యాధునిక POS & ఇన్వెంటరీ వ్యవస్థ**
+
+[![MIT License](https://img.shields.io/badge/License-MIT-emerald.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.0-61dafb?logo=react)](https://react.dev/)
 [![Dexie.js](https://img.shields.io/badge/Dexie.js-v7_IndexedDB-brightgreen)](https://dexie.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v3.4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E_Verified-orange?logo=playwright)](https://playwright.dev/)
 
-**Sauda (సౌదా / सौदा)** is a production-grade, offline-first Point of Sale (POS) and inventory ERP engineered specifically for Indian Kirana stores, FMCG retailers, and general provision shops.
+---
+
+<img src="docs/screenshots/01_hero_gateway.png" alt="Sauda Luxury Welcome Gateway & Store Setup" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+
+</div>
 
 ---
 
-## 📊 Current Status Summary (For AI Agents & Developers)
+## 🌟 Overview (పరిచయం)
 
-| Metric | Current Count | Status |
-| :--- | :---: | :--- |
-| **Total Phases** | **8 (Phase 0 – 7)** | Defined in [`ROADMAP.md`](./ROADMAP.md) |
-| **Completed Phases** | **4 (Phases 0, 1, 2, 3)** | **100% Tested & Verified ✓** |
-| **Pending Phases** | **4 (Phases 4, 5, 6, 7)** | Phase 4 Active Now |
-| **Active Next Task** | **Milestone 4.1** | Customer Credit Limits & Aging Analysis |
-| **Total Completed Milestones** | **11** | Fully functional and in production code |
+**Sauda (సౌదా / सौदा)** is a production-grade, offline-first Point of Sale (POS), Khata ledger, and inventory ERP tailored specifically for Indian Kirana stores, FMCG retailers, supermarkets, and provision stores.
 
-> 📖 **Full Implementation Roadmap**: See [`ROADMAP.md`](./ROADMAP.md) for detailed deliverables of each phase, milestone breakdowns, and verification procedures.
+- **100% Offline-First:** Operates seamlessly with zero internet dependency using Dexie.js (IndexedDB v7).
+- **Bilingual Interface:** Instant real-time language toggle between English, Telugu (తెలుగు), and Hindi (हिंदी).
+- **Hardware Agnostic:** Plug-and-play support for Barcode Scanners, Thermal Receipt Printers (58mm/80mm), Solenoid Cash Drawers, and Digital Weighing Scales (RS-232 / Web Serial).
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+## 📸 Visual Showcase & Screen Walkthrough
 
-- **Frontend Core**: React 19, TypeScript, Vite, Tailwind CSS.
-- **Database & Offline Persistence**: Dexie.js (IndexedDB v7) with resilient local persistence, compound indexes, and zero cloud requirement for core billing.
-- **Design System**: "Cool Classic" — Slate (`#0F172A`), Porcelain (`#F8FAFC`), Royal Blue (`#2563EB`), Emerald (`#059669`), Crimson (`#DC2626`), Amber (`#D97706`).
-- **Typography**: Syne (Display/Numbers), Inter (UI), Noto Sans Telugu (Regional script).
-- **Hardware Integration**:
-  - **Barcode Scanner**: Zero-click hardware wedge hook (`src/hooks/useBarcodeScanner.ts`) with Web Audio 1250Hz confirmation chime.
-  - **Thermal Receipt Printer**: Dual 80mm & 58mm ESC/POS layout (`src/components/ThermalReceipt.tsx`) with dynamic UPI QR and Code 128 barcodes.
-  - **Cash Drawer**: RJ11 solenoid kick pulse (`ESC p 0 25 250`), Web Audio solenoid chime, PIN-authorized manual modal (`Ctrl+D`), and Dexie audit log.
-  - **Weighing Scale**: Web Serial API (`src/utils/weighingScale.ts`) with continuous RS-232 multi-protocol stream parser (Generic, Essae, Phoenix, Eagle), stable tone, and live LED HUD (`src/features/pos/PosScreen.tsx`).
-  - **GST Compliance Engine**: Kirana statutory HSN database, reverse-calculation of taxable base, CGST/SGST/IGST, 15-character GSTIN validator, B2B tax invoice modal, and GSTR-1 Sales Return Studio with 1-click JSON and CSV export (`src/utils/gst.ts`).
+### 1. 🛒 Next-Gen Fast POS Billing Terminal
+*Rapid item search, hardware wedge barcode scanner, weighing scale live HUD, and instant payment settlement.*
+
+<div align="center">
+  <img src="docs/screenshots/03_pos_terminal.png" alt="POS Terminal Interface" width="100%" style="border-radius: 8px;" />
+</div>
 
 ---
 
-## 📁 Repository Structure
+### 2. 📊 Store Analytics & Real-Time KPI Dashboard
+*Daily turnover, gross margins, low stock alerts, top-selling inventory, and cash/UPI collection ratios.*
 
-```
-c:\Project\Lekvya\
-├── src\
-│   ├── components\          # Reusable UI widgets (Navbar, ThermalReceipt, CommandPalette, BarcodeSvg)
-│   ├── context\             # App state provider (AppContext.tsx)
-│   ├── db\                  # Dexie.js v7 schema and sample database seeder (db.ts)
-│   ├── features\
-│   │   ├── dashboard\       # Store metrics, KPI cards, low stock alerts (DashboardScreen.tsx)
-│   │   ├── pos\             # Fast POS billing, weighing scale HUD, B2B tax modal (PosScreen.tsx)
-│   │   ├── products\        # Catalog, barcode stickers, expiry radar, physical audit (ProductCatalog.tsx)
-│   │   ├── khata\           # Customer & Supplier double-entry ledger (KhataScreen.tsx)
-│   │   └── settings\        # Printer, Cash drawer, Scale calibration, Backup/Restore (SettingsScreen.tsx)
-│   ├── hooks\               # Custom hooks (useBarcodeScanner.ts)
-│   ├── types\               # Complete bilingual domain models (index.ts)
-│   └── utils\               # ESC/POS generator, RS-232 parser, GST calculation engine
-├── test_milestone_2_5.mjs   # Playwright E2E: Barcode Stickers & Physical Audit
-├── test_milestone_3_1.mjs   # Playwright E2E: Thermal Receipt Printer & Dynamic UPI QR
-├── test_milestone_3_2.mjs   # Playwright E2E: Electronic Cash Drawer Kick & Audit Logs
-├── test_milestone_3_3.mjs   # Playwright E2E: Digital Weighing Scale & RS-232 Stream
-├── test_milestone_3_4.mjs   # Playwright E2E: GST Invoicing, B2B Tax Receipts & GSTR-1 Studio
-├── ROADMAP.md               # Master phase & milestone tracker
-└── package.json             # NPM scripts and dependencies
-```
+<div align="center">
+  <img src="docs/screenshots/02_store_dashboard.png" alt="Store Dashboard" width="100%" style="border-radius: 8px;" />
+</div>
 
 ---
 
-## 🚀 Development & Testing Commands
+### 3. 📖 Bilingual Double-Entry Khata & Customer Aging
+*Customer credit limits, supplier outstanding balances, 30/60/90+ day aging analysis, and 1-click WhatsApp payment reminders.*
+
+<div align="center">
+  <img src="docs/screenshots/05_khata_ledger.png" alt="Khata Ledger Screen" width="100%" style="border-radius: 8px;" />
+</div>
+
+---
+
+### 4. 📦 Product Catalog, Barcode Printing & Physical Audit
+*Batch management, MRP vs Selling Price tracking, barcode sticker generator, and expiry date radar.*
+
+<div align="center">
+  <img src="docs/screenshots/04_product_catalog.png" alt="Product Catalog & Inventory" width="100%" style="border-radius: 8px;" />
+</div>
+
+---
+
+### 5. 📑 Financial Balance Sheet, Day Book & Statutory GST Studio
+*Real-time Assets vs Liabilities calculation, Daybook cash-flow audits, B2B tax invoicing, and GSTR-1 compliant filing exports.*
+
+<div align="center">
+  <img src="docs/screenshots/06_balance_sheet.png" alt="Financial Balance Sheet" width="100%" style="border-radius: 8px;" />
+</div>
+
+---
+
+## 🔌 Hardware Integration Suite
+
+| Hardware Device | Communication Protocol | Key Features |
+| :--- | :--- | :--- |
+| **Barcode Scanner** | Zero-latency Keyboard Wedge | Automatic UPC/EAN-13 detection with 1250Hz audio chime confirmation |
+| **Thermal Printer** | ESC/POS (USB / Bluetooth) | Dual 80mm & 58mm bill layouts with dynamic UPI QR code generation |
+| **Cash Drawer** | RJ11 Solenoid Kick Pulse | Automated drawer kick upon cash payment & PIN-protected audit log |
+| **Weighing Scale** | RS-232 (Web Serial API) | Real-time continuous weight stream parser (Phoenix, Essae, Eagle) with stable tone |
+
+---
+
+## 🏗️ Technology Stack
+
+* **Frontend Framework:** React 19, TypeScript, Vite
+* **Styling & Design System:** Tailwind CSS with custom Kirana luxury tokens
+* **Local Persistence:** Dexie.js (IndexedDB v7) with high-performance compound indexing
+* **Testing & Verification:** Playwright E2E automation test suite
+* **Icons & Animation:** Lucide Icons, Motion (Framer Motion v12)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+* **Node.js**: v20.0 or higher
+* **npm**: v10.0 or higher
+
+### Installation & Launch
 
 ```bash
-# 1. Install dependencies
+# 1. Clone repository
+git clone https://github.com/anas116-ai/Sauda.git
+cd Sauda
+
+# 2. Install dependencies
 npm install
 
-# 2. Start Vite dev server (runs on http://localhost:5173/)
+# 3. Launch development server
 npm run dev
-
-# 3. Compile and build TypeScript for production
-npm run build
-
-# 4. Run Playwright verification tests
-node test_milestone_3_4.mjs
 ```
+
+Visit `http://localhost:5173` in your browser to experience Sauda.
 
 ---
 
-## 🤖 Instructions for AI Agents Continuing Development
+## 📜 License
 
-If an autonomous coding agent (Claude, Cursor, Copilot, ChatGPT, Antigravity) is given this codebase:
-1. **Always read [`ROADMAP.md`](./ROADMAP.md) first** to identify the active phase and milestone.
-2. **Current Active Task**: **Milestone 4.1: Customer Credit Limits & Aging Analysis** in `src/features/khata/KhataScreen.tsx` and `src/features/pos/PosScreen.tsx`.
-3. **Strict QA Rule**: Do not declare any feature complete without writing a dedicated Playwright test (`test_milestone_<X>_<Y>.mjs`), executing it, and confirming zero errors.
-4. **Design Rules**: Adhere strictly to the "Cool Classic" palette, bilingual Telugu/English labels, and tactile feedback.
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for full details.
+
+Developed with ❤️ for Indian Retailers & Kirana Entrepreneurs.

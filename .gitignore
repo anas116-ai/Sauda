@@ -36,6 +36,7 @@ yarn-error.log*
 
 # Media / temporary
 *.png
+!docs/screenshots/*.png
 *.jpg
 *.jpeg
 *.webp
